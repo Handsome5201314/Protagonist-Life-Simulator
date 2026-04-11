@@ -1,0 +1,839 @@
+{
+  "users": [
+    {
+      "id": "user_demo",
+      "displayName": "Vault Keeper",
+      "seasonId": "season_founders",
+      "wallet": {
+        "renown": 120,
+        "diamonds": 36,
+        "seasonPoints": 0,
+        "supportStreak": 0
+      },
+      "linkedAiliangbiao": {
+        "status": "linked",
+        "linkedAt": "2026-04-10T13:44:42.334Z",
+        "externalUserId": "prototype-linked-user"
+      },
+      "createdAt": "2026-04-10T12:32:41.436Z",
+      "updatedAt": "2026-04-10T13:44:42.334Z"
+    }
+  ],
+  "personas": [
+    {
+      "id": "persona_9305edf9-3cfb-45a7-97d7-89e0ae8fc764",
+      "userId": "user_demo",
+      "source": "ailiangbiao",
+      "sourceProfileId": "lb_other_child",
+      "assessmentVersion": "ailiangbiao-prototype",
+      "name": "Private Child Mirror",
+      "relation": "OTHER",
+      "ageBand": "child",
+      "adultOnlyEligible": false,
+      "traitVector": {
+        "charm": 52,
+        "resilience": 54,
+        "focus": 58,
+        "empathy": 56,
+        "strategy": 57,
+        "chaos": 32,
+        "courage": 55
+      },
+      "publicTraitTags": [
+        "私密档案",
+        "感受型",
+        "慢热",
+        "高敏"
+      ],
+      "fears": [
+        "陌生嘈杂环境"
+      ],
+      "interests": [
+        "星图",
+        "图鉴"
+      ],
+      "communicationStyle": "quiet-precise",
+      "careerTilt": "strategy-led",
+      "riskFlags": [
+        "private_only"
+      ],
+      "lockedHash": "1bcfcc710de1666f10d663839b30bfdbb3a7125f8da3a02338a370611ebe40fa",
+      "expiresAt": "2026-05-10T12:46:59.510Z"
+    },
+    {
+      "id": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+      "userId": "user_demo",
+      "source": "ailiangbiao",
+      "sourceProfileId": "lb_self_adult",
+      "assessmentVersion": "ailiangbiao-prototype",
+      "name": "Measure-born Hero",
+      "relation": "SELF",
+      "ageBand": "adult",
+      "adultOnlyEligible": true,
+      "traitVector": {
+        "charm": 58,
+        "resilience": 54,
+        "focus": 62,
+        "empathy": 56,
+        "strategy": 65,
+        "chaos": 32,
+        "courage": 59
+      },
+      "publicTraitTags": [
+        "成人主角",
+        "谋略型",
+        "慢热",
+        "高敏"
+      ],
+      "fears": [
+        "被粗暴归类",
+        "失去选择权"
+      ],
+      "interests": [
+        "心理画像",
+        "世界观构建",
+        "策略游戏"
+      ],
+      "communicationStyle": "quiet-precise",
+      "careerTilt": "strategy-led",
+      "riskFlags": [],
+      "lockedHash": "68ed0f67f5056e7d171f9fdc73a211f6bb6a7cfba9ca1f1f378fc194ce448423",
+      "expiresAt": "2026-05-10T12:46:59.509Z"
+    },
+    {
+      "id": "persona_demo_self",
+      "userId": "user_demo",
+      "source": "upload",
+      "assessmentVersion": "1.0",
+      "name": "Crimson Archivist",
+      "relation": "SELF",
+      "ageBand": "adult",
+      "adultOnlyEligible": true,
+      "traitVector": {
+        "charm": 61,
+        "resilience": 74,
+        "focus": 66,
+        "empathy": 57,
+        "strategy": 69,
+        "chaos": 28,
+        "courage": 64
+      },
+      "publicTraitTags": [
+        "慎密",
+        "压场感",
+        "故事脑",
+        "先观察后出手"
+      ],
+      "fears": [
+        "被彻底误解",
+        "喧嚣失控"
+      ],
+      "interests": [
+        "长篇小说",
+        "赛博民俗",
+        "塔罗意象"
+      ],
+      "communicationStyle": "slow-burn tactician",
+      "careerTilt": "strategy & storytelling",
+      "riskFlags": [],
+      "lockedHash": "8b6a279198bece83db51509057254923175c4996b6735ad22fde48bcd5a86af7",
+      "overlayId": "overlay_demo_self",
+      "expiresAt": "2026-05-10T12:32:41.436Z"
+    },
+    {
+      "id": "persona_legend_lamplight",
+      "userId": "user_demo",
+      "source": "legend",
+      "assessmentVersion": "legend-1.0",
+      "name": "Lamplight Lin Daiyu.exe",
+      "relation": "OTHER",
+      "ageBand": "adult",
+      "adultOnlyEligible": true,
+      "traitVector": {
+        "charm": 82,
+        "resilience": 48,
+        "focus": 60,
+        "empathy": 88,
+        "strategy": 58,
+        "chaos": 41,
+        "courage": 44
+      },
+      "publicTraitTags": [
+        "脆感美学",
+        "高敏锐",
+        "台词杀伤",
+        "情绪穿透"
+      ],
+      "fears": [
+        "粗暴现实",
+        "被消费式欣赏"
+      ],
+      "interests": [
+        "诗歌",
+        "黑雨都市",
+        "纸灯庭院"
+      ],
+      "communicationStyle": "blade-soft confessional",
+      "careerTilt": "cultural icon",
+      "riskFlags": [],
+      "lockedHash": "1206743c33ba21335c6060b1d3769f90ebd9a03f99a63e517e00e7ee92e4b61d",
+      "expiresAt": "2026-05-10T12:32:41.436Z"
+    },
+    {
+      "id": "persona_legend_tycoon",
+      "userId": "user_demo",
+      "source": "legend",
+      "assessmentVersion": "legend-1.0",
+      "name": "Orbital Tycoon Muskcore",
+      "relation": "OTHER",
+      "ageBand": "adult",
+      "adultOnlyEligible": true,
+      "traitVector": {
+        "charm": 72,
+        "resilience": 79,
+        "focus": 63,
+        "empathy": 26,
+        "strategy": 85,
+        "chaos": 57,
+        "courage": 92
+      },
+      "publicTraitTags": [
+        "高压推进",
+        "赌徒勇气",
+        "争议引力",
+        "场面控制"
+      ],
+      "fears": [
+        "停滞",
+        "平庸会议"
+      ],
+      "interests": [
+        "火箭",
+        "野心叙事",
+        "极限赌注"
+      ],
+      "communicationStyle": "volatile visionary",
+      "careerTilt": "frontier builder",
+      "riskFlags": [],
+      "lockedHash": "585a21ad0ef5cde9acf9616c03858085f18f31410063b2fb32dc57ab0a5826cf",
+      "expiresAt": "2026-05-10T12:32:41.436Z"
+    },
+    {
+      "id": "persona_legend_orchid",
+      "userId": "user_demo",
+      "source": "legend",
+      "assessmentVersion": "legend-1.0",
+      "name": "Neon Orchid",
+      "relation": "OTHER",
+      "ageBand": "adult",
+      "adultOnlyEligible": true,
+      "traitVector": {
+        "charm": 88,
+        "resilience": 58,
+        "focus": 49,
+        "empathy": 73,
+        "strategy": 46,
+        "chaos": 64,
+        "courage": 61
+      },
+      "publicTraitTags": [
+        "调情高手",
+        "浪漫主导",
+        "高能量",
+        "戏剧感"
+      ],
+      "fears": [
+        "无趣社交",
+        "过于僵硬的谈话"
+      ],
+      "interests": [
+        "派对摄影",
+        "霓虹舞台",
+        "夜色城市"
+      ],
+      "communicationStyle": "playful flirt",
+      "careerTilt": "creative spotlight",
+      "riskFlags": [],
+      "lockedHash": "ae1c40e5bebad14d09d8dabd74716006ba10f778bddf87f77c1c7364253efba0",
+      "expiresAt": "2026-05-10T15:06:49.627Z"
+    },
+    {
+      "id": "persona_legend_analyst",
+      "userId": "user_demo",
+      "source": "legend",
+      "assessmentVersion": "legend-1.0",
+      "name": "Quiet Analyst",
+      "relation": "OTHER",
+      "ageBand": "adult",
+      "adultOnlyEligible": true,
+      "traitVector": {
+        "charm": 41,
+        "resilience": 68,
+        "focus": 84,
+        "empathy": 52,
+        "strategy": 88,
+        "chaos": 18,
+        "courage": 39
+      },
+      "publicTraitTags": [
+        "慢热",
+        "逻辑派",
+        "回避试探",
+        "稳定输出"
+      ],
+      "fears": [
+        "被强行热场",
+        "过快推进"
+      ],
+      "interests": [
+        "推理小说",
+        "数据可视化",
+        "深夜电台"
+      ],
+      "communicationStyle": "precise and reserved",
+      "careerTilt": "research and systems",
+      "riskFlags": [],
+      "lockedHash": "d54b1e479f0af962fd013ae6bad54767a55e2bd846cafac1b06b9ad6d8f3d6ad",
+      "expiresAt": "2026-05-10T15:06:49.627Z"
+    },
+    {
+      "id": "persona_legend_monk",
+      "userId": "user_demo",
+      "source": "legend",
+      "assessmentVersion": "legend-1.0",
+      "name": "Cloudstep Monk",
+      "relation": "OTHER",
+      "ageBand": "adult",
+      "adultOnlyEligible": true,
+      "traitVector": {
+        "charm": 57,
+        "resilience": 86,
+        "focus": 76,
+        "empathy": 70,
+        "strategy": 54,
+        "chaos": 12,
+        "courage": 66
+      },
+      "publicTraitTags": [
+        "平静",
+        "治愈感",
+        "低刺激",
+        "安全依恋"
+      ],
+      "fears": [
+        "情绪绑架",
+        "无边界试探"
+      ],
+      "interests": [
+        "茶道",
+        "山路徒步",
+        "极简生活"
+      ],
+      "communicationStyle": "grounded calm",
+      "careerTilt": "healing and mentoring",
+      "riskFlags": [],
+      "lockedHash": "f0663872ea63d6f3c1da5f7666ea58c9e320604edd079ffdb5e6e0601fc13bca",
+      "expiresAt": "2026-05-10T15:06:49.627Z"
+    },
+    {
+      "id": "persona_legend_hacker",
+      "userId": "user_demo",
+      "source": "legend",
+      "assessmentVersion": "legend-1.0",
+      "name": "Mirrorline Hacker",
+      "relation": "OTHER",
+      "ageBand": "adult",
+      "adultOnlyEligible": true,
+      "traitVector": {
+        "charm": 63,
+        "resilience": 51,
+        "focus": 79,
+        "empathy": 44,
+        "strategy": 83,
+        "chaos": 49,
+        "courage": 72
+      },
+      "publicTraitTags": [
+        "嘴硬",
+        "高智商",
+        "边界感强",
+        "危险吸引力"
+      ],
+      "fears": [
+        "失控暴露",
+        "被读透"
+      ],
+      "interests": [
+        "破解游戏",
+        "电子音乐",
+        "匿名论坛"
+      ],
+      "communicationStyle": "sharp and evasive",
+      "careerTilt": "security and counterplay",
+      "riskFlags": [],
+      "lockedHash": "25de4bf1fa24185ea51b348b1877a78b4a98a27f279612f74e12ab1665c71f17",
+      "expiresAt": "2026-05-10T15:06:49.627Z"
+    },
+    {
+      "id": "persona_legend_barista",
+      "userId": "user_demo",
+      "source": "legend",
+      "assessmentVersion": "legend-1.0",
+      "name": "Sunlit Barista",
+      "relation": "OTHER",
+      "ageBand": "adult",
+      "adultOnlyEligible": true,
+      "traitVector": {
+        "charm": 74,
+        "resilience": 62,
+        "focus": 55,
+        "empathy": 81,
+        "strategy": 43,
+        "chaos": 37,
+        "courage": 58
+      },
+      "publicTraitTags": [
+        "亲和力强",
+        "高共情",
+        "日常感",
+        "容易让人放松"
+      ],
+      "fears": [
+        "冷暴力",
+        "过度炫技"
+      ],
+      "interests": [
+        "咖啡",
+        "独立电影",
+        "城市散步"
+      ],
+      "communicationStyle": "warm and grounding",
+      "careerTilt": "hospitality and art",
+      "riskFlags": [],
+      "lockedHash": "ecbd63285d15e3d5d70e7d6568af8b71030a1f1afcc5a9648434b4cc1d92a4a1",
+      "expiresAt": "2026-05-10T15:06:49.627Z"
+    }
+  ],
+  "overlays": [
+    {
+      "id": "overlay_demo_self",
+      "personaId": "persona_demo_self",
+      "resumeSummary": "内容策略与产品叙事双栖，擅长把复杂能力包装成强体验；在压力场景里更容易从沉默中积蓄反击。",
+      "publicBio": "一个把世界观拆成齿轮、再把人性装回命运钟表里的主角。",
+      "datingPreferences": [
+        "真诚",
+        "边界感",
+        "能一起做项目",
+        "不爱表演型社交"
+      ],
+      "visualSkin": "fortune-ink",
+      "tonePreset": "measured-poetic",
+      "privacyLevel": "public",
+      "updatedAt": "2026-04-10T12:32:41.436Z"
+    }
+  ],
+  "memoryTraits": [],
+  "worldPacks": [
+    {
+      "id": "world_curated_clock",
+      "userId": "user_demo",
+      "title": "Clockwork Jade Casino",
+      "theme": "命运赌桌与东方蒸汽城",
+      "factions": [
+        "翡翠庄家",
+        "赤墨执笔人",
+        "失落皇票猎手"
+      ],
+      "conflicts": [
+        "谁能改写命运本金",
+        "旧王朝债券即将到期"
+      ],
+      "tone": "opulent-pressure",
+      "tabooRules": [
+        "不可明说真正愿望",
+        "不可在月蚀钟响后撒谎"
+      ],
+      "derivedFrom": "curated",
+      "safetyStatus": "clean",
+      "sanitizedSummary": "一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。",
+      "sourceDigest": "curated",
+      "expiresAt": "2027-04-10T12:32:41.436Z"
+    },
+    {
+      "id": "world_curated_tarot",
+      "userId": "user_demo",
+      "title": "Tarot Embassy",
+      "theme": "塔罗使团与婚约外交",
+      "factions": [
+        "恋契司礼院",
+        "逆位先知团",
+        "沉默婚盟局"
+      ],
+      "conflicts": [
+        "政治婚约背后的真正目标",
+        "谁在修改配对星图"
+      ],
+      "tone": "intimate-danger",
+      "tabooRules": [
+        "第一眼不可暴露全部底牌"
+      ],
+      "derivedFrom": "curated",
+      "safetyStatus": "clean",
+      "sanitizedSummary": "每一场相亲都像一场外交仪式，微笑是最便宜的盾牌，沉默才是最高级的武器。",
+      "sourceDigest": "curated",
+      "expiresAt": "2027-04-10T12:32:41.436Z"
+    }
+  ],
+  "matches": [
+    {
+      "id": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0",
+      "userId": "user_demo",
+      "seed": 165161,
+      "mode": "public",
+      "worldPackId": "world_curated_clock",
+      "maxParticipants": 4,
+      "participantIds": [
+        "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
+        "participant_43f80c2b-bd8a-4b2d-b5c4-9aa05a3729d3",
+        "participant_1fb96606-da22-4aea-b133-6f2aa21fc440",
+        "participant_3420bf4c-56c9-4552-a28f-7d1218e56da6"
+      ],
+      "publicStoryStatus": "streaming",
+      "supportPool": 0,
+      "roundStates": [
+        {
+          "round": 1,
+          "title": "Opening Stake",
+          "status": "done",
+          "checkpointCount": 6,
+          "scores": [
+            {
+              "participantId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
+              "delta": 5,
+              "total": 5,
+              "notes": [
+                "Crimson Archivist 带着 慎密 / 压场感 / 故事脑 踏入 Clockwork Jade Casino。",
+                "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+              ]
+            },
+            {
+              "participantId": "participant_43f80c2b-bd8a-4b2d-b5c4-9aa05a3729d3",
+              "delta": 6,
+              "total": 6,
+              "notes": [
+                "Lamplight Lin Daiyu.exe 带着 脆感美学 / 高敏锐 / 台词杀伤 踏入 Clockwork Jade Casino。",
+                "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+              ]
+            },
+            {
+              "participantId": "participant_1fb96606-da22-4aea-b133-6f2aa21fc440",
+              "delta": 6,
+              "total": 6,
+              "notes": [
+                "Orbital Tycoon Muskcore 带着 高压推进 / 赌徒勇气 / 争议引力 踏入 Clockwork Jade Casino。",
+                "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+              ]
+            },
+            {
+              "participantId": "participant_3420bf4c-56c9-4552-a28f-7d1218e56da6",
+              "delta": 5,
+              "total": 5,
+              "notes": [
+                "Measure-born Hero 带着 成人主角 / 谋略型 / 慢热 踏入 Clockwork Jade Casino。",
+                "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+              ]
+            }
+          ],
+          "skillEquips": [],
+          "chapter": "Crimson Archivist 在第 1 回合的势头变化为 +5。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。\n\nLamplight Lin Daiyu.exe 在第 1 回合的势头变化为 +6。Lamplight Lin Daiyu.exe 带着 脆感美学 / 高敏锐 / 台词杀伤 踏入 Clockwork Jade Casino。\n\nOrbital Tycoon Muskcore 在第 1 回合的势头变化为 +6。Orbital Tycoon Muskcore 带着 高压推进 / 赌徒勇气 / 争议引力 踏入 Clockwork Jade Casino。\n\nMeasure-born Hero 在第 1 回合的势头变化为 +5。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+        },
+        {
+          "round": 2,
+          "title": "Reverse Ledger",
+          "status": "pending",
+          "checkpointCount": 0,
+          "scores": [],
+          "skillEquips": []
+        },
+        {
+          "round": 3,
+          "title": "Final Seal",
+          "status": "pending",
+          "checkpointCount": 0,
+          "scores": [],
+          "skillEquips": []
+        }
+      ],
+      "createdAt": "2026-04-10T13:27:27.219Z",
+      "updatedAt": "2026-04-10T13:46:11.266Z"
+    }
+  ],
+  "participants": [
+    {
+      "id": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
+      "personaId": "persona_demo_self",
+      "displayName": "Crimson Archivist",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": true,
+      "eliminated": false,
+      "roundScore": 5,
+      "totalScore": 5,
+      "ghosted": false
+    },
+    {
+      "id": "participant_43f80c2b-bd8a-4b2d-b5c4-9aa05a3729d3",
+      "personaId": "persona_legend_lamplight",
+      "displayName": "Lamplight Lin Daiyu.exe",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 6,
+      "totalScore": 6,
+      "ghosted": false
+    },
+    {
+      "id": "participant_1fb96606-da22-4aea-b133-6f2aa21fc440",
+      "personaId": "persona_legend_tycoon",
+      "displayName": "Orbital Tycoon Muskcore",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 6,
+      "totalScore": 6,
+      "ghosted": false
+    },
+    {
+      "id": "participant_3420bf4c-56c9-4552-a28f-7d1218e56da6",
+      "personaId": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+      "displayName": "Measure-born Hero",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": true,
+      "eliminated": false,
+      "roundScore": 5,
+      "totalScore": 5,
+      "ghosted": false
+    }
+  ],
+  "supportTickets": [],
+  "datingDossiers": [],
+  "streams": [
+    {
+      "id": "stream_00a321f1-cc3a-422a-ae53-4bc4b8d752f3",
+      "matchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0",
+      "round": 1,
+      "phase": "queued",
+      "segments": [
+        "开局落注\nClockwork Jade Casino 又一次撕开了丝绒般的伤口。一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。",
+        "Crimson Archivist 在第 1 回合的势头变化为 +5。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。",
+        "Lamplight Lin Daiyu.exe 在第 1 回合的势头变化为 +6。Lamplight Lin Daiyu.exe 带着 脆感美学 / 高敏锐 / 台词杀伤 踏入 Clockwork Jade Casino。",
+        "Orbital Tycoon Muskcore 在第 1 回合的势头变化为 +6。Orbital Tycoon Muskcore 带着 高压推进 / 赌徒勇气 / 争议引力 踏入 Clockwork Jade Casino。",
+        "Measure-born Hero 在第 1 回合的势头变化为 +5。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。",
+        "Crimson Archivist：本回合 +5，总分 5。",
+        "Lamplight Lin Daiyu.exe：本回合 +6，总分 6。",
+        "Orbital Tycoon Muskcore：本回合 +6，总分 6。",
+        "Measure-born Hero：本回合 +5，总分 5。"
+      ],
+      "finalChapter": "开局落注\nClockwork Jade Casino 又一次撕开了丝绒般的伤口。一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。\n\nCrimson Archivist 在第 1 回合的势头变化为 +5。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。\n\nLamplight Lin Daiyu.exe 在第 1 回合的势头变化为 +6。Lamplight Lin Daiyu.exe 带着 脆感美学 / 高敏锐 / 台词杀伤 踏入 Clockwork Jade Casino。\n\nOrbital Tycoon Muskcore 在第 1 回合的势头变化为 +6。Orbital Tycoon Muskcore 带着 高压推进 / 赌徒勇气 / 争议引力 踏入 Clockwork Jade Casino。\n\nMeasure-born Hero 在第 1 回合的势头变化为 +5。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。\n\nCrimson Archivist：本回合 +5，总分 5。\n\nLamplight Lin Daiyu.exe：本回合 +6，总分 6。\n\nOrbital Tycoon Muskcore：本回合 +6，总分 6。\n\nMeasure-born Hero：本回合 +5，总分 5。",
+      "scoreBoard": [
+        {
+          "participantId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
+          "delta": 5,
+          "total": 5,
+          "notes": [
+            "Crimson Archivist 带着 慎密 / 压场感 / 故事脑 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        },
+        {
+          "participantId": "participant_43f80c2b-bd8a-4b2d-b5c4-9aa05a3729d3",
+          "delta": 6,
+          "total": 6,
+          "notes": [
+            "Lamplight Lin Daiyu.exe 带着 脆感美学 / 高敏锐 / 台词杀伤 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        },
+        {
+          "participantId": "participant_1fb96606-da22-4aea-b133-6f2aa21fc440",
+          "delta": 6,
+          "total": 6,
+          "notes": [
+            "Orbital Tycoon Muskcore 带着 高压推进 / 赌徒勇气 / 争议引力 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        },
+        {
+          "participantId": "participant_3420bf4c-56c9-4552-a28f-7d1218e56da6",
+          "delta": 5,
+          "total": 5,
+          "notes": [
+            "Measure-born Hero 带着 成人主角 / 谋略型 / 慢热 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        }
+      ]
+    }
+  ],
+  "scratchUploads": [],
+  "webhooks": [],
+  "datingMatches": [
+    {
+      "id": "dating_48684291-74ca-4afe-8189-0ff69b2d75f4",
+      "userId": "user_demo",
+      "selfPersonaId": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+      "counterpartPersonaId": "persona_demo_self",
+      "backdropTitle": "Tarot Alley Night Market",
+      "backdropSummary": "夜市尽头的塔罗摊位刚好空出一张双人桌，纸牌、雾气和低饱和灯光替你们把第一次对视变得更像命运。",
+      "heartbeat": 50,
+      "vibe": 50,
+      "turnCount": 0,
+      "status": "active",
+      "transcript": [
+        {
+          "id": "msg_298375db-325e-4524-be18-0ad906db1bf1",
+          "speaker": "other",
+          "text": "桌面上那叠边缘磨损的",
+          "heartbeat": 50,
+          "vibe": 50,
+          "createdAt": "2026-04-10T17:43:24.551Z"
+        }
+      ],
+      "currentOptions": [
+        {
+          "id": "opt_f7269809-3f6b-421f-a3eb-2ebcefb67168",
+          "actionType": "FLIRT",
+          "label": "热情回应",
+          "flavor": "试着向前一步，别总是只观察。"
+        },
+        {
+          "id": "opt_014b2835-0e3e-488c-99b0-fd9f2ec3d935",
+          "actionType": "LOGIC_TALK",
+          "label": "理性闲聊",
+          "flavor": "从兴趣和观点切入，更容易稳住局面。"
+        },
+        {
+          "id": "opt_43113abc-0752-458c-86fa-5d3d415941b4",
+          "actionType": "PULL_BACK",
+          "label": "故意高冷",
+          "flavor": "对慢热的人，也许适度后撤才不会压得太紧。"
+        },
+        {
+          "id": "opt_1b415493-1660-496d-b70f-ba46fd3cc70c",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：真心话喷雾",
+          "flavor": "花费钻石强行打开一个更真诚的回合。",
+          "costDiamonds": 3
+        }
+      ],
+      "createdAt": "2026-04-10T17:43:24.551Z",
+      "updatedAt": "2026-04-10T17:43:24.551Z"
+    },
+    {
+      "id": "dating_1bfe806d-7b96-4d10-97fb-f462a0de25e3",
+      "userId": "user_demo",
+      "selfPersonaId": "persona_demo_self",
+      "counterpartPersonaId": "persona_legend_barista",
+      "backdropTitle": "Tarot Alley Night Market",
+      "backdropSummary": "夜市尽头的塔罗摊位刚好空出一张双人桌，纸牌、雾气和低饱和灯光替你们把第一次对视变得更像命运。",
+      "heartbeat": 50,
+      "vibe": 50,
+      "turnCount": 0,
+      "status": "active",
+      "transcript": [
+        {
+          "id": "msg_8e86bc32-2b91-4041-87d6-851b3cfa606e",
+          "speaker": "other",
+          "text": "你拨弄着桌上那",
+          "heartbeat": 50,
+          "vibe": 50,
+          "createdAt": "2026-04-10T15:07:51.098Z"
+        }
+      ],
+      "currentOptions": [
+        {
+          "id": "opt_29254b3b-7236-4abd-8073-f024454c91f3",
+          "actionType": "FLIRT",
+          "label": "热情回应",
+          "flavor": "试着向前一步，别总是只观察。"
+        },
+        {
+          "id": "opt_9ab4cf36-705c-484e-88bf-2e1712ada7bd",
+          "actionType": "LOGIC_TALK",
+          "label": "理性闲聊",
+          "flavor": "从兴趣和观点切入，更容易稳住局面。"
+        },
+        {
+          "id": "opt_5da93b51-4993-44aa-884d-ddb0d47a96fb",
+          "actionType": "PULL_BACK",
+          "label": "故意高冷",
+          "flavor": "对高共情对象来说，这可能是一种危险信号。"
+        },
+        {
+          "id": "opt_958a29cc-d0a6-462b-9c5b-547b6e854880",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：真心话喷雾",
+          "flavor": "花费钻石强行打开一个更真诚的回合。",
+          "costDiamonds": 3
+        }
+      ],
+      "createdAt": "2026-04-10T15:07:51.098Z",
+      "updatedAt": "2026-04-10T15:07:51.098Z"
+    },
+    {
+      "id": "dating_573004a6-a88c-4b6c-9f91-b1342b3418fb",
+      "userId": "user_demo",
+      "selfPersonaId": "persona_demo_self",
+      "counterpartPersonaId": "persona_legend_barista",
+      "backdropTitle": "Tarot Alley Night Market",
+      "backdropSummary": "夜市尽头的塔罗摊位刚好空出一张双人桌，纸牌、雾气和低饱和灯光替你们把第一次对视变得更像命运。",
+      "heartbeat": 50,
+      "vibe": 50,
+      "turnCount": 0,
+      "status": "active",
+      "transcript": [
+        {
+          "id": "msg_2c1cdc78-6e6a-4101-a0b2-b8246845a109",
+          "speaker": "other",
+          "text": "“不好意思，让你久等了",
+          "heartbeat": 50,
+          "vibe": 50,
+          "createdAt": "2026-04-10T15:07:00.304Z"
+        }
+      ],
+      "currentOptions": [
+        {
+          "id": "opt_f6007452-2f6c-4b4d-90dc-fb46d977cc40",
+          "actionType": "FLIRT",
+          "label": "热情回应",
+          "flavor": "试着向前一步，别总是只观察。"
+        },
+        {
+          "id": "opt_2ee69897-d2a6-4a5d-856d-55f795204c0d",
+          "actionType": "LOGIC_TALK",
+          "label": "理性闲聊",
+          "flavor": "从兴趣和观点切入，更容易稳住局面。"
+        },
+        {
+          "id": "opt_3aecf678-2adf-425b-9fff-d441f47dfdad",
+          "actionType": "PULL_BACK",
+          "label": "故意高冷",
+          "flavor": "对高共情对象来说，这可能是一种危险信号。"
+        },
+        {
+          "id": "opt_e3e3db6e-823c-489f-b49d-a22b5a10fc23",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：真心话喷雾",
+          "flavor": "花费钻石强行打开一个更真诚的回合。",
+          "costDiamonds": 3
+        }
+      ],
+      "createdAt": "2026-04-10T15:07:00.304Z",
+      "updatedAt": "2026-04-10T15:07:00.304Z"
+    }
+  ],
+  "datingStreams": []
+}

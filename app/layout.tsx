@@ -1,20 +1,13 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 
 import "@/app/globals.css";
+import { FateSiteHeader } from "@/components/FateSiteHeader";
 import { getDb } from "@/lib/db";
-
-const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/personas", label: "Persona Vault" },
-  { href: "/arena", label: "Arena" },
-  { href: "/dating", label: "Tarot Date Desk" },
-  { href: "/worlds", label: "World Forge" },
-];
+import { getLocale } from "@/lib/i18n-server";
 
 export const metadata = {
-  title: "Hero Life Arena",
-  description: "Interactive fiction arena, support economy, and dating rehearsal built for AgentPit.",
+  title: "人生无常命运大厅",
+  description: "深空赛博玻璃拟物风格的主角人生竞技场与相亲局。",
 };
 
 export const dynamic = "force-dynamic";
@@ -22,38 +15,19 @@ export const dynamic = "force-dynamic";
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const db = await getDb();
   const user = db.users[0];
+  const locale = await getLocale();
 
   return (
-    <html lang="en">
-      <body>
-        <div className="app-shell">
-          <header className="top-nav">
-            <div className="page-wrap top-nav__row">
-              <div className="brand">
-                <div className="brand__seal">命</div>
-                <div className="brand__copy">
-                  <h1>Hero Life Arena</h1>
-                  <p>Interactive Fiction + Crowd Momentum + Tarot Date Desk</p>
-                </div>
-              </div>
+    <html lang={locale}>
+      <body className="min-h-screen bg-[#0f0c29] text-white antialiased [font-family:'Space_Grotesk','Manrope','PingFang_SC','Microsoft_YaHei',sans-serif]">
+        <div className="relative min-h-screen overflow-x-hidden bg-[#0f0c29]">
+          <div className="pointer-events-none fixed inset-0 -z-20 bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e]" />
+          <div className="pointer-events-none fixed left-[-8%] top-[-12%] -z-10 h-[32rem] w-[32rem] rounded-full bg-fuchsia-500/20 blur-[140px]" />
+          <div className="pointer-events-none fixed bottom-[-18%] right-[-6%] -z-10 h-[28rem] w-[28rem] rounded-full bg-cyan-500/10 blur-[140px]" />
 
-              <div className="nav-links">
-                {navItems.map((item) => (
-                  <Link key={item.href} href={item.href} className="nav-link">
-                    {item.label}
-                  </Link>
-                ))}
-                <span className="pill">Renown {user.wallet.renown}</span>
-                <span className="pill">Diamonds {user.wallet.diamonds}</span>
-              </div>
-            </div>
-          </header>
+          <FateSiteHeader user={user} />
 
-          {children}
-
-          <div className="page-wrap footer-note">
-            Built as a text-first MVP. Public support uses Renown only; Diamonds never affect public outcomes.
-          </div>
+          <div className="relative z-10">{children}</div>
         </div>
       </body>
     </html>

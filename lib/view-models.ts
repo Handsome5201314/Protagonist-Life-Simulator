@@ -1,17 +1,16 @@
+import type { Locale } from "@/lib/i18n";
+import { getDatingMarket, getDatingMatchBundle } from "@/lib/app-service";
 import { getDb } from "@/lib/db";
 
-export async function getHomeView() {
+export async function getHomeView(locale: Locale = "en") {
   const db = await getDb();
-  const user = db.users[0];
-  const publicPersonas = db.personas.filter((persona) => !persona.deletedAt);
-  const publicMatches = db.matches.slice().reverse().slice(0, 4);
+  const market = await getDatingMarket({ locale });
 
   return {
-    user,
-    publicPersonas,
-    worldPacks: db.worldPacks.slice(0, 4),
-    matches: publicMatches,
-    memoryTraits: db.memoryTraits.slice().reverse().slice(0, 4),
+    user: db.users[0],
+    market,
+    overlays: db.overlays,
+    activePersonas: db.personas.filter((persona) => !persona.deletedAt).slice(0, 6),
   };
 }
 
@@ -50,6 +49,10 @@ export async function getDatingView() {
     dossiers: db.datingDossiers.slice().reverse(),
     overlays: db.overlays,
   };
+}
+
+export async function getDatingRoomView(roomId: string) {
+  return getDatingMatchBundle(roomId);
 }
 
 export async function getWorldForgeView() {

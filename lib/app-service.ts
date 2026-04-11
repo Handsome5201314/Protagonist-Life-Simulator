@@ -9,10 +9,32 @@ import {
 import { getSkillById, rewardTiers } from "@/lib/catalog";
 import { getDb, updateDb } from "@/lib/db";
 import { createDatingDossier, runDatingRehearsal } from "@/lib/dating";
+import {
+  buildDefaultDatingOptions,
+  buildDatingMarketCandidates,
+  buildMarketStatusLine,
+  buildQuickPersonaFromAnswers,
+  createDatingBackdrop,
+  fallbackOpeningLine,
+  fallbackTurnNarrative,
+  getPrimaryDatingPersona,
+  resolveDatingTurn,
+} from "@/lib/dating-market";
 import { buildMatchParticipants, buildStreamRecord, createMemoryTrait, evaluateRound, settleSupportRewards } from "@/lib/game-engine";
 import { sanitizeWorldInput } from "@/lib/guardrails";
+import type { Locale } from "@/lib/i18n";
+import {
+  generateArenaChapterWithGemini,
+  generateDatingOpeningWithGemini,
+  generateDatingRehearsalWithGemini,
+  generateDatingTurnWithGemini,
+  generateWorldPackWithGemini,
+} from "@/lib/llm-features";
 import type {
   ArenaMatch,
+  DatingMatch,
+  DatingMatchOption,
+  DatingStreamRecord,
   MatchParticipant,
   PersonaOverlay,
   PersonaSnapshot,
@@ -48,6 +70,7 @@ const matchSchema = z.object({
   mode: z.enum(["public", "private"]).default("public"),
   worldPackId: z.string(),
   participantPersonaIds: z.array(z.string()).min(1).max(4),
+  maxParticipants: z.number().int().min(2).max(4).optional(),
 });
 
 const supportSchema = z.object({
@@ -70,10 +93,44 @@ const rehearsalSchema = z.object({
   dossierId: z.string(),
   modeId: z.string(),
   prompt: z.string().min(5),
+  locale: z.enum(["en", "zh"]).optional(),
+});
+
+const quickPersonaSchema = z.object({
+  nickname: z.string().min(1),
+  socialStyle: z.enum(["warm", "quiet", "playful"]),
+  pace: z.enum(["slow", "balanced", "fast"]),
+  logic: z.enum(["heart", "mixed", "logic"]),
+});
+
+const createDatingMatchSchema = z.object({
+  selfPersonaId: z.string(),
+  counterpartPersonaId: z.string(),
+  locale: z.enum(["en", "zh"]).optional(),
+});
+
+const datingInteractSchema = z.object({
+  locale: z.enum(["en", "zh"]).optional(),
+  actionType: z.enum(["FLIRT", "LOGIC_TALK", "PULL_BACK", "USE_SKILL"]),
+  skillId: z.string().optional(),
+});
+
+const userProfileSchema = z.object({
+  displayName: z.string().min(1),
+  fullName: z.string().min(1),
+  phone: z.string().min(6),
+  email: z.string().email().optional().or(z.literal("")),
+  city: z.string().min(1),
+  bio: z.string().max(400).optional().default(""),
 });
 
 function ensureDemoUserId() {
   return "user_demo";
+}
+
+function resolveDefaultMatchCapacity(world: WorldPack) {
+  const text = `${world.title} ${world.theme} ${world.conflicts.join(" ")} ${world.sanitizedSummary}`.toLowerCase();
+  return /(romance|date|tarot|love|相亲|婚约|心动|恋)/i.test(text) ? 2 : 4;
 }
 
 function createUploadPersona(input: z.infer<typeof personaImportSchema>): PersonaSnapshot {
@@ -146,6 +203,24 @@ export async function completeAiliangbiaoLink() {
   });
 }
 
+export async function updateUserProfile(input: unknown) {
+  const data = userProfileSchema.parse(input);
+
+  return updateDb((db) => {
+    const user = db.users[0];
+    user.displayName = data.displayName;
+    user.profile = {
+      fullName: data.fullName,
+      phone: data.phone,
+      email: data.email || "",
+      city: data.city,
+      bio: data.bio || "",
+    };
+    user.updatedAt = nowIso();
+    return user;
+  });
+}
+
 export async function importPersona(input: unknown) {
   const data = personaImportSchema.parse(input);
 
@@ -168,6 +243,11 @@ export async function importPersona(input: unknown) {
 
     return persona;
   });
+}
+
+export async function createQuickPersona(input: unknown) {
+  const data = quickPersonaSchema.parse(input);
+  return importPersona(buildQuickPersonaFromAnswers(data));
 }
 
 export async function updatePersonaOverlay(personaId: string, input: unknown) {
@@ -210,11 +290,23 @@ export async function updatePersonaOverlay(personaId: string, input: unknown) {
 }
 
 export async function uploadWorldPack(args: {
+  locale?: Locale;
   title: string;
   text: string;
   originalName?: string;
 }) {
   const sanitized = sanitizeWorldInput(args.text);
+
+  const llmWorld = await generateWorldPackWithGemini({
+    locale: args.locale || "zh",
+    title: args.title,
+    sourceText: args.text,
+    sanitizedSummary: sanitized.sanitizedSummary,
+    factions: sanitized.factions,
+    conflicts: sanitized.conflicts,
+    tabooRules: sanitized.tabooRules,
+    tone: sanitized.tone,
+  });
 
   return updateDb((db) => {
     const uploadId = createId("upload");
@@ -233,13 +325,13 @@ export async function uploadWorldPack(args: {
       userId: ensureDemoUserId(),
       title: args.title,
       theme: args.title,
-      factions: sanitized.factions,
-      conflicts: sanitized.conflicts,
-      tone: sanitized.tone,
-      tabooRules: sanitized.tabooRules,
+      factions: llmWorld?.factions?.length ? llmWorld.factions.slice(0, 6) : sanitized.factions,
+      conflicts: llmWorld?.conflicts?.length ? llmWorld.conflicts.slice(0, 6) : sanitized.conflicts,
+      tone: llmWorld?.tone || sanitized.tone,
+      tabooRules: llmWorld?.tabooRules?.length ? llmWorld.tabooRules.slice(0, 6) : sanitized.tabooRules,
       derivedFrom: "upload",
       safetyStatus: sanitized.safetyStatus,
-      sanitizedSummary: sanitized.sanitizedSummary,
+      sanitizedSummary: llmWorld?.sanitizedSummary || sanitized.sanitizedSummary,
       sourceDigest: normalizeDigest(args.text).slice(0, 250),
       expiresAt: addDays(30),
     };
@@ -249,20 +341,37 @@ export async function uploadWorldPack(args: {
   });
 }
 
-export async function sanitizeExistingWorldPack(worldId: string) {
+export async function sanitizeExistingWorldPack(worldId: string, locale: Locale = "zh") {
+  const dbSnapshot = await getDb();
+  const worldSnapshot = dbSnapshot.worldPacks.find((item) => item.id === worldId);
+  if (!worldSnapshot) {
+    throw new Error("World pack not found");
+  }
+
+  const sanitized = sanitizeWorldInput(`${worldSnapshot.theme}. ${worldSnapshot.sourceDigest}`);
+  const llmWorld = await generateWorldPackWithGemini({
+    locale,
+    title: worldSnapshot.title,
+    sourceText: worldSnapshot.sourceDigest,
+    sanitizedSummary: sanitized.sanitizedSummary,
+    factions: sanitized.factions,
+    conflicts: sanitized.conflicts,
+    tabooRules: sanitized.tabooRules,
+    tone: sanitized.tone,
+  });
+
   return updateDb((db) => {
     const world = db.worldPacks.find((item) => item.id === worldId);
     if (!world) {
       throw new Error("World pack not found");
     }
 
-    const sanitized = sanitizeWorldInput(`${world.theme}. ${world.sourceDigest}`);
-    world.factions = sanitized.factions;
-    world.conflicts = sanitized.conflicts;
-    world.tabooRules = sanitized.tabooRules;
-    world.tone = sanitized.tone;
+    world.factions = llmWorld?.factions?.length ? llmWorld.factions.slice(0, 6) : sanitized.factions;
+    world.conflicts = llmWorld?.conflicts?.length ? llmWorld.conflicts.slice(0, 6) : sanitized.conflicts;
+    world.tabooRules = llmWorld?.tabooRules?.length ? llmWorld.tabooRules.slice(0, 6) : sanitized.tabooRules;
+    world.tone = llmWorld?.tone || sanitized.tone;
     world.safetyStatus = sanitized.safetyStatus;
-    world.sanitizedSummary = sanitized.sanitizedSummary;
+    world.sanitizedSummary = llmWorld?.sanitizedSummary || sanitized.sanitizedSummary;
     return world;
   });
 }
@@ -277,9 +386,11 @@ export async function createMatch(input: unknown) {
       throw new Error("World pack not found");
     }
 
+    const targetParticipants = data.maxParticipants ?? resolveDefaultMatchCapacity(world);
     const selectedPersonas = data.participantPersonaIds
       .map((id) => db.personas.find((persona) => persona.id === id))
-      .filter(Boolean) as PersonaSnapshot[];
+      .filter(Boolean)
+      .slice(0, targetParticipants) as PersonaSnapshot[];
 
     if (!selectedPersonas.length) {
       throw new Error("No participants selected");
@@ -291,7 +402,7 @@ export async function createMatch(input: unknown) {
     }
 
     const legends = db.personas.filter((persona) => persona.source === "legend");
-    while (selectedPersonas.length < 4) {
+    while (selectedPersonas.length < targetParticipants) {
       const candidate = legends.find((legend) => !selectedPersonas.some((persona) => persona.id === legend.id));
       if (!candidate) {
         break;
@@ -305,6 +416,7 @@ export async function createMatch(input: unknown) {
       seed: Math.floor(Math.random() * 999999),
       mode: data.mode,
       worldPackId: world.id,
+      maxParticipants: targetParticipants,
       participantIds: [],
       publicStoryStatus: "draft",
       supportPool: 0,
@@ -374,6 +486,53 @@ export async function supportMatch(matchId: string, input: unknown) {
   });
 }
 
+export async function joinMatch(matchId: string, input: unknown) {
+  const data = z.object({ personaId: z.string() }).parse(input);
+
+  return updateDb((db) => {
+    const match = db.matches.find((item) => item.id === matchId);
+    if (!match) {
+      throw new Error("Match not found");
+    }
+
+    if (match.publicStoryStatus !== "draft") {
+      throw new Error("Only recruiting rooms can accept new clones");
+    }
+
+    const persona = db.personas.find((item) => item.id === data.personaId);
+    if (!persona) {
+      throw new Error("Persona not found");
+    }
+
+    if (!persona.adultOnlyEligible && match.mode === "public") {
+      throw new Error("Public rooms only accept adult SELF personas");
+    }
+
+    const existingParticipants = db.participants.filter((item) => match.participantIds.includes(item.id));
+
+    if (existingParticipants.some((participant) => participant.personaId === persona.id)) {
+      throw new Error("This clone is already seated in the room");
+    }
+
+    if (existingParticipants.length >= match.maxParticipants) {
+      throw new Error("Room is already full");
+    }
+
+    const memoryTraits = db.memoryTraits.filter((trait) => trait.personaId === persona.id);
+    const participant = buildMatchParticipants([persona], [persona.id], memoryTraits)[0];
+    db.participants.push(participant);
+    match.participantIds.push(participant.id);
+    match.updatedAt = nowIso();
+
+    return {
+      matchId: match.id,
+      participant,
+      currentParticipants: match.participantIds.length,
+      maxParticipants: match.maxParticipants,
+    };
+  });
+}
+
 export async function equipSkill(matchId: string, round: number, input: unknown) {
   const data = skillEquipSchema.parse(input);
 
@@ -420,8 +579,8 @@ export async function equipSkill(matchId: string, round: number, input: unknown)
   });
 }
 
-export async function triggerRound(matchId: string, round: number) {
-  return updateDb((db) => {
+export async function triggerRound(matchId: string, round: number, locale: Locale = "en") {
+  return updateDb(async (db) => {
     const match = db.matches.find((item) => item.id === matchId);
     if (!match) {
       throw new Error("Match not found");
@@ -442,6 +601,7 @@ export async function triggerRound(matchId: string, round: number) {
     }
 
     const result = evaluateRound({
+      locale,
       match,
       round,
       participants,
@@ -459,6 +619,7 @@ export async function triggerRound(matchId: string, round: number) {
     match.publicStoryStatus = round === 3 ? "complete" : "streaming";
 
     const stream = buildStreamRecord({
+      locale,
       match,
       round,
       world,
@@ -467,6 +628,25 @@ export async function triggerRound(matchId: string, round: number) {
       storyLines: result.storyLines,
       elimination: result.elimination,
     });
+
+    const llmChapter = await generateArenaChapterWithGemini({
+      locale,
+      world,
+      round,
+      participants,
+      personas,
+      scoreBoard: result.scores,
+      deterministicNotes: result.storyLines,
+      elimination: result.elimination,
+      winnerId: match.winnerId,
+    });
+
+    if (llmChapter?.chapter?.length) {
+      stream.segments = llmChapter.chapter;
+      stream.finalChapter = llmChapter.chapter.join("\n\n");
+      roundState.chapter = stream.finalChapter;
+      roundState.checkpointCount = llmChapter.chapter.length;
+    }
     db.streams.unshift(stream);
 
     if (round === 3) {
@@ -509,7 +689,7 @@ export async function getMatchBundle(matchId: string) {
   const participants = db.participants.filter((item) => match.participantIds.includes(item.id));
   const personas = participants
     .map((participant) => db.personas.find((persona) => persona.id === participant.personaId))
-    .filter(Boolean);
+    .filter((item): item is PersonaSnapshot => Boolean(item));
   const world = db.worldPacks.find((item) => item.id === match.worldPackId);
   const tickets = db.supportTickets.filter((item) => item.matchId === match.id);
 
@@ -579,13 +759,32 @@ export async function rehearseDating(input: unknown) {
 
   const overlay = db.overlays.find((item) => item.personaId === persona.id);
 
-  return runDatingRehearsal({
+  const fallback = runDatingRehearsal({
+    locale: data.locale,
     persona,
     overlay,
     dossier,
     modeId: data.modeId,
     prompt: data.prompt,
   });
+
+  const llmDraft = await generateDatingRehearsalWithGemini({
+    locale: data.locale || "en",
+    persona,
+    overlay,
+    dossier,
+    modeLabel: fallback.mode.label,
+    prompt: data.prompt,
+    fallbackAnalysis: fallback.analysis,
+    fallbackScript: fallback.script,
+  });
+
+  return {
+    ...fallback,
+    analysis: llmDraft?.analysis?.length ? llmDraft.analysis : fallback.analysis,
+    script: llmDraft?.script?.length ? llmDraft.script : fallback.script,
+    poweredBy: llmDraft ? "gemini" : "rules",
+  };
 }
 
 export async function deleteMe() {
@@ -658,4 +857,267 @@ export async function processPartnerProfileRevoked(body: { profileId?: string })
 
 export async function getA2AState(matchId: string) {
   return getMatchBundle(matchId);
+}
+
+export async function getDatingMarket(input?: { locale?: Locale }) {
+  const db = await getDb();
+  const locale = input?.locale || "en";
+  const owned = db.personas.filter((persona) => persona.source !== "legend" && !persona.deletedAt);
+  const self = getPrimaryDatingPersona(owned);
+
+  return {
+    user: db.users[0],
+    locale,
+    selfPersona: self || null,
+    quickBindRequired: !self,
+    candidates: self ? buildDatingMarketCandidates(self, db.personas).map((candidate) => ({
+      ...candidate,
+      statusLine: buildMarketStatusLine(candidate.matchScore),
+    })) : [],
+  };
+}
+
+export async function createDatingMatch(input: unknown) {
+  const data = createDatingMatchSchema.parse(input);
+  const locale = data.locale || "en";
+  const db = await getDb();
+  const self = db.personas.find((persona) => persona.id === data.selfPersonaId);
+  const other = db.personas.find((persona) => persona.id === data.counterpartPersonaId);
+
+  if (!self || !other) {
+    throw new Error("Persona not found");
+  }
+
+  if (!self.adultOnlyEligible || self.relation !== "SELF") {
+    throw new Error("Only adult SELF personas can enter the dating market");
+  }
+
+  const backdrop = createDatingBackdrop(self, other);
+  const openingFallback = fallbackOpeningLine(self, other);
+  const openingLine =
+    (await generateDatingOpeningWithGemini({
+      locale,
+      self,
+      other,
+      backdropTitle: backdrop.title,
+      backdropSummary: backdrop.summary,
+      fallbackLine: openingFallback,
+    })) || openingFallback;
+
+  return updateDb((mutableDb) => {
+    const selfPersona = mutableDb.personas.find((persona) => persona.id === self.id)!;
+    const otherPersona = mutableDb.personas.find((persona) => persona.id === other.id)!;
+    const matchId = createId("dating");
+    const transcript = [
+      {
+        id: createId("msg"),
+        speaker: "other" as const,
+        text: openingLine,
+        heartbeat: 50,
+        vibe: 50,
+        createdAt: nowIso(),
+      },
+    ];
+    const options = buildDefaultDatingOptions(
+      {
+        id: matchId,
+        userId: ensureDemoUserId(),
+        selfPersonaId: selfPersona.id,
+        counterpartPersonaId: otherPersona.id,
+        backdropTitle: backdrop.title,
+        backdropSummary: backdrop.summary,
+        heartbeat: 50,
+        vibe: 50,
+        turnCount: 0,
+        status: "active",
+        transcript,
+        currentOptions: [],
+        createdAt: nowIso(),
+        updatedAt: nowIso(),
+      },
+      selfPersona,
+      otherPersona
+    );
+
+    const match: DatingMatch = {
+      id: matchId,
+      userId: ensureDemoUserId(),
+      selfPersonaId: selfPersona.id,
+      counterpartPersonaId: otherPersona.id,
+      backdropTitle: backdrop.title,
+      backdropSummary: backdrop.summary,
+      heartbeat: 50,
+      vibe: 50,
+      turnCount: 0,
+      status: "active",
+      transcript,
+      currentOptions: options,
+      createdAt: nowIso(),
+      updatedAt: nowIso(),
+    };
+
+    mutableDb.datingMatches.unshift(match);
+    return match;
+  });
+}
+
+export async function getDatingMatchBundle(roomId: string) {
+  const db = await getDb();
+  const room = db.datingMatches.find((match) => match.id === roomId);
+  if (!room) {
+    throw new Error("Dating room not found");
+  }
+
+  const selfPersona = db.personas.find((persona) => persona.id === room.selfPersonaId);
+  const counterpartPersona = db.personas.find((persona) => persona.id === room.counterpartPersonaId);
+  const selfOverlay = db.overlays.find((overlay) => overlay.personaId === room.selfPersonaId);
+  const counterpartOverlay = db.overlays.find((overlay) => overlay.personaId === room.counterpartPersonaId);
+
+  if (!selfPersona || !counterpartPersona) {
+    throw new Error("Dating room personas are missing");
+  }
+
+  return {
+    room,
+    selfPersona,
+    counterpartPersona,
+    selfOverlay: selfOverlay || null,
+    counterpartOverlay: counterpartOverlay || null,
+    wallet: db.users[0].wallet,
+  };
+}
+
+export async function interactDatingMatch(roomId: string, input: unknown) {
+  const data = datingInteractSchema.parse(input);
+  const locale = data.locale || "en";
+
+  return updateDb(async (db) => {
+    const room = db.datingMatches.find((match) => match.id === roomId);
+    if (!room) {
+      throw new Error("Dating room not found");
+    }
+
+    if (room.status !== "active") {
+      throw new Error("This dating room is no longer active");
+    }
+
+    const self = db.personas.find((persona) => persona.id === room.selfPersonaId);
+    const other = db.personas.find((persona) => persona.id === room.counterpartPersonaId);
+    if (!self || !other) {
+      throw new Error("Dating personas not found");
+    }
+
+    const user = db.users[0];
+    if (data.actionType === "USE_SKILL") {
+      const cost = 3;
+      if (user.wallet.diamonds < cost) {
+        throw new Error("Not enough Diamonds");
+      }
+      user.wallet.diamonds -= cost;
+    }
+
+    const result = resolveDatingTurn({
+      actionType: data.actionType,
+      self,
+      other,
+      heartbeat: room.heartbeat,
+      vibe: room.vibe,
+      usedSkill: data.actionType === "USE_SKILL",
+    });
+
+    const fallbackLine = fallbackTurnNarrative({
+      actionType: data.actionType,
+      success: result.success,
+      heartbeatDelta: result.heartbeatDelta,
+      vibeDelta: result.vibeDelta,
+      self,
+      other,
+    });
+
+    const llmLine =
+      (await generateDatingTurnWithGemini({
+        locale,
+        self,
+        other,
+        backdropTitle: room.backdropTitle,
+        actionType: data.actionType,
+        heartbeat: result.heartbeat,
+        vibe: result.vibe,
+        heartbeatDelta: result.heartbeatDelta,
+        vibeDelta: result.vibeDelta,
+        success: result.success,
+        fallbackLine,
+      })) || fallbackLine;
+
+    room.heartbeat = result.heartbeat;
+    room.vibe = result.vibe;
+    room.status = result.status;
+    room.turnCount += 1;
+    room.updatedAt = nowIso();
+
+    room.transcript.push(
+      {
+        id: createId("msg"),
+        speaker: "self",
+        text:
+          data.actionType === "FLIRT"
+            ? "你把气氛往心动方向推了一步。"
+            : data.actionType === "LOGIC_TALK"
+              ? "你把话题拉回一个更稳的切入口。"
+              : data.actionType === "PULL_BACK"
+                ? "你故意慢下来，试探这份沉默。"
+                : "你用了技能，让这回合变得更真诚。",
+        heartbeat: result.heartbeat,
+        vibe: result.vibe,
+        createdAt: nowIso(),
+      },
+      {
+        id: createId("msg"),
+        speaker: "other",
+        text: llmLine,
+        heartbeat: result.heartbeat,
+        vibe: result.vibe,
+        createdAt: nowIso(),
+      }
+    );
+
+    room.currentOptions = buildDefaultDatingOptions(room, self, other);
+
+    const segments = llmLine
+      .split(/(?<=[。！？.!?])/)
+      .map((segment) => segment.trim())
+      .filter(Boolean);
+
+    const stream: DatingStreamRecord = {
+      id: createId("dating_stream"),
+      roomId: room.id,
+      phase: "queued",
+      segments: segments.length ? segments : [llmLine],
+      finalText: llmLine,
+      heartbeat: room.heartbeat,
+      vibe: room.vibe,
+      status: room.status,
+      options: room.currentOptions,
+    };
+
+    db.datingStreams.unshift(stream);
+
+    return {
+      status: 202,
+      roomId: room.id,
+      streamId: stream.id,
+      heartbeat: room.heartbeat,
+      vibe: room.vibe,
+      roomStatus: room.status,
+    };
+  });
+}
+
+export async function getDatingStream(streamId: string) {
+  const db = await getDb();
+  const stream = db.datingStreams.find((item) => item.id === streamId);
+  if (!stream) {
+    throw new Error("Dating stream not found");
+  }
+  return stream;
 }

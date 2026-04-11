@@ -134,6 +134,7 @@ export type ArenaMatch = {
   seed: number;
   mode: "public" | "private";
   worldPackId: string;
+  maxParticipants: number;
   participantIds: string[];
   publicStoryStatus: "draft" | "streaming" | "complete";
   supportPool: number;
@@ -168,6 +169,58 @@ export type DatingDossier = {
   expiresAt: string;
 };
 
+export type DatingActionType =
+  | "FLIRT"
+  | "LOGIC_TALK"
+  | "PULL_BACK"
+  | "USE_SKILL";
+
+export type DatingMatchOption = {
+  id: string;
+  actionType: DatingActionType;
+  label: string;
+  flavor: string;
+  costDiamonds?: number;
+};
+
+export type DatingMessage = {
+  id: string;
+  speaker: "self" | "other" | "system";
+  text: string;
+  heartbeat: number;
+  vibe: number;
+  createdAt: string;
+};
+
+export type DatingMatch = {
+  id: string;
+  userId: string;
+  selfPersonaId: string;
+  counterpartPersonaId: string;
+  backdropTitle: string;
+  backdropSummary: string;
+  heartbeat: number;
+  vibe: number;
+  turnCount: number;
+  status: "active" | "soulmatch" | "collapsed";
+  transcript: DatingMessage[];
+  currentOptions: DatingMatchOption[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type DatingStreamRecord = {
+  id: string;
+  roomId: string;
+  phase: "queued" | "typing" | "final";
+  segments: string[];
+  finalText: string;
+  heartbeat: number;
+  vibe: number;
+  status: DatingMatch["status"];
+  options: DatingMatchOption[];
+};
+
 export type StreamRecord = {
   id: string;
   matchId: string;
@@ -195,6 +248,13 @@ export type UserRecord = {
   displayName: string;
   seasonId: string;
   wallet: CurrencyWallet;
+  profile?: {
+    fullName?: string;
+    phone?: string;
+    email?: string;
+    city?: string;
+    bio?: string;
+  };
   linkedAiliangbiao?: {
     status: "linked" | "unlinked";
     linkedAt?: string;
@@ -222,6 +282,8 @@ export type AppDatabase = {
   participants: MatchParticipant[];
   supportTickets: SupportTicket[];
   datingDossiers: DatingDossier[];
+  datingMatches: DatingMatch[];
+  datingStreams: DatingStreamRecord[];
   streams: StreamRecord[];
   scratchUploads: ScratchUpload[];
   webhooks: WebhookLog[];

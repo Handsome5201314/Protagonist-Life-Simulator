@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 import type { AppDatabase } from "@/lib/types";
-import { createSeedDatabase } from "@/lib/seed-data";
+import { createSeedDatabase, seedLegends, seedWorlds } from "@/lib/seed-data";
 import { nowIso } from "@/lib/utils";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -22,6 +22,28 @@ async function ensureDbFile() {
 
 function cleanupDb(db: AppDatabase) {
   const now = Date.now();
+
+  const existingPersonaIds = new Set(db.personas.map((persona) => persona.id));
+  for (const legend of seedLegends) {
+    if (!existingPersonaIds.has(legend.id)) {
+      db.personas.push(legend);
+    }
+  }
+
+  const existingWorldIds = new Set(db.worldPacks.map((world) => world.id));
+  for (const world of seedWorlds) {
+    if (!existingWorldIds.has(world.id)) {
+      db.worldPacks.push(world);
+    }
+  }
+
+  if (!(db as AppDatabase).datingMatches) {
+    (db as AppDatabase).datingMatches = [];
+  }
+
+  if (!(db as AppDatabase).datingStreams) {
+    (db as AppDatabase).datingStreams = [];
+  }
 
   db.scratchUploads = db.scratchUploads.filter((upload) => new Date(upload.deleteAfter).getTime() > now);
 

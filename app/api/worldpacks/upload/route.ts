@@ -9,10 +9,12 @@ export async function POST(request: NextRequest) {
     let title = "Untitled World";
     let text = "";
     let originalName: string | undefined;
+    let locale: "en" | "zh" = "en";
 
     if (contentType.includes("multipart/form-data")) {
       const formData = await request.formData();
       title = String(formData.get("title") || title);
+      locale = String(formData.get("locale") || "en") === "zh" ? "zh" : "en";
       const file = formData.get("file");
       if (file instanceof File) {
         text = await file.text();
@@ -25,9 +27,10 @@ export async function POST(request: NextRequest) {
       title = String(body.title || title);
       text = String(body.text || "");
       originalName = body.originalName;
+      locale = body.locale === "zh" ? "zh" : "en";
     }
 
-    const world = await uploadWorldPack({ title, text, originalName });
+    const world = await uploadWorldPack({ locale, title, text, originalName });
     return NextResponse.json({ world });
   } catch (error) {
     return NextResponse.json(

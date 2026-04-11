@@ -1,4 +1,5 @@
 import { getSkillById, rewardTiers, worldToneWeights } from "@/lib/catalog";
+import type { Locale } from "@/lib/i18n";
 import type {
   ArenaMatch,
   MatchParticipant,
@@ -108,6 +109,7 @@ export function buildMatchParticipants(
 }
 
 export function evaluateRound(args: {
+  locale?: Locale;
   match: ArenaMatch;
   round: number;
   participants: MatchParticipant[];
@@ -115,6 +117,8 @@ export function evaluateRound(args: {
   world: WorldPack;
   memoryTraits: MemoryTrait[];
 }) {
+  const locale = args.locale || "en";
+  const t = (en: string, zh: string) => (locale === "zh" ? zh : en);
   const toneModifier = worldToneWeights[args.world.tone] ?? {};
   const scores: RoundScore[] = [];
   const storyLines: string[] = [];
@@ -141,10 +145,14 @@ export function evaluateRound(args: {
     const delta = clamp(Math.round(baseScore / 8 + seededSwing), -3, 22);
     const total = participant.totalScore + delta;
     const notes = [
-      `${persona.name} enters ${args.world.title} carrying ${formatList(persona.publicTraitTags.slice(0, 3))}.`,
+      locale === "zh"
+        ? `${persona.name} 带着 ${formatList(persona.publicTraitTags.slice(0, 3))} 踏入 ${args.world.title}。`
+        : `${persona.name} enters ${args.world.title} carrying ${formatList(persona.publicTraitTags.slice(0, 3))}.`,
       ...memoryBlend.notes,
       ...synergy.notes,
-      `World tone ${args.world.tone} nudges the scene toward ${formatList(args.world.conflicts.slice(0, 2))}.`,
+      locale === "zh"
+        ? `世界氛围 ${args.world.tone} 正把剧情推向 ${formatList(args.world.conflicts.slice(0, 2))}。`
+        : `World tone ${args.world.tone} nudges the scene toward ${formatList(args.world.conflicts.slice(0, 2))}.`,
     ];
 
     participant.roundScore = delta;
@@ -158,10 +166,9 @@ export function evaluateRound(args: {
     });
 
     storyLines.push(
-      `${participant.displayName} pushes through round ${args.round} with a momentum shift of ${delta >= 0 ? "+" : ""}${delta}. ${pick(
-        notes,
-        total
-      )}`
+      locale === "zh"
+        ? `${participant.displayName} 在第 ${args.round} 回合的势头变化为 ${delta >= 0 ? "+" : ""}${delta}。${pick(notes, total)}`
+        : `${participant.displayName} pushes through round ${args.round} with a momentum shift of ${delta >= 0 ? "+" : ""}${delta}. ${pick(notes, total)}`
     );
   }
 
@@ -174,7 +181,10 @@ export function evaluateRound(args: {
     loser.participant.eliminated = true;
     elimination = loser.participant.id;
     storyLines.push(
-      `${loser.participant.displayName} misreads the room at the worst moment possible and falls into the shadow ledger.`
+      t(
+        `${loser.participant.displayName} misreads the room at the worst moment possible and falls into the shadow ledger.`,
+        `${loser.participant.displayName} 在最糟糕的时刻读错了全场，于是被拖进了暗影账本。`
+      )
     );
   }
 
@@ -185,7 +195,10 @@ export function evaluateRound(args: {
       args.match.winnerId = winner.id;
       args.match.publicStoryStatus = "complete";
       storyLines.push(
-        `${winner.displayName} takes the final line of the chapter and seals the table with the sort of ending that gets screenshotted across time zones.`
+        t(
+          `${winner.displayName} takes the final line of the chapter and seals the table with the sort of ending that gets screenshotted across time zones.`,
+          `${winner.displayName} 拿下了这一章的最后一句，并用一种注定会被跨时区截图传播的方式封桌。`
+        )
       );
     }
   }
@@ -198,6 +211,7 @@ export function evaluateRound(args: {
 }
 
 export function buildStreamRecord(args: {
+  locale?: Locale;
   match: ArenaMatch;
   round: number;
   world: WorldPack;
@@ -206,11 +220,28 @@ export function buildStreamRecord(args: {
   storyLines: string[];
   elimination?: string;
 }) {
-  const title = args.round === 1 ? "Opening Stake" : args.round === 2 ? "Reverse Ledger" : "Final Seal";
-  const opening = `${title}\n${args.world.title} opens another velvet wound. ${args.world.sanitizedSummary}`;
+  const locale = args.locale || "en";
+  const title =
+    locale === "zh"
+      ? args.round === 1
+        ? "开局落注"
+        : args.round === 2
+          ? "反转账本"
+          : "终局封印"
+      : args.round === 1
+        ? "Opening Stake"
+        : args.round === 2
+          ? "Reverse Ledger"
+          : "Final Seal";
+  const opening =
+    locale === "zh"
+      ? `${title}\n${args.world.title} 又一次撕开了丝绒般的伤口。${args.world.sanitizedSummary}`
+      : `${title}\n${args.world.title} opens another velvet wound. ${args.world.sanitizedSummary}`;
   const scoreLines = args.scoreBoard.map((score) => {
     const participant = args.participants.find((item) => item.id === score.participantId);
-    return `${participant?.displayName}: ${score.delta >= 0 ? "+" : ""}${score.delta} this round, total ${score.total}.`;
+    return locale === "zh"
+      ? `${participant?.displayName}：本回合 ${score.delta >= 0 ? "+" : ""}${score.delta}，总分 ${score.total}。`
+      : `${participant?.displayName}: ${score.delta >= 0 ? "+" : ""}${score.delta} this round, total ${score.total}.`;
   });
 
   const finalChapter = [opening, ...args.storyLines, ...scoreLines].join("\n\n");

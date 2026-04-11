@@ -5,10 +5,10 @@
       "displayName": "Vault Keeper",
       "seasonId": "season_founders",
       "wallet": {
-        "renown": 120,
+        "renown": 118,
         "diamonds": 36,
-        "seasonPoints": 0,
-        "supportStreak": 0
+        "seasonPoints": 10,
+        "supportStreak": 1
       },
       "linkedAiliangbiao": {
         "status": "linked",
@@ -432,7 +432,23 @@
       "updatedAt": "2026-04-10T12:32:41.436Z"
     }
   ],
-  "memoryTraits": [],
+  "memoryTraits": [
+    {
+      "id": "memory_86dbf002-6d1f-4b8e-ae9e-ce9d4c97fb09",
+      "userId": "user_demo",
+      "personaId": "persona_demo_self",
+      "originMatchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0",
+      "name": "Crown Echo",
+      "triggerType": "champion",
+      "modifier": {
+        "courage": 8,
+        "strategy": 7
+      },
+      "rarity": "legendary",
+      "seasonId": "season_founders",
+      "summary": "上一代在残局里把命运往自己这边扳了半寸。"
+    }
+  ],
   "worldPacks": [
     {
       "id": "world_curated_clock",
@@ -498,8 +514,8 @@
         "participant_1fb96606-da22-4aea-b133-6f2aa21fc440",
         "participant_3420bf4c-56c9-4552-a28f-7d1218e56da6"
       ],
-      "publicStoryStatus": "streaming",
-      "supportPool": 0,
+      "publicStoryStatus": "complete",
+      "supportPool": 8,
       "roundStates": [
         {
           "round": 1,
@@ -550,22 +566,73 @@
         {
           "round": 2,
           "title": "Reverse Ledger",
-          "status": "pending",
-          "checkpointCount": 0,
-          "scores": [],
-          "skillEquips": []
+          "status": "done",
+          "checkpointCount": 5,
+          "scores": [
+            {
+              "participantId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
+              "delta": 14,
+              "total": 33,
+              "notes": [
+                "Crimson Archivist 带着 慎密 / 压场感 / 故事脑 踏入 Clockwork Jade Casino。",
+                "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+              ]
+            },
+            {
+              "participantId": "participant_1fb96606-da22-4aea-b133-6f2aa21fc440",
+              "delta": 11,
+              "total": 28,
+              "notes": [
+                "Orbital Tycoon Muskcore 带着 高压推进 / 赌徒勇气 / 争议引力 踏入 Clockwork Jade Casino。",
+                "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+              ]
+            },
+            {
+              "participantId": "participant_3420bf4c-56c9-4552-a28f-7d1218e56da6",
+              "delta": 14,
+              "total": 33,
+              "notes": [
+                "Measure-born Hero 带着 成人主角 / 谋略型 / 慢热 踏入 Clockwork Jade Casino。",
+                "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+              ]
+            }
+          ],
+          "skillEquips": [],
+          "chapter": "发条翡翠赌场的穹顶之上，巨大的黄铜齿轮正无情地咬合，发出沉闷的轰鸣。旧王朝债券即将到期的倒计时，化作一缕缕刺鼻的蒸汽，弥漫在镶金的牌桌之间。在这里，每一枚命运筹码的掷出都伴随着虚伪的脱帽致意，而每一声礼貌的问候背后，都藏着足以切断咽喉的淬毒暗刃。奢华的穹顶下，高压的空气几乎要将人的肺腑压碎，所有人都紧盯着桌面，盘算着谁能改写命运的本金。\n\nCrimson Archivist 坐在天鹅绒高背椅中，宛如一位审视历史的君王。他凭借着极端的慎密与强大的压场感，并不急于将筹码推入漩涡。他先是冷眼观察着桌面上命运本金的流向，随后那颗精密的“故事脑”开始运作，将零散的线索编织成一张密不透风的网。当他终于优雅地出手，推出十四枚猩红筹码时，整个赌局的走向已被他悄然攥在掌心。\n\n坐在桌台另一端的 Measure-born Hero，则展现出了截然不同却同样致命的从容。作为一名习惯了生死博弈的成人主角，他以慢热的姿态稳扎稳打。他那高敏的直觉捕捉到了齿轮转动间的每一次微小颤动，谋略型的头脑让他在旧王朝债券清算的前夕，精准地切入了庄家的软肋。同样是十四枚筹码的凶悍入账，让他在这场不见血的厮杀中，与 Archivist 形成了分庭抗礼的均势。\n\n然而，并非所有人都能驾驭这座蒸汽都城的残酷法则。Orbital Tycoon Muskcore 带着他标志性的高压推进与赌徒勇气，试图用争议引力强行接管场面控制权。他狂傲地将大把筹码砸向桌面，试图用绝对的资源碾压那些繁文缛节，却忽视了这座赌场里最基本的生存逻辑——永远不要在戴着礼貌的面具前暴露你的底牌。\n\n在旧王朝债券即将到期的最糟糕时刻，Muskcore 彻底读错了全场的暗流。他以为自己买下了未来，却不知自己已踏入死局。随着一声凄厉的汽笛长鸣，赌桌四周的礼宾员们整齐划一地脱下礼帽，露出袖口弹出的黄铜锁链。桌面裂开深渊，Muskcore 甚至来不及发出一声抗议，便在机械臂的死死纠缠下，被生生拖进了深不见底的“暗影账本”。他的狂妄与筹码被尽数剥夺，化作了这座赌场明天早晨新鲜的蒸汽能源。",
+          "elimination": "participant_1fb96606-da22-4aea-b133-6f2aa21fc440"
         },
         {
           "round": 3,
           "title": "Final Seal",
-          "status": "pending",
-          "checkpointCount": 0,
-          "scores": [],
-          "skillEquips": []
+          "status": "done",
+          "checkpointCount": 5,
+          "scores": [
+            {
+              "participantId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
+              "delta": 16,
+              "total": 49,
+              "notes": [
+                "Crimson Archivist 带着 慎密 / 压场感 / 故事脑 踏入 Clockwork Jade Casino。",
+                "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+              ]
+            },
+            {
+              "participantId": "participant_3420bf4c-56c9-4552-a28f-7d1218e56da6",
+              "delta": 16,
+              "total": 49,
+              "notes": [
+                "Measure-born Hero 带着 成人主角 / 谋略型 / 慢热 踏入 Clockwork Jade Casino。",
+                "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+              ]
+            }
+          ],
+          "skillEquips": [],
+          "chapter": "Crimson Archivist 在第 3 回合的势头变化为 +16。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。\n\nMeasure-born Hero 在第 3 回合的势头变化为 +16。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。\n\nCrimson Archivist 拿下了这一章的最后一句，并用一种注定会被跨时区截图传播的方式封桌。"
         }
       ],
       "createdAt": "2026-04-10T13:27:27.219Z",
-      "updatedAt": "2026-04-10T13:46:11.266Z"
+      "updatedAt": "2026-04-11T02:59:53.272Z",
+      "winnerId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa"
     }
   ],
   "participants": [
@@ -573,12 +640,12 @@
       "id": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
       "personaId": "persona_demo_self",
       "displayName": "Crimson Archivist",
-      "supportTotal": 0,
+      "supportTotal": 8,
       "skillLoadout": [],
       "isUserOwned": true,
       "eliminated": false,
-      "roundScore": 5,
-      "totalScore": 5,
+      "roundScore": 16,
+      "totalScore": 49,
       "ghosted": false
     },
     {
@@ -588,9 +655,9 @@
       "supportTotal": 0,
       "skillLoadout": [],
       "isUserOwned": false,
-      "eliminated": false,
-      "roundScore": 6,
-      "totalScore": 6,
+      "eliminated": true,
+      "roundScore": 11,
+      "totalScore": 17,
       "ghosted": false
     },
     {
@@ -600,9 +667,9 @@
       "supportTotal": 0,
       "skillLoadout": [],
       "isUserOwned": false,
-      "eliminated": false,
-      "roundScore": 6,
-      "totalScore": 6,
+      "eliminated": true,
+      "roundScore": 11,
+      "totalScore": 28,
       "ghosted": false
     },
     {
@@ -613,14 +680,163 @@
       "skillLoadout": [],
       "isUserOwned": true,
       "eliminated": false,
-      "roundScore": 5,
-      "totalScore": 5,
+      "roundScore": 16,
+      "totalScore": 49,
       "ghosted": false
     }
   ],
-  "supportTickets": [],
+  "supportTickets": [
+    {
+      "id": "support_ea93546d-25e9-40b6-a4a2-0f5b40a8974c",
+      "userId": "user_demo",
+      "matchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0",
+      "participantId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
+      "renownSpent": 8,
+      "rewardTier": "bronze",
+      "status": "won",
+      "createdAt": "2026-04-11T02:59:51.246Z"
+    }
+  ],
   "datingDossiers": [],
   "streams": [
+    {
+      "id": "stream_0b4cef7e-e28b-47d1-8af2-dae169ea3a4f",
+      "matchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0",
+      "round": 3,
+      "phase": "queued",
+      "segments": [
+        "终局封印\nClockwork Jade Casino 又一次撕开了丝绒般的伤口。一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。",
+        "Crimson Archivist 在第 3 回合的势头变化为 +16。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。",
+        "Measure-born Hero 在第 3 回合的势头变化为 +16。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。",
+        "Crimson Archivist 拿下了这一章的最后一句，并用一种注定会被跨时区截图传播的方式封桌。",
+        "Crimson Archivist：本回合 +16，总分 49。",
+        "Measure-born Hero：本回合 +16，总分 49。"
+      ],
+      "finalChapter": "终局封印\nClockwork Jade Casino 又一次撕开了丝绒般的伤口。一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。\n\nCrimson Archivist 在第 3 回合的势头变化为 +16。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。\n\nMeasure-born Hero 在第 3 回合的势头变化为 +16。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。\n\nCrimson Archivist 拿下了这一章的最后一句，并用一种注定会被跨时区截图传播的方式封桌。\n\nCrimson Archivist：本回合 +16，总分 49。\n\nMeasure-born Hero：本回合 +16，总分 49。",
+      "scoreBoard": [
+        {
+          "participantId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
+          "delta": 16,
+          "total": 49,
+          "notes": [
+            "Crimson Archivist 带着 慎密 / 压场感 / 故事脑 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        },
+        {
+          "participantId": "participant_3420bf4c-56c9-4552-a28f-7d1218e56da6",
+          "delta": 16,
+          "total": 49,
+          "notes": [
+            "Measure-born Hero 带着 成人主角 / 谋略型 / 慢热 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        }
+      ],
+      "winnerId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa"
+    },
+    {
+      "id": "stream_5de94e05-95da-414c-9890-f7b1c3c76d6b",
+      "matchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0",
+      "round": 2,
+      "phase": "queued",
+      "segments": [
+        "发条翡翠赌场的穹顶之上，巨大的黄铜齿轮正无情地咬合，发出沉闷的轰鸣。旧王朝债券即将到期的倒计时，化作一缕缕刺鼻的蒸汽，弥漫在镶金的牌桌之间。在这里，每一枚命运筹码的掷出都伴随着虚伪的脱帽致意，而每一声礼貌的问候背后，都藏着足以切断咽喉的淬毒暗刃。奢华的穹顶下，高压的空气几乎要将人的肺腑压碎，所有人都紧盯着桌面，盘算着谁能改写命运的本金。",
+        "Crimson Archivist 坐在天鹅绒高背椅中，宛如一位审视历史的君王。他凭借着极端的慎密与强大的压场感，并不急于将筹码推入漩涡。他先是冷眼观察着桌面上命运本金的流向，随后那颗精密的“故事脑”开始运作，将零散的线索编织成一张密不透风的网。当他终于优雅地出手，推出十四枚猩红筹码时，整个赌局的走向已被他悄然攥在掌心。",
+        "坐在桌台另一端的 Measure-born Hero，则展现出了截然不同却同样致命的从容。作为一名习惯了生死博弈的成人主角，他以慢热的姿态稳扎稳打。他那高敏的直觉捕捉到了齿轮转动间的每一次微小颤动，谋略型的头脑让他在旧王朝债券清算的前夕，精准地切入了庄家的软肋。同样是十四枚筹码的凶悍入账，让他在这场不见血的厮杀中，与 Archivist 形成了分庭抗礼的均势。",
+        "然而，并非所有人都能驾驭这座蒸汽都城的残酷法则。Orbital Tycoon Muskcore 带着他标志性的高压推进与赌徒勇气，试图用争议引力强行接管场面控制权。他狂傲地将大把筹码砸向桌面，试图用绝对的资源碾压那些繁文缛节，却忽视了这座赌场里最基本的生存逻辑——永远不要在戴着礼貌的面具前暴露你的底牌。",
+        "在旧王朝债券即将到期的最糟糕时刻，Muskcore 彻底读错了全场的暗流。他以为自己买下了未来，却不知自己已踏入死局。随着一声凄厉的汽笛长鸣，赌桌四周的礼宾员们整齐划一地脱下礼帽，露出袖口弹出的黄铜锁链。桌面裂开深渊，Muskcore 甚至来不及发出一声抗议，便在机械臂的死死纠缠下，被生生拖进了深不见底的“暗影账本”。他的狂妄与筹码被尽数剥夺，化作了这座赌场明天早晨新鲜的蒸汽能源。"
+      ],
+      "finalChapter": "发条翡翠赌场的穹顶之上，巨大的黄铜齿轮正无情地咬合，发出沉闷的轰鸣。旧王朝债券即将到期的倒计时，化作一缕缕刺鼻的蒸汽，弥漫在镶金的牌桌之间。在这里，每一枚命运筹码的掷出都伴随着虚伪的脱帽致意，而每一声礼貌的问候背后，都藏着足以切断咽喉的淬毒暗刃。奢华的穹顶下，高压的空气几乎要将人的肺腑压碎，所有人都紧盯着桌面，盘算着谁能改写命运的本金。\n\nCrimson Archivist 坐在天鹅绒高背椅中，宛如一位审视历史的君王。他凭借着极端的慎密与强大的压场感，并不急于将筹码推入漩涡。他先是冷眼观察着桌面上命运本金的流向，随后那颗精密的“故事脑”开始运作，将零散的线索编织成一张密不透风的网。当他终于优雅地出手，推出十四枚猩红筹码时，整个赌局的走向已被他悄然攥在掌心。\n\n坐在桌台另一端的 Measure-born Hero，则展现出了截然不同却同样致命的从容。作为一名习惯了生死博弈的成人主角，他以慢热的姿态稳扎稳打。他那高敏的直觉捕捉到了齿轮转动间的每一次微小颤动，谋略型的头脑让他在旧王朝债券清算的前夕，精准地切入了庄家的软肋。同样是十四枚筹码的凶悍入账，让他在这场不见血的厮杀中，与 Archivist 形成了分庭抗礼的均势。\n\n然而，并非所有人都能驾驭这座蒸汽都城的残酷法则。Orbital Tycoon Muskcore 带着他标志性的高压推进与赌徒勇气，试图用争议引力强行接管场面控制权。他狂傲地将大把筹码砸向桌面，试图用绝对的资源碾压那些繁文缛节，却忽视了这座赌场里最基本的生存逻辑——永远不要在戴着礼貌的面具前暴露你的底牌。\n\n在旧王朝债券即将到期的最糟糕时刻，Muskcore 彻底读错了全场的暗流。他以为自己买下了未来，却不知自己已踏入死局。随着一声凄厉的汽笛长鸣，赌桌四周的礼宾员们整齐划一地脱下礼帽，露出袖口弹出的黄铜锁链。桌面裂开深渊，Muskcore 甚至来不及发出一声抗议，便在机械臂的死死纠缠下，被生生拖进了深不见底的“暗影账本”。他的狂妄与筹码被尽数剥夺，化作了这座赌场明天早晨新鲜的蒸汽能源。",
+      "elimination": "participant_1fb96606-da22-4aea-b133-6f2aa21fc440",
+      "scoreBoard": [
+        {
+          "participantId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
+          "delta": 14,
+          "total": 33,
+          "notes": [
+            "Crimson Archivist 带着 慎密 / 压场感 / 故事脑 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        },
+        {
+          "participantId": "participant_1fb96606-da22-4aea-b133-6f2aa21fc440",
+          "delta": 11,
+          "total": 28,
+          "notes": [
+            "Orbital Tycoon Muskcore 带着 高压推进 / 赌徒勇气 / 争议引力 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        },
+        {
+          "participantId": "participant_3420bf4c-56c9-4552-a28f-7d1218e56da6",
+          "delta": 14,
+          "total": 33,
+          "notes": [
+            "Measure-born Hero 带着 成人主角 / 谋略型 / 慢热 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stream_81344a4f-194c-4ab6-9690-c285eb7220ac",
+      "matchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0",
+      "round": 2,
+      "phase": "queued",
+      "segments": [
+        "反转账本\nClockwork Jade Casino 又一次撕开了丝绒般的伤口。一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。",
+        "Crimson Archivist 在第 2 回合的势头变化为 +14。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。",
+        "Lamplight Lin Daiyu.exe 在第 2 回合的势头变化为 +11。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。",
+        "Orbital Tycoon Muskcore 在第 2 回合的势头变化为 +11。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。",
+        "Measure-born Hero 在第 2 回合的势头变化为 +14。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。",
+        "Lamplight Lin Daiyu.exe 在最糟糕的时刻读错了全场，于是被拖进了暗影账本。",
+        "Crimson Archivist：本回合 +14，总分 19。",
+        "Lamplight Lin Daiyu.exe：本回合 +11，总分 17。",
+        "Orbital Tycoon Muskcore：本回合 +11，总分 17。",
+        "Measure-born Hero：本回合 +14，总分 19。"
+      ],
+      "finalChapter": "反转账本\nClockwork Jade Casino 又一次撕开了丝绒般的伤口。一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。\n\nCrimson Archivist 在第 2 回合的势头变化为 +14。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。\n\nLamplight Lin Daiyu.exe 在第 2 回合的势头变化为 +11。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。\n\nOrbital Tycoon Muskcore 在第 2 回合的势头变化为 +11。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。\n\nMeasure-born Hero 在第 2 回合的势头变化为 +14。世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。\n\nLamplight Lin Daiyu.exe 在最糟糕的时刻读错了全场，于是被拖进了暗影账本。\n\nCrimson Archivist：本回合 +14，总分 19。\n\nLamplight Lin Daiyu.exe：本回合 +11，总分 17。\n\nOrbital Tycoon Muskcore：本回合 +11，总分 17。\n\nMeasure-born Hero：本回合 +14，总分 19。",
+      "elimination": "participant_43f80c2b-bd8a-4b2d-b5c4-9aa05a3729d3",
+      "scoreBoard": [
+        {
+          "participantId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
+          "delta": 14,
+          "total": 19,
+          "notes": [
+            "Crimson Archivist 带着 慎密 / 压场感 / 故事脑 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        },
+        {
+          "participantId": "participant_43f80c2b-bd8a-4b2d-b5c4-9aa05a3729d3",
+          "delta": 11,
+          "total": 17,
+          "notes": [
+            "Lamplight Lin Daiyu.exe 带着 脆感美学 / 高敏锐 / 台词杀伤 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        },
+        {
+          "participantId": "participant_1fb96606-da22-4aea-b133-6f2aa21fc440",
+          "delta": 11,
+          "total": 17,
+          "notes": [
+            "Orbital Tycoon Muskcore 带着 高压推进 / 赌徒勇气 / 争议引力 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        },
+        {
+          "participantId": "participant_3420bf4c-56c9-4552-a28f-7d1218e56da6",
+          "delta": 14,
+          "total": 19,
+          "notes": [
+            "Measure-born Hero 带着 成人主角 / 谋略型 / 慢热 踏入 Clockwork Jade Casino。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ]
+        }
+      ]
+    },
     {
       "id": "stream_00a321f1-cc3a-422a-ae53-4bc4b8d752f3",
       "matchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0",
@@ -681,6 +897,57 @@
   "scratchUploads": [],
   "webhooks": [],
   "datingMatches": [
+    {
+      "id": "dating_6d9eaf5c-74c7-4259-8316-8bfa08e24de9",
+      "userId": "user_demo",
+      "selfPersonaId": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+      "counterpartPersonaId": "persona_legend_monk",
+      "backdropTitle": "Tarot Alley Night Market",
+      "backdropSummary": "夜市尽头的塔罗摊位刚好空出一张双人桌，纸牌、雾气和低饱和灯光替你们把第一次对视变得更像命运。",
+      "heartbeat": 50,
+      "vibe": 50,
+      "turnCount": 0,
+      "status": "active",
+      "transcript": [
+        {
+          "id": "msg_e2ae3f94-95d7-42ba-b4e8-d0aa74a9f0f1",
+          "speaker": "other",
+          "text": "夜雾掩去了四周的喧嚣",
+          "heartbeat": 50,
+          "vibe": 50,
+          "createdAt": "2026-04-11T02:41:10.262Z"
+        }
+      ],
+      "currentOptions": [
+        {
+          "id": "opt_b6e6e929-29e2-42c7-b153-b097971207c3",
+          "actionType": "FLIRT",
+          "label": "热情回应",
+          "flavor": "试着向前一步，别总是只观察。"
+        },
+        {
+          "id": "opt_50bd9c7c-2e35-4dd9-9c6c-a320f86a2bb7",
+          "actionType": "LOGIC_TALK",
+          "label": "理性闲聊",
+          "flavor": "从兴趣和观点切入，更容易稳住局面。"
+        },
+        {
+          "id": "opt_6799174a-467e-4df6-8395-3f763c0d6a1b",
+          "actionType": "PULL_BACK",
+          "label": "故意高冷",
+          "flavor": "对慢热的人，也许适度后撤才不会压得太紧。"
+        },
+        {
+          "id": "opt_2a9547c5-bf5b-4284-b8bb-3717f97004c9",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：真心话喷雾",
+          "flavor": "花费钻石强行打开一个更真诚的回合。",
+          "costDiamonds": 3
+        }
+      ],
+      "createdAt": "2026-04-11T02:41:10.262Z",
+      "updatedAt": "2026-04-11T02:41:10.262Z"
+    },
     {
       "id": "dating_48684291-74ca-4afe-8189-0ff69b2d75f4",
       "userId": "user_demo",

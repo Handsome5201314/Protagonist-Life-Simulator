@@ -1,4 +1,7 @@
+﻿"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Coins, Gem, Orbit, Sparkles } from "lucide-react";
 
 import type { UserRecord } from "@/lib/types";
@@ -15,7 +18,13 @@ const navItems = [
   { href: "/login", label: "用户中心" },
 ];
 
+function isActivePath(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function FateSiteHeader({ user }: Props) {
+  const pathname = usePathname();
   const isLinked = user.linkedAiliangbiao?.status === "linked";
   const avatarLetter = user.displayName.slice(0, 1).toUpperCase() || "命";
 
@@ -43,15 +52,23 @@ export function FateSiteHeader({ user }: Props) {
 
         <div className="flex items-center gap-3">
           <nav className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-2 text-sm text-white/60 lg:flex">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const active = isActivePath(pathname, item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`rounded-full px-4 py-2 transition ${
+                    active
+                      ? "bg-white/12 text-white shadow-[0_0_18px_rgba(255,255,255,0.08)]"
+                      : "hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
 
           {isLinked ? (

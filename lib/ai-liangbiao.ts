@@ -1,4 +1,4 @@
-import type { PersonaSnapshot, TraitVector } from "@/lib/types";
+﻿import type { PersonaSnapshot, TraitVector } from "@/lib/types";
 import { addDays, createId, createLockedHash } from "@/lib/utils";
 
 type ImportedAssessment = {
@@ -48,13 +48,13 @@ function createVectorFromAssessments(assessments: ImportedAssessment[] = []): Tr
     base.courage += 4;
   }
 
-  if (/焦虑|anxiety/.test(joined)) {
+  if (/(焦虑|anxiety)/.test(joined)) {
     base.resilience -= 6;
     base.focus -= 4;
     base.empathy += 6;
   }
 
-  if (/抑郁|depress/.test(joined)) {
+  if (/(抑郁|depress)/.test(joined)) {
     base.charm -= 5;
     base.resilience -= 5;
   }
@@ -62,10 +62,7 @@ function createVectorFromAssessments(assessments: ImportedAssessment[] = []): Tr
   return base;
 }
 
-export async function createPersonaFromAiliangbiaoProfile(
-  userId: string,
-  profile: ImportedProfile
-): Promise<PersonaSnapshot> {
+export async function createPersonaFromAiliangbiaoProfile(userId: string, profile: ImportedProfile): Promise<PersonaSnapshot> {
   const interests = profile.interests ?? ["叙事设计", "人格实验"];
   const fears = profile.fears ?? ["被错误定义"];
   const assessments = profile.assessments ?? [];
@@ -76,13 +73,11 @@ export async function createPersonaFromAiliangbiaoProfile(
   const adultOnlyEligible = relation === "SELF" && ageBand === "adult";
 
   const publicTraitTags = [
-    adultOnlyEligible ? "成人主角" : "私密档案",
-    vector.strategy > 60 ? "谋略型" : "感受型",
+    adultOnlyEligible ? "成年主角" : "私密档案",
+    vector.strategy > 60 ? "策略型" : "感受型",
     vector.charm > 60 ? "镜头感" : "慢热",
     vector.resilience > 60 ? "抗压" : "高敏",
   ];
-
-  const riskFlags = adultOnlyEligible ? [] : ["private_only"];
 
   return {
     id: createId("persona"),
@@ -100,13 +95,8 @@ export async function createPersonaFromAiliangbiaoProfile(
     interests,
     communicationStyle: vector.charm > 60 ? "theatrical-intimate" : "quiet-precise",
     careerTilt: vector.strategy > vector.empathy ? "strategy-led" : "people-led",
-    riskFlags,
-    lockedHash: createLockedHash({
-      profile: profile.nickname,
-      interests,
-      fears,
-      assessments,
-    }),
+    riskFlags: adultOnlyEligible ? [] : ["private_only"],
+    lockedHash: createLockedHash({ profile: profile.nickname, interests, fears, assessments }),
     expiresAt: addDays(30),
   };
 }
@@ -123,29 +113,18 @@ export async function fetchPrototypeImportPayload() {
         interests: ["心理画像", "世界观构建", "策略游戏"],
         fears: ["被粗暴归类", "失去选择权"],
         assessments: [
-          {
-            scaleId: "MBTI",
-            conclusion: "偏战略与抽象思维",
-          },
-          {
-            scaleId: "HOLLAND",
-            conclusion: "研究与创意兼具",
-          },
+          { scaleId: "MBTI", conclusion: "偏战略与抽象思维" },
+          { scaleId: "HOLLAND", conclusion: "研究与创意兼具" },
         ],
       },
       {
         id: "lb_other_child",
         nickname: "Private Child Mirror",
-        relation: "CHILD",
+        relation: "OTHER",
         ageMonths: 120,
         interests: ["星图", "图鉴"],
         fears: ["陌生嘈杂环境"],
-        assessments: [
-          {
-            scaleId: "SRS",
-            conclusion: "仅限私密追踪，不进入公开竞技",
-          },
-        ],
+        assessments: [{ scaleId: "SRS", conclusion: "仅限私密追踪，不进入公开竞技" }],
       },
     ],
   };
@@ -157,32 +136,22 @@ function getPartnerBaseUrl() {
 
 function getPartnerHeaders() {
   const token = process.env.AILIANGBIAO_PARTNER_TOKEN;
-  return token
-    ? {
-        Authorization: `Bearer ${token}`,
-      }
-    : undefined;
+  return token ? { Authorization: `Bearer ${token}` } : undefined;
 }
 
 export async function fetchPartnerImportPayload() {
   const baseUrl = getPartnerBaseUrl();
-  if (!baseUrl) {
-    return null;
-  }
+  if (!baseUrl) return null;
 
   const profilesResponse = await fetch(`${baseUrl}/api/partner/v1/profiles`, {
     headers: getPartnerHeaders(),
     cache: "no-store",
   });
 
-  if (!profilesResponse.ok) {
-    return null;
-  }
+  if (!profilesResponse.ok) return null;
 
   const profilesPayload = (await profilesResponse.json()) as { profiles?: PartnerProfilePayload[] };
-  if (!profilesPayload.profiles?.length) {
-    return null;
-  }
+  if (!profilesPayload.profiles?.length) return null;
 
   const profiles: ImportedProfile[] = [];
 
@@ -198,9 +167,7 @@ export async function fetchPartnerImportPayload() {
       }),
     ]);
 
-    if (!snapshotResponse.ok) {
-      continue;
-    }
+    if (!snapshotResponse.ok) continue;
 
     const snapshotPayload = (await snapshotResponse.json()) as {
       sourceProfileId?: string;
@@ -212,34 +179,23 @@ export async function fetchPartnerImportPayload() {
       ? ((await assessmentsResponse.json()) as { items?: ImportedAssessment[] })
       : { items: [] };
 
-    const adultAgeBand = profile.adultOnlyEligible ? 336 : 144;
-
     profiles.push({
       id: snapshotPayload.sourceProfileId || profile.profileId,
       nickname: profile.name,
       relation: profile.adultOnlyEligible ? "SELF" : "OTHER",
-      ageMonths: adultAgeBand,
+      ageMonths: profile.adultOnlyEligible ? 336 : 144,
       interests: snapshotPayload.publicTraitTags || ["partner import"],
       fears: snapshotPayload.riskFlags || [],
       assessments: assessmentsPayload.items || [],
     });
   }
 
-  if (!profiles.length) {
-    return null;
-  }
-
-  return {
-    externalUserId: "partner-linked-user",
-    profiles,
-  };
+  return profiles.length ? { externalUserId: "partner-linked-user", profiles } : null;
 }
 
 export async function fetchSinglePartnerPersona(profileId: string) {
   const baseUrl = getPartnerBaseUrl();
-  if (!baseUrl) {
-    return null;
-  }
+  if (!baseUrl) return null;
 
   const [snapshotResponse, assessmentsResponse] = await Promise.all([
     fetch(`${baseUrl}/api/partner/v1/profiles/${encodeURIComponent(profileId)}/persona-snapshot`, {
@@ -252,9 +208,7 @@ export async function fetchSinglePartnerPersona(profileId: string) {
     }),
   ]);
 
-  if (!snapshotResponse.ok) {
-    return null;
-  }
+  if (!snapshotResponse.ok) return null;
 
   const snapshotPayload = (await snapshotResponse.json()) as {
     sourceProfileId?: string;

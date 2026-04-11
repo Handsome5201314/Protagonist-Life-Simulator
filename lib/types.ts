@@ -1,4 +1,4 @@
-export type CurrencyWallet = {
+﻿export type CurrencyWallet = {
   renown: number;
   diamonds: number;
   seasonPoints: number;
@@ -92,6 +92,7 @@ export type WorldPack = {
 
 export type MatchParticipant = {
   id: string;
+  matchId: string;
   personaId: string;
   displayName: string;
   supportTotal: number;
@@ -128,6 +129,13 @@ export type RoundState = {
   skillEquips: SkillEquip[];
 };
 
+export type ArenaPrepState = {
+  mode: "rapid" | "immersive";
+  seatOrder: string[];
+  reservePersonaIds: string[];
+  updatedAt: string;
+};
+
 export type ArenaMatch = {
   id: string;
   userId: string;
@@ -139,6 +147,7 @@ export type ArenaMatch = {
   publicStoryStatus: "draft" | "streaming" | "complete";
   supportPool: number;
   winnerId?: string;
+  prep: ArenaPrepState;
   roundStates: RoundState[];
   createdAt: string;
   updatedAt: string;
@@ -169,11 +178,7 @@ export type DatingDossier = {
   expiresAt: string;
 };
 
-export type DatingActionType =
-  | "FLIRT"
-  | "LOGIC_TALK"
-  | "PULL_BACK"
-  | "USE_SKILL";
+export type DatingActionType = "FLIRT" | "LOGIC_TALK" | "PULL_BACK" | "USE_SKILL";
 
 export type DatingMatchOption = {
   id: string;

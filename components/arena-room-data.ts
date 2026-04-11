@@ -1,4 +1,4 @@
-import type { ArenaMatch, MatchParticipant, PersonaSnapshot } from "@/lib/types";
+﻿import type { ArenaMatch, MatchParticipant, PersonaSnapshot } from "@/lib/types";
 
 const palettes = [
   ["from-pink-400 via-fuchsia-500 to-purple-500", "border-pink-300/20 bg-pink-400/10", "text-pink-100"],
@@ -8,7 +8,27 @@ const palettes = [
 ] as const;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
-const splitText = (text: string) => text.split(/\n{2,}/).map((item) => item.trim()).filter(Boolean);
+
+// 智能文本分割：优先按段落分割，如果没有段落则按句子分割，确保每段都有完整语义
+const splitText = (text: string): string[] => {
+  if (!text || !text.trim()) return [];
+
+  // 先尝试按段落分割（两个以上换行符）
+  const paragraphs = text.split(/\n{2,}/).map((item) => item.trim()).filter(Boolean);
+  if (paragraphs.length > 1) return paragraphs;
+
+  // 如果只有一段，尝试按句子分割（句号、问号、感叹号后跟空格或换行）
+  const sentences = text
+    .replace(/([。！？.!?])([^\s])/g, "$1\n$2") // 在标点后面加换行
+    .split(/\n/)
+    .map((item) => item.trim())
+    .filter((item) => item.length > 5); // 过滤掉太短的片段
+
+  if (sentences.length > 1) return sentences;
+
+  // 如果还是没有分割成功，返回原始文本
+  return [text.trim()];
+};
 
 export function buildParticipantCards(participants: MatchParticipant[], personas: PersonaSnapshot[]) {
   const maxScore = Math.max(...participants.map((item) => item.totalScore), 0);

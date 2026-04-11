@@ -83,6 +83,12 @@ const skillEquipSchema = z.object({
   skillId: z.string(),
 });
 
+const prepSchema = z.object({
+  mode: z.enum(["rapid", "immersive"]),
+  seatOrder: z.array(z.string()).min(1).max(4),
+  reservePersonaIds: z.array(z.string()).max(8).default([]),
+});
+
 const dossierSchema = z.object({
   personaId: z.string(),
   resumeText: z.string().min(10),
@@ -130,7 +136,7 @@ function ensureDemoUserId() {
 
 function resolveDefaultMatchCapacity(world: WorldPack) {
   const text = `${world.title} ${world.theme} ${world.conflicts.join(" ")} ${world.sanitizedSummary}`.toLowerCase();
-  return /(romance|date|tarot|love|相亲|婚约|心动|恋)/i.test(text) ? 2 : 4;
+  return /(romance|date|tarot|love|embassy)/i.test(text) ? 2 : 4;
 }
 
 function createUploadPersona(input: z.infer<typeof personaImportSchema>): PersonaSnapshot {
@@ -138,7 +144,11 @@ function createUploadPersona(input: z.infer<typeof personaImportSchema>): Person
   const digest = normalizeDigest(input.rawText || input.name || "persona");
   const publicTraitTags = input.publicTraitTags.length
     ? input.publicTraitTags
-    : ["上传快照", digest.includes("quiet") ? "慢热" : "叙事型", digest.includes("leader") ? "领航者" : "镜面观察者"];
+    : [
+        "\u4E0A\u4F20\u5FEB\u7167",
+        digest.includes("quiet") ? "\u6162\u70ED" : "\u53D9\u4E8B\u578B",
+        digest.includes("leader") ? "\u9886\u822A\u8005" : "\u955C\u9762\u89C2\u5BDF\u8005",
+      ];
 
   return {
     id: createId("persona"),
@@ -170,7 +180,45 @@ function createUploadPersona(input: z.infer<typeof personaImportSchema>): Person
 }
 
 function getMatchWithParticipants(matchId: string, participants: MatchParticipant[]) {
-  return participants.filter((item) => item.id && true);
+  return participants.filter((item) => item.matchId === matchId || item.id);
+}
+
+function buildReservePersonas(
+  db: import("@/lib/types").AppDatabase,
+  selectedPersonaIds: string[],
+  mode: "public" | "private",
+  limit: number
+) {
+  const eligible = db.personas.filter((persona) => {
+    if (selectedPersonaIds.includes(persona.id) || persona.deletedAt) return false;
+    if (mode === "private") return persona.ageBand === "adult" || persona.source === "legend";
+    return persona.adultOnlyEligible || persona.source === "legend";
+  });
+
+  const selfOwned = eligible.filter((persona) => persona.source !== "legend");
+  const legends = eligible.filter((persona) => persona.source === "legend");
+  return [...selfOwned, ...legends].slice(0, limit);
+}
+
+function ensureArenaParticipant(db: import("@/lib/types").AppDatabase, matchId: string, personaId: string) {
+  const existing = db.participants.find((participant) => participant.matchId === matchId && participant.personaId === personaId);
+  if (existing) return existing;
+
+  const persona = db.personas.find((item) => item.id === personaId);
+  if (!persona) {
+    throw new Error("Persona not found");
+  }
+
+  const memoryTraits = db.memoryTraits.filter((trait) => trait.personaId === persona.id);
+  const participant = buildMatchParticipants([persona], [persona.id], memoryTraits, matchId)[0];
+  db.participants.push(participant);
+  return participant;
+}
+
+function syncMatchParticipantsFromPrep(db: import("@/lib/types").AppDatabase, match: ArenaMatch) {
+  match.participantIds = match.prep.seatOrder.map((personaId) => ensureArenaParticipant(db, match.id, personaId).id);
+  match.updatedAt = nowIso();
+  return match.participantIds;
 }
 
 export async function completeAiliangbiaoLink() {
@@ -389,8 +437,8 @@ export async function createMatch(input: unknown) {
     const targetParticipants = data.maxParticipants ?? resolveDefaultMatchCapacity(world);
     const selectedPersonas = data.participantPersonaIds
       .map((id) => db.personas.find((persona) => persona.id === id))
-      .filter(Boolean)
-      .slice(0, targetParticipants) as PersonaSnapshot[];
+      .filter((persona): persona is PersonaSnapshot => Boolean(persona))
+      .slice(0, targetParticipants);
 
     if (!selectedPersonas.length) {
       throw new Error("No participants selected");
@@ -401,17 +449,16 @@ export async function createMatch(input: unknown) {
       throw new Error("Public arena only accepts adult SELF personas or legends");
     }
 
-    const legends = db.personas.filter((persona) => persona.source === "legend");
-    while (selectedPersonas.length < targetParticipants) {
-      const candidate = legends.find((legend) => !selectedPersonas.some((persona) => persona.id === legend.id));
-      if (!candidate) {
-        break;
-      }
-      selectedPersonas.push(candidate);
-    }
+    const reservePersonas = buildReservePersonas(
+      db,
+      selectedPersonas.map((persona) => persona.id),
+      data.mode,
+      Math.max(0, Math.min(8, targetParticipants + 2))
+    );
 
+    const matchId = createId("match");
     const match: ArenaMatch = {
-      id: createId("match"),
+      id: matchId,
       userId: user.id,
       seed: Math.floor(Math.random() * 999999),
       mode: data.mode,
@@ -420,6 +467,12 @@ export async function createMatch(input: unknown) {
       participantIds: [],
       publicStoryStatus: "draft",
       supportPool: 0,
+      prep: {
+        mode: "rapid",
+        seatOrder: selectedPersonas.map((persona) => persona.id),
+        reservePersonaIds: reservePersonas.map((persona) => persona.id),
+        updatedAt: nowIso(),
+      },
       roundStates: [
         { round: 1, title: "Opening Stake", status: "pending", checkpointCount: 0, scores: [], skillEquips: [] },
         { round: 2, title: "Reverse Ledger", status: "pending", checkpointCount: 0, scores: [], skillEquips: [] },
@@ -427,18 +480,22 @@ export async function createMatch(input: unknown) {
       ],
       createdAt: nowIso(),
       updatedAt: nowIso(),
-    };
+    } satisfies ArenaMatch;
 
-    const memoryTraits = db.memoryTraits.filter((trait) => selectedPersonas.some((persona) => persona.id === trait.personaId));
-    const participants = buildMatchParticipants(selectedPersonas, selectedPersonas.map((persona) => persona.id), memoryTraits);
+    const activeMemoryTraits = db.memoryTraits.filter((trait) => selectedPersonas.some((persona) => persona.id === trait.personaId));
+    const reserveMemoryTraits = db.memoryTraits.filter((trait) => reservePersonas.some((persona) => persona.id === trait.personaId));
+    const activeParticipants = buildMatchParticipants(selectedPersonas, selectedPersonas.map((persona) => persona.id), activeMemoryTraits, matchId);
+    const reserveParticipants = reservePersonas.length
+      ? buildMatchParticipants(reservePersonas, reservePersonas.map((persona) => persona.id), reserveMemoryTraits, matchId)
+      : [];
 
-    db.participants.push(...participants);
-    match.participantIds = participants.map((item) => item.id);
+    db.participants.push(...activeParticipants, ...reserveParticipants);
+    match.participantIds = activeParticipants.map((participant) => participant.id);
     db.matches.unshift(match);
 
     return {
       match,
-      participants,
+      participants: activeParticipants,
     };
   });
 }
@@ -508,27 +565,73 @@ export async function joinMatch(matchId: string, input: unknown) {
       throw new Error("Public rooms only accept adult SELF personas");
     }
 
-    const existingParticipants = db.participants.filter((item) => match.participantIds.includes(item.id));
-
-    if (existingParticipants.some((participant) => participant.personaId === persona.id)) {
+    if (match.prep.seatOrder.includes(persona.id)) {
       throw new Error("This clone is already seated in the room");
     }
 
-    if (existingParticipants.length >= match.maxParticipants) {
+    if (match.prep.seatOrder.length >= match.maxParticipants) {
       throw new Error("Room is already full");
     }
 
-    const memoryTraits = db.memoryTraits.filter((trait) => trait.personaId === persona.id);
-    const participant = buildMatchParticipants([persona], [persona.id], memoryTraits)[0];
-    db.participants.push(participant);
-    match.participantIds.push(participant.id);
-    match.updatedAt = nowIso();
+    ensureArenaParticipant(db, match.id, persona.id);
+    match.prep.seatOrder.push(persona.id);
+    match.prep.reservePersonaIds = match.prep.reservePersonaIds.filter((personaId) => personaId !== persona.id);
+    match.prep.updatedAt = nowIso();
+    syncMatchParticipantsFromPrep(db, match);
 
     return {
       matchId: match.id,
-      participant,
+      participant: db.participants.find((item) => item.matchId === match.id && item.personaId === persona.id),
       currentParticipants: match.participantIds.length,
       maxParticipants: match.maxParticipants,
+    };
+  });
+}
+
+export async function updateMatchPrep(matchId: string, input: unknown) {
+  const data = prepSchema.parse(input);
+
+  return updateDb((db) => {
+    const match = db.matches.find((item) => item.id === matchId);
+    if (!match) {
+      throw new Error("Match not found");
+    }
+
+    if (match.publicStoryStatus !== "draft") {
+      throw new Error("Only draft rooms can update prep state");
+    }
+
+    const allowedPersonaIds = new Set([...match.prep.seatOrder, ...match.prep.reservePersonaIds]);
+    const seatOrder = Array.from(new Set(data.seatOrder));
+    const reservePersonaIds = Array.from(new Set(data.reservePersonaIds)).filter((personaId) => !seatOrder.includes(personaId));
+
+    if (seatOrder.length > match.maxParticipants) {
+      throw new Error("Seat order exceeds room capacity");
+    }
+
+    if (!seatOrder.every((personaId) => allowedPersonaIds.has(personaId))) {
+      throw new Error("Seat order contains unknown personas");
+    }
+
+    if (!reservePersonaIds.every((personaId) => allowedPersonaIds.has(personaId))) {
+      throw new Error("Reserve list contains unknown personas");
+    }
+
+    seatOrder.forEach((personaId) => ensureArenaParticipant(db, match.id, personaId));
+    reservePersonaIds.forEach((personaId) => ensureArenaParticipant(db, match.id, personaId));
+
+    match.prep = {
+      mode: data.mode,
+      seatOrder,
+      reservePersonaIds,
+      updatedAt: nowIso(),
+    };
+    syncMatchParticipantsFromPrep(db, match);
+
+    return {
+      matchId: match.id,
+      prep: match.prep,
+      participantIds: match.participantIds,
     };
   });
 }
@@ -1061,12 +1164,12 @@ export async function interactDatingMatch(roomId: string, input: unknown) {
         speaker: "self",
         text:
           data.actionType === "FLIRT"
-            ? "你把气氛往心动方向推了一步。"
+            ? "\u4F60\u628A\u6C14\u6C1B\u5F80\u5FC3\u52A8\u65B9\u5411\u63A8\u8FD1\u4E86\u4E00\u6B65\u3002"
             : data.actionType === "LOGIC_TALK"
-              ? "你把话题拉回一个更稳的切入口。"
+              ? "\u4F60\u628A\u8BDD\u9898\u62C9\u56DE\u4E00\u4E2A\u66F4\u7A33\u7684\u5207\u5165\u53E3\u3002"
               : data.actionType === "PULL_BACK"
-                ? "你故意慢下来，试探这份沉默。"
-                : "你用了技能，让这回合变得更真诚。",
+                ? "\u4F60\u6545\u610F\u6162\u4E0B\u6765\uFF0C\u89C2\u5BDF\u8FD9\u4EFD\u6C89\u9ED8\u4F1A\u4E0D\u4F1A\u56DE\u6D41\u3002"
+                : "\u4F60\u7528\u4E86\u4E00\u6B21\u6280\u80FD\uFF0C\u8BA9\u8FD9\u4E00\u56DE\u5408\u53D8\u5F97\u66F4\u5766\u767D\u3002",
         heartbeat: result.heartbeat,
         vibe: result.vibe,
         createdAt: nowIso(),
@@ -1083,8 +1186,9 @@ export async function interactDatingMatch(roomId: string, input: unknown) {
 
     room.currentOptions = buildDefaultDatingOptions(room, self, other);
 
+    // 按句子分割文本，用于流式输出打字机效果
     const segments = llmLine
-      .split(/(?<=[。！？.!?])/)
+      .split(/(?<=[。！？.?!])(?=\s*[^。！？.?!])/)
       .map((segment) => segment.trim())
       .filter(Boolean);
 

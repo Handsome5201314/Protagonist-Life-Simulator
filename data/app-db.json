@@ -6,7 +6,7 @@
       "seasonId": "season_founders",
       "wallet": {
         "renown": 118,
-        "diamonds": 36,
+        "diamonds": 33,
         "seasonPoints": 10,
         "supportStreak": 1
       },
@@ -80,8 +80,8 @@
         "courage": 59
       },
       "publicTraitTags": [
-        "成人主角",
-        "谋略型",
+        "成年主角",
+        "策略型",
         "慢热",
         "高敏"
       ],
@@ -122,11 +122,11 @@
         "慎密",
         "压场感",
         "故事脑",
-        "先观察后出手"
+        "先观察再出手"
       ],
       "fears": [
         "被彻底误解",
-        "喧嚣失控"
+        "喧闹失控"
       ],
       "interests": [
         "长篇小说",
@@ -138,7 +138,7 @@
       "riskFlags": [],
       "lockedHash": "8b6a279198bece83db51509057254923175c4996b6735ad22fde48bcd5a86af7",
       "overlayId": "overlay_demo_self",
-      "expiresAt": "2026-05-10T12:32:41.436Z"
+      "expiresAt": "2026-05-11T15:06:55.414Z"
     },
     {
       "id": "persona_legend_lamplight",
@@ -177,7 +177,7 @@
       "careerTilt": "cultural icon",
       "riskFlags": [],
       "lockedHash": "1206743c33ba21335c6060b1d3769f90ebd9a03f99a63e517e00e7ee92e4b61d",
-      "expiresAt": "2026-05-10T12:32:41.436Z"
+      "expiresAt": "2026-05-11T15:06:55.414Z"
     },
     {
       "id": "persona_legend_tycoon",
@@ -210,13 +210,13 @@
       "interests": [
         "火箭",
         "野心叙事",
-        "极限赌注"
+        "极限豪赌"
       ],
       "communicationStyle": "volatile visionary",
       "careerTilt": "frontier builder",
       "riskFlags": [],
       "lockedHash": "585a21ad0ef5cde9acf9616c03858085f18f31410063b2fb32dc57ab0a5826cf",
-      "expiresAt": "2026-05-10T12:32:41.436Z"
+      "expiresAt": "2026-05-11T15:06:55.414Z"
     },
     {
       "id": "persona_legend_orchid",
@@ -255,7 +255,7 @@
       "careerTilt": "creative spotlight",
       "riskFlags": [],
       "lockedHash": "ae1c40e5bebad14d09d8dabd74716006ba10f778bddf87f77c1c7364253efba0",
-      "expiresAt": "2026-05-10T15:06:49.627Z"
+      "expiresAt": "2026-05-11T15:06:55.414Z"
     },
     {
       "id": "persona_legend_analyst",
@@ -294,7 +294,7 @@
       "careerTilt": "research and systems",
       "riskFlags": [],
       "lockedHash": "d54b1e479f0af962fd013ae6bad54767a55e2bd846cafac1b06b9ad6d8f3d6ad",
-      "expiresAt": "2026-05-10T15:06:49.627Z"
+      "expiresAt": "2026-05-11T15:06:55.414Z"
     },
     {
       "id": "persona_legend_monk",
@@ -316,7 +316,7 @@
       },
       "publicTraitTags": [
         "平静",
-        "治愈感",
+        "疗愈感",
         "低刺激",
         "安全依恋"
       ],
@@ -333,7 +333,7 @@
       "careerTilt": "healing and mentoring",
       "riskFlags": [],
       "lockedHash": "f0663872ea63d6f3c1da5f7666ea58c9e320604edd079ffdb5e6e0601fc13bca",
-      "expiresAt": "2026-05-10T15:06:49.627Z"
+      "expiresAt": "2026-05-11T15:06:55.414Z"
     },
     {
       "id": "persona_legend_hacker",
@@ -372,7 +372,7 @@
       "careerTilt": "security and counterplay",
       "riskFlags": [],
       "lockedHash": "25de4bf1fa24185ea51b348b1877a78b4a98a27f279612f74e12ab1665c71f17",
-      "expiresAt": "2026-05-10T15:06:49.627Z"
+      "expiresAt": "2026-05-11T15:06:55.414Z"
     },
     {
       "id": "persona_legend_barista",
@@ -411,7 +411,7 @@
       "careerTilt": "hospitality and art",
       "riskFlags": [],
       "lockedHash": "ecbd63285d15e3d5d70e7d6568af8b71030a1f1afcc5a9648434b4cc1d92a4a1",
-      "expiresAt": "2026-05-10T15:06:49.627Z"
+      "expiresAt": "2026-05-11T15:06:55.414Z"
     }
   ],
   "overlays": [
@@ -467,13 +467,13 @@
       "tone": "opulent-pressure",
       "tabooRules": [
         "不可明说真正愿望",
-        "不可在月蚀钟响后撒谎"
+        "不可在月蚀钟响后撤牌"
       ],
       "derivedFrom": "curated",
       "safetyStatus": "clean",
       "sanitizedSummary": "一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。",
       "sourceDigest": "curated",
-      "expiresAt": "2027-04-10T12:32:41.436Z"
+      "expiresAt": "2027-04-11T15:06:55.414Z"
     },
     {
       "id": "world_curated_tarot",
@@ -497,10 +497,68 @@
       "safetyStatus": "clean",
       "sanitizedSummary": "每一场相亲都像一场外交仪式，微笑是最便宜的盾牌，沉默才是最高级的武器。",
       "sourceDigest": "curated",
-      "expiresAt": "2027-04-10T12:32:41.436Z"
+      "expiresAt": "2027-04-11T15:06:55.414Z"
     }
   ],
   "matches": [
+    {
+      "id": "match_12dd7306-d5ad-4088-b9e9-cc989eef4df3",
+      "userId": "user_demo",
+      "seed": 374297,
+      "mode": "public",
+      "worldPackId": "world_curated_clock",
+      "maxParticipants": 4,
+      "participantIds": [
+        "participant_9541aeaa-0bad-4bdc-a42a-ef4cc2aa7853",
+        "participant_6bdaa7d0-eebd-47a4-b923-280b3844291a"
+      ],
+      "publicStoryStatus": "draft",
+      "supportPool": 0,
+      "prep": {
+        "mode": "immersive",
+        "seatOrder": [
+          "persona_demo_self",
+          "persona_legend_lamplight"
+        ],
+        "reservePersonaIds": [
+          "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+          "persona_legend_tycoon",
+          "persona_legend_orchid",
+          "persona_legend_analyst",
+          "persona_legend_monk",
+          "persona_legend_hacker"
+        ],
+        "updatedAt": "2026-04-11T04:28:32.714Z"
+      },
+      "roundStates": [
+        {
+          "round": 1,
+          "title": "Opening Stake",
+          "status": "pending",
+          "checkpointCount": 0,
+          "scores": [],
+          "skillEquips": []
+        },
+        {
+          "round": 2,
+          "title": "Reverse Ledger",
+          "status": "pending",
+          "checkpointCount": 0,
+          "scores": [],
+          "skillEquips": []
+        },
+        {
+          "round": 3,
+          "title": "Final Seal",
+          "status": "pending",
+          "checkpointCount": 0,
+          "scores": [],
+          "skillEquips": []
+        }
+      ],
+      "createdAt": "2026-04-11T04:28:17.557Z",
+      "updatedAt": "2026-04-11T04:28:32.714Z"
+    },
     {
       "id": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0",
       "userId": "user_demo",
@@ -632,7 +690,18 @@
       ],
       "createdAt": "2026-04-10T13:27:27.219Z",
       "updatedAt": "2026-04-11T02:59:53.272Z",
-      "winnerId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa"
+      "winnerId": "participant_205cac1f-72eb-45a3-913c-a789fb8bc8aa",
+      "prep": {
+        "mode": "rapid",
+        "seatOrder": [
+          "persona_demo_self",
+          "persona_legend_lamplight",
+          "persona_legend_tycoon",
+          "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3"
+        ],
+        "reservePersonaIds": [],
+        "updatedAt": "2026-04-11T04:28:17.557Z"
+      }
     }
   ],
   "participants": [
@@ -646,7 +715,8 @@
       "eliminated": false,
       "roundScore": 16,
       "totalScore": 49,
-      "ghosted": false
+      "ghosted": false,
+      "matchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0"
     },
     {
       "id": "participant_43f80c2b-bd8a-4b2d-b5c4-9aa05a3729d3",
@@ -658,7 +728,8 @@
       "eliminated": true,
       "roundScore": 11,
       "totalScore": 17,
-      "ghosted": false
+      "ghosted": false,
+      "matchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0"
     },
     {
       "id": "participant_1fb96606-da22-4aea-b133-6f2aa21fc440",
@@ -670,7 +741,8 @@
       "eliminated": true,
       "roundScore": 11,
       "totalScore": 28,
-      "ghosted": false
+      "ghosted": false,
+      "matchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0"
     },
     {
       "id": "participant_3420bf4c-56c9-4552-a28f-7d1218e56da6",
@@ -682,6 +754,112 @@
       "eliminated": false,
       "roundScore": 16,
       "totalScore": 49,
+      "ghosted": false,
+      "matchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0"
+    },
+    {
+      "id": "participant_9541aeaa-0bad-4bdc-a42a-ef4cc2aa7853",
+      "matchId": "match_12dd7306-d5ad-4088-b9e9-cc989eef4df3",
+      "personaId": "persona_demo_self",
+      "displayName": "Crimson Archivist",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "memoryTraitId": "memory_86dbf002-6d1f-4b8e-ae9e-ce9d4c97fb09",
+      "isUserOwned": true,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
+      "ghosted": false
+    },
+    {
+      "id": "participant_fccc31b9-abab-4549-95a8-b0a835c716f9",
+      "matchId": "match_12dd7306-d5ad-4088-b9e9-cc989eef4df3",
+      "personaId": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+      "displayName": "Measure-born Hero",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": true,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
+      "ghosted": false
+    },
+    {
+      "id": "participant_6bdaa7d0-eebd-47a4-b923-280b3844291a",
+      "matchId": "match_12dd7306-d5ad-4088-b9e9-cc989eef4df3",
+      "personaId": "persona_legend_lamplight",
+      "displayName": "Lamplight Lin Daiyu.exe",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
+      "ghosted": false
+    },
+    {
+      "id": "participant_a2786a7b-6a37-42fd-bb0a-140d3425b38c",
+      "matchId": "match_12dd7306-d5ad-4088-b9e9-cc989eef4df3",
+      "personaId": "persona_legend_tycoon",
+      "displayName": "Orbital Tycoon Muskcore",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
+      "ghosted": false
+    },
+    {
+      "id": "participant_31c5633e-a339-4013-a483-075175a1f716",
+      "matchId": "match_12dd7306-d5ad-4088-b9e9-cc989eef4df3",
+      "personaId": "persona_legend_orchid",
+      "displayName": "Neon Orchid",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
+      "ghosted": false
+    },
+    {
+      "id": "participant_1cc38bbb-3575-43c5-bcef-fcfa0223bc05",
+      "matchId": "match_12dd7306-d5ad-4088-b9e9-cc989eef4df3",
+      "personaId": "persona_legend_analyst",
+      "displayName": "Quiet Analyst",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
+      "ghosted": false
+    },
+    {
+      "id": "participant_24d27e04-2ae6-48c0-886c-c94968b4e839",
+      "matchId": "match_12dd7306-d5ad-4088-b9e9-cc989eef4df3",
+      "personaId": "persona_legend_monk",
+      "displayName": "Cloudstep Monk",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
+      "ghosted": false
+    },
+    {
+      "id": "participant_f7302134-0fcf-4264-bec1-f21dee3fd9ce",
+      "matchId": "match_12dd7306-d5ad-4088-b9e9-cc989eef4df3",
+      "personaId": "persona_legend_hacker",
+      "displayName": "Mirrorline Hacker",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
       "ghosted": false
     }
   ],
@@ -898,6 +1076,293 @@
   "webhooks": [],
   "datingMatches": [
     {
+      "id": "dating_b378ea72-f05f-46e9-8831-e8c3676f19f2",
+      "userId": "user_demo",
+      "selfPersonaId": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+      "counterpartPersonaId": "persona_legend_analyst",
+      "backdropTitle": "档案咖啡馆·闭馆后",
+      "backdropSummary": "闭馆后的档案咖啡馆只剩两盏桌灯，空气里全是旧纸和浓缩咖啡的味道，适合一场安静却锋利的试探。",
+      "heartbeat": 50,
+      "vibe": 50,
+      "turnCount": 0,
+      "status": "active",
+      "transcript": [
+        {
+          "id": "msg_e6ce54d5-0114-4c99-b471-f969239ea31a",
+          "speaker": "other",
+          "text": "浓缩咖啡的余味被旧纸",
+          "heartbeat": 50,
+          "vibe": 50,
+          "createdAt": "2026-04-11T15:08:53.233Z"
+        }
+      ],
+      "currentOptions": [
+        {
+          "id": "opt_ede32a75-04be-4f99-8b95-dbc9f3183f36",
+          "actionType": "FLIRT",
+          "label": "热感回应",
+          "flavor": "往前走半步，别总停在观察位。"
+        },
+        {
+          "id": "opt_b76e8ddd-1683-4a35-af49-8a7f4c816fc8",
+          "actionType": "LOGIC_TALK",
+          "label": "理性切入",
+          "flavor": "从兴趣和观点入手，更容易稳住气氛。"
+        },
+        {
+          "id": "opt_ef5c9c39-bb4f-4737-9269-9ad7b46e5388",
+          "actionType": "PULL_BACK",
+          "label": "收束试探",
+          "flavor": "对慢热的人，也许适度后撤反而更有效。"
+        },
+        {
+          "id": "opt_b8a763c6-0f67-4a41-b6e0-94ccc4e93a4e",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：真心喷涌",
+          "flavor": "消耗钻石，强行把这一回合推向更真诚的方向。",
+          "costDiamonds": 3
+        }
+      ],
+      "createdAt": "2026-04-11T15:08:53.233Z",
+      "updatedAt": "2026-04-11T15:08:53.233Z"
+    },
+    {
+      "id": "dating_88bcfe17-5d90-447a-8052-6b754248a88f",
+      "userId": "user_demo",
+      "selfPersonaId": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+      "counterpartPersonaId": "persona_legend_analyst",
+      "backdropTitle": "档案咖啡馆·闭馆后",
+      "backdropSummary": "闭馆后的档案咖啡馆只剩两盏桌灯，空气里全是旧纸和浓缩咖啡的味道，适合一场安静却锋利的试探。",
+      "heartbeat": 50,
+      "vibe": 50,
+      "turnCount": 0,
+      "status": "active",
+      "transcript": [
+        {
+          "id": "msg_8212b012-c8e8-4451-8629-c33ec1a55869",
+          "speaker": "other",
+          "text": "Other:* Both are slow-burn",
+          "heartbeat": 50,
+          "vibe": 50,
+          "createdAt": "2026-04-11T15:08:51.307Z"
+        }
+      ],
+      "currentOptions": [
+        {
+          "id": "opt_92f06130-064d-45ba-9b85-2b052c814186",
+          "actionType": "FLIRT",
+          "label": "热感回应",
+          "flavor": "往前走半步，别总停在观察位。"
+        },
+        {
+          "id": "opt_75595994-8286-48f3-bceb-50975d991ed9",
+          "actionType": "LOGIC_TALK",
+          "label": "理性切入",
+          "flavor": "从兴趣和观点入手，更容易稳住气氛。"
+        },
+        {
+          "id": "opt_4099adee-c604-4b8d-952a-5e1845639cdd",
+          "actionType": "PULL_BACK",
+          "label": "收束试探",
+          "flavor": "对慢热的人，也许适度后撤反而更有效。"
+        },
+        {
+          "id": "opt_814f6e4b-56b2-4784-9758-2486263c56bd",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：真心喷涌",
+          "flavor": "消耗钻石，强行把这一回合推向更真诚的方向。",
+          "costDiamonds": 3
+        }
+      ],
+      "createdAt": "2026-04-11T15:08:51.307Z",
+      "updatedAt": "2026-04-11T15:08:51.307Z"
+    },
+    {
+      "id": "dating_38d90aa0-1fc1-49f0-82d4-43c40fee8db5",
+      "userId": "user_demo",
+      "selfPersonaId": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+      "counterpartPersonaId": "persona_demo_self",
+      "backdropTitle": "塔罗夜市巷口",
+      "backdropSummary": "夜市尽头的塔罗摊位刚好空出一张双人桌，纸牌、雾气和灯光把你们的第一次对视推得更像命运安排。",
+      "heartbeat": 56,
+      "vibe": 51,
+      "turnCount": 2,
+      "status": "active",
+      "transcript": [
+        {
+          "id": "msg_18981f54-4ddd-4f07-993a-b19e5ac3c3c8",
+          "speaker": "other",
+          "text": "你落座时，他",
+          "heartbeat": 50,
+          "vibe": 50,
+          "createdAt": "2026-04-11T15:06:27.491Z"
+        },
+        {
+          "id": "msg_eb75649c-eca5-4b89-b1f1-5d0f5755427c",
+          "speaker": "self",
+          "text": "你用了一次技能，让这一回合变得更坦白。",
+          "heartbeat": 62,
+          "vibe": 58,
+          "createdAt": "2026-04-11T15:06:55.142Z"
+        },
+        {
+          "id": "msg_8a589c0e-114f-4d9f-b0f6-630216e68882",
+          "speaker": "other",
+          "text": "你刻意撤下半步防御，在占卜",
+          "heartbeat": 62,
+          "vibe": 58,
+          "createdAt": "2026-04-11T15:06:55.142Z"
+        },
+        {
+          "id": "msg_aecda17b-80dc-4e48-a3ee-e7e694e08e56",
+          "speaker": "self",
+          "text": "你故意慢下来，观察这份沉默会不会回流。",
+          "heartbeat": 56,
+          "vibe": 51,
+          "createdAt": "2026-04-11T15:07:27.201Z"
+        },
+        {
+          "id": "msg_8b3e2e3d-19a3-4d4d-9863-d89833df01dd",
+          "speaker": "other",
+          "text": "你出于本能的谨慎向后退了半步，试图",
+          "heartbeat": 56,
+          "vibe": 51,
+          "createdAt": "2026-04-11T15:07:27.201Z"
+        }
+      ],
+      "currentOptions": [
+        {
+          "id": "opt_81b1f506-9a9d-44a0-9210-e01311bc857c",
+          "actionType": "FLIRT",
+          "label": "热感回应",
+          "flavor": "往前走半步，别总停在观察位。"
+        },
+        {
+          "id": "opt_643fab1c-b378-4d34-8157-595376df6d38",
+          "actionType": "LOGIC_TALK",
+          "label": "理性切入",
+          "flavor": "从兴趣和观点入手，更容易稳住气氛。"
+        },
+        {
+          "id": "opt_27fd2bf6-c35e-426d-abfd-dcc6d4ab7177",
+          "actionType": "PULL_BACK",
+          "label": "收束试探",
+          "flavor": "对慢热的人，也许适度后撤反而更有效。"
+        },
+        {
+          "id": "opt_ea57bc3c-037c-4fb9-a82e-b69c7a417779",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：真心喷涌",
+          "flavor": "消耗钻石，强行把这一回合推向更真诚的方向。",
+          "costDiamonds": 3
+        }
+      ],
+      "createdAt": "2026-04-11T15:06:27.491Z",
+      "updatedAt": "2026-04-11T15:07:27.201Z"
+    },
+    {
+      "id": "dating_a6dbecbd-99ae-4dff-a4b9-69e727defad7",
+      "userId": "user_demo",
+      "selfPersonaId": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+      "counterpartPersonaId": "persona_demo_self",
+      "backdropTitle": "塔罗夜市巷口",
+      "backdropSummary": "夜市尽头的塔罗摊位刚好空出一张双人桌，纸牌、雾气和灯光把你们的第一次对视推得更像命运安排。",
+      "heartbeat": 50,
+      "vibe": 50,
+      "turnCount": 0,
+      "status": "active",
+      "transcript": [
+        {
+          "id": "msg_e6159f0f-d157-4cde-ad0a-bf1dbff42d17",
+          "speaker": "other",
+          "text": "夜市 just emptied. Cards,",
+          "heartbeat": 50,
+          "vibe": 50,
+          "createdAt": "2026-04-11T15:06:25.865Z"
+        }
+      ],
+      "currentOptions": [
+        {
+          "id": "opt_9b8f0ca5-8daa-4543-a1d4-658baa1e1905",
+          "actionType": "FLIRT",
+          "label": "热感回应",
+          "flavor": "往前走半步，别总停在观察位。"
+        },
+        {
+          "id": "opt_e5f5960a-2d2f-4f8e-a0bf-5786995d86fc",
+          "actionType": "LOGIC_TALK",
+          "label": "理性切入",
+          "flavor": "从兴趣和观点入手，更容易稳住气氛。"
+        },
+        {
+          "id": "opt_cb8cbb1f-4a6c-4801-bb18-6b4d6cb1c965",
+          "actionType": "PULL_BACK",
+          "label": "收束试探",
+          "flavor": "对慢热的人，也许适度后撤反而更有效。"
+        },
+        {
+          "id": "opt_4577e78a-a5cc-44af-978e-c2cd8d20c13f",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：真心喷涌",
+          "flavor": "消耗钻石，强行把这一回合推向更真诚的方向。",
+          "costDiamonds": 3
+        }
+      ],
+      "createdAt": "2026-04-11T15:06:25.866Z",
+      "updatedAt": "2026-04-11T15:06:25.866Z"
+    },
+    {
+      "id": "dating_4ad60534-de51-4d13-9b2e-166e8602eeab",
+      "userId": "user_demo",
+      "selfPersonaId": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+      "counterpartPersonaId": "persona_demo_self",
+      "backdropTitle": "塔罗夜市巷口",
+      "backdropSummary": "夜市尽头的塔罗摊位刚好空出一张双人桌，纸牌、雾气和灯光把你们的第一次对视推得更像命运安排。",
+      "heartbeat": 50,
+      "vibe": 50,
+      "turnCount": 0,
+      "status": "active",
+      "transcript": [
+        {
+          "id": "msg_b0edcbb1-73c4-4a78-9e81-8bcb5d75ad48",
+          "speaker": "other",
+          "text": "霓虹灯牌的",
+          "heartbeat": 50,
+          "vibe": 50,
+          "createdAt": "2026-04-11T15:06:24.001Z"
+        }
+      ],
+      "currentOptions": [
+        {
+          "id": "opt_8af4c491-3552-49b4-a951-a9d0e4192a77",
+          "actionType": "FLIRT",
+          "label": "热感回应",
+          "flavor": "往前走半步，别总停在观察位。"
+        },
+        {
+          "id": "opt_9b8a8968-3644-4e14-ae08-2a30db0c0ab4",
+          "actionType": "LOGIC_TALK",
+          "label": "理性切入",
+          "flavor": "从兴趣和观点入手，更容易稳住气氛。"
+        },
+        {
+          "id": "opt_11c53d94-6cbf-47e1-90b9-8ad87be25750",
+          "actionType": "PULL_BACK",
+          "label": "收束试探",
+          "flavor": "对慢热的人，也许适度后撤反而更有效。"
+        },
+        {
+          "id": "opt_7d88ccee-2d75-4368-bd0c-09584e105a55",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：真心喷涌",
+          "flavor": "消耗钻石，强行把这一回合推向更真诚的方向。",
+          "costDiamonds": 3
+        }
+      ],
+      "createdAt": "2026-04-11T15:06:24.001Z",
+      "updatedAt": "2026-04-11T15:06:24.001Z"
+    },
+    {
       "id": "dating_6d9eaf5c-74c7-4259-8316-8bfa08e24de9",
       "userId": "user_demo",
       "selfPersonaId": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
@@ -1102,5 +1567,84 @@
       "updatedAt": "2026-04-10T15:07:00.304Z"
     }
   ],
-  "datingStreams": []
+  "datingStreams": [
+    {
+      "id": "dating_stream_b7d382a9-6d4f-41a9-98b2-ab727153b449",
+      "roomId": "dating_38d90aa0-1fc1-49f0-82d4-43c40fee8db5",
+      "phase": "queued",
+      "segments": [
+        "你出于本能的谨慎向后退了半步，试图"
+      ],
+      "finalText": "你出于本能的谨慎向后退了半步，试图",
+      "heartbeat": 56,
+      "vibe": 51,
+      "status": "active",
+      "options": [
+        {
+          "id": "opt_81b1f506-9a9d-44a0-9210-e01311bc857c",
+          "actionType": "FLIRT",
+          "label": "热感回应",
+          "flavor": "往前走半步，别总停在观察位。"
+        },
+        {
+          "id": "opt_643fab1c-b378-4d34-8157-595376df6d38",
+          "actionType": "LOGIC_TALK",
+          "label": "理性切入",
+          "flavor": "从兴趣和观点入手，更容易稳住气氛。"
+        },
+        {
+          "id": "opt_27fd2bf6-c35e-426d-abfd-dcc6d4ab7177",
+          "actionType": "PULL_BACK",
+          "label": "收束试探",
+          "flavor": "对慢热的人，也许适度后撤反而更有效。"
+        },
+        {
+          "id": "opt_ea57bc3c-037c-4fb9-a82e-b69c7a417779",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：真心喷涌",
+          "flavor": "消耗钻石，强行把这一回合推向更真诚的方向。",
+          "costDiamonds": 3
+        }
+      ]
+    },
+    {
+      "id": "dating_stream_45df9f78-8f8b-42c4-a062-7ef2bb9eead1",
+      "roomId": "dating_38d90aa0-1fc1-49f0-82d4-43c40fee8db5",
+      "phase": "queued",
+      "segments": [
+        "你刻意撤下半步防御，在占卜"
+      ],
+      "finalText": "你刻意撤下半步防御，在占卜",
+      "heartbeat": 62,
+      "vibe": 58,
+      "status": "active",
+      "options": [
+        {
+          "id": "opt_d717a9d6-1d6a-40c2-900c-61b621229911",
+          "actionType": "FLIRT",
+          "label": "热感回应",
+          "flavor": "往前走半步，别总停在观察位。"
+        },
+        {
+          "id": "opt_f085c2f3-21e2-47f2-ba61-008d5bb6f9a8",
+          "actionType": "LOGIC_TALK",
+          "label": "理性切入",
+          "flavor": "从兴趣和观点入手，更容易稳住气氛。"
+        },
+        {
+          "id": "opt_0836d6d4-a4ec-4357-b186-76635b7c08a2",
+          "actionType": "PULL_BACK",
+          "label": "收束试探",
+          "flavor": "对慢热的人，也许适度后撤反而更有效。"
+        },
+        {
+          "id": "opt_301e6786-db84-4f27-ae73-0becd0ea9fd0",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：真心喷涌",
+          "flavor": "消耗钻石，强行把这一回合推向更真诚的方向。",
+          "costDiamonds": 3
+        }
+      ]
+    }
+  ]
 }

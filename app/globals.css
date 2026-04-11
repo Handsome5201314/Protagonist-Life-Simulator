@@ -1,20 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #f7f2e8;
-  --paper-deep: #eadfcd;
-  --ink: #161312;
-  --ink-soft: #4a3d37;
-  --cinnabar: #ab2f2f;
+  /* ── Deep Space Design Tokens ── */
+  --void: #0f0c29;
+  --void-mid: #302b63;
+  --void-deep: #24243e;
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-hover: rgba(255, 255, 255, 0.08);
+  --glass-active: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-border-hover: rgba(255, 255, 255, 0.18);
+  --neon-pink: #ec4899;
+  --neon-purple: #a855f7;
+  --neon-cyan: #22d3ee;
+  --neon-amber: #facc15;
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.68);
+  --text-muted: rgba(255, 255, 255, 0.42);
+  --headline: "Space Grotesk", "Manrope", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --body: "Space Grotesk", "Manrope", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --radius-xl: 24px;
+  --radius-2xl: 30px;
+  --radius-3xl: 34px;
+  --shadow-deep: 0 30px 80px rgba(0, 0, 0, 0.35);
+  /* ── Legacy compat ── */
+  --paper: #0f0c29;
+  --paper-deep: #302b63;
+  --ink: #f8fafc;
+  --ink-soft: rgba(255, 255, 255, 0.68);
+  --cinnabar: #ec4899;
   --emerald: #0f6c5c;
   --jade: #2c8d73;
-  --gold: #c39a4f;
-  --fog: rgba(255, 248, 237, 0.78);
-  --card: rgba(255, 251, 245, 0.8);
-  --border: rgba(47, 34, 27, 0.12);
-  --shadow: 0 30px 80px rgba(46, 32, 22, 0.12);
-  --headline: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
-  --body: "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  --gold: #facc15;
+  --fog: rgba(15, 12, 41, 0.78);
+  --card: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.10);
+  --shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
 }
 
 * {
@@ -29,8 +50,8 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: var(--body);
-  color: #f8fafc;
-  background: linear-gradient(135deg, #0f0c29 0%, #302b63 48%, #24243e 100%);
+  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--void) 0%, var(--void-mid) 48%, var(--void-deep) 100%);
 }
 
 a {

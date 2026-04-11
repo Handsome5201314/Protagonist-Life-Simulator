@@ -1,0 +1,16 @@
+
+> zhujue-life-arena@0.1.0 dev
+> next dev --webpack
+
+▲ Next.js 16.2.3 (webpack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.64.1:3001
+- Environments: .env
+✓ Ready in 297ms
+  next-swc build: wasm build @next/swc-wasm-nodejs
+  Skipping creating a lockfile at C:\Users\lishuaishuai\Desktop\Protagonist-Life-Simulator\.next\dev\lock because we're using WASM bindings
+
+ POST /api/matches/match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0/prep 400 in 2.1s (next.js: 2.1s, application-code: 17ms)
+ POST /api/matches/match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0/prep 400 in 17ms (next.js: 12ms, application-code: 4ms)
+ POST /api/matches 201 in 193ms (next.js: 182ms, application-code: 11ms)
+ POST /api/matches/match_12dd7306-d5ad-4088-b9e9-cc989eef4df3/prep 200 in 21ms (next.js: 14ms, application-code: 7ms)

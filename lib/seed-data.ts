@@ -1,5 +1,5 @@
-import type { AppDatabase, PersonaOverlay, PersonaSnapshot, TraitVector, UserRecord, WorldPack } from "@/lib/types";
-import { addDays, createId, createLockedHash, nowIso } from "@/lib/utils";
+﻿import type { AppDatabase, PersonaOverlay, PersonaSnapshot, TraitVector, UserRecord, WorldPack } from "@/lib/types";
+import { addDays, createLockedHash, nowIso } from "@/lib/utils";
 
 function vector(values: Partial<TraitVector>): TraitVector {
   return {
@@ -37,7 +37,7 @@ const demoUser: UserRecord = {
   updatedAt: nowIso(),
 };
 
-const personaA: PersonaSnapshot = {
+export const seedSelfPersona: PersonaSnapshot = {
   id: "persona_demo_self",
   userId: demoUser.id,
   source: "upload",
@@ -55,8 +55,8 @@ const personaA: PersonaSnapshot = {
     chaos: 28,
     courage: 64,
   }),
-  publicTraitTags: ["慎密", "压场感", "故事脑", "先观察后出手"],
-  fears: ["被彻底误解", "喧嚣失控"],
+  publicTraitTags: ["慎密", "压场感", "故事脑", "先观察再出手"],
+  fears: ["被彻底误解", "喧闹失控"],
   interests: ["长篇小说", "赛博民俗", "塔罗意象"],
   communicationStyle: "slow-burn tactician",
   careerTilt: "strategy & storytelling",
@@ -66,11 +66,10 @@ const personaA: PersonaSnapshot = {
   expiresAt: addDays(30),
 };
 
-const overlayA: PersonaOverlay = {
+export const seedSelfOverlay: PersonaOverlay = {
   id: "overlay_demo_self",
-  personaId: personaA.id,
-  resumeSummary:
-    "内容策略与产品叙事双栖，擅长把复杂能力包装成强体验；在压力场景里更容易从沉默中积蓄反击。",
+  personaId: seedSelfPersona.id,
+  resumeSummary: "内容策略与产品叙事双栈，擅长把复杂能力包装成强体验；在高压场景里更容易从沉默中积蓄反击。",
   publicBio: "一个把世界观拆成齿轮、再把人性装回命运钟表里的主角。",
   datingPreferences: ["真诚", "边界感", "能一起做项目", "不爱表演型社交"],
   visualSkin: "fortune-ink",
@@ -89,15 +88,7 @@ export const seedLegends: PersonaSnapshot[] = [
     relation: "OTHER",
     ageBand: "adult",
     adultOnlyEligible: true,
-    traitVector: vector({
-      charm: 82,
-      resilience: 48,
-      focus: 60,
-      empathy: 88,
-      strategy: 58,
-      chaos: 41,
-      courage: 44,
-    }),
+    traitVector: vector({ charm: 82, resilience: 48, focus: 60, empathy: 88, strategy: 58, chaos: 41, courage: 44 }),
     publicTraitTags: ["脆感美学", "高敏锐", "台词杀伤", "情绪穿透"],
     fears: ["粗暴现实", "被消费式欣赏"],
     interests: ["诗歌", "黑雨都市", "纸灯庭院"],
@@ -116,18 +107,10 @@ export const seedLegends: PersonaSnapshot[] = [
     relation: "OTHER",
     ageBand: "adult",
     adultOnlyEligible: true,
-    traitVector: vector({
-      charm: 72,
-      resilience: 79,
-      focus: 63,
-      empathy: 26,
-      strategy: 85,
-      chaos: 57,
-      courage: 92,
-    }),
+    traitVector: vector({ charm: 72, resilience: 79, focus: 63, empathy: 26, strategy: 85, chaos: 57, courage: 92 }),
     publicTraitTags: ["高压推进", "赌徒勇气", "争议引力", "场面控制"],
     fears: ["停滞", "平庸会议"],
-    interests: ["火箭", "野心叙事", "极限赌注"],
+    interests: ["火箭", "野心叙事", "极限豪赌"],
     communicationStyle: "volatile visionary",
     careerTilt: "frontier builder",
     riskFlags: [],
@@ -143,15 +126,7 @@ export const seedLegends: PersonaSnapshot[] = [
     relation: "OTHER",
     ageBand: "adult",
     adultOnlyEligible: true,
-    traitVector: vector({
-      charm: 88,
-      resilience: 58,
-      focus: 49,
-      empathy: 73,
-      strategy: 46,
-      chaos: 64,
-      courage: 61,
-    }),
+    traitVector: vector({ charm: 88, resilience: 58, focus: 49, empathy: 73, strategy: 46, chaos: 64, courage: 61 }),
     publicTraitTags: ["调情高手", "浪漫主导", "高能量", "戏剧感"],
     fears: ["无趣社交", "过于僵硬的谈话"],
     interests: ["派对摄影", "霓虹舞台", "夜色城市"],
@@ -170,15 +145,7 @@ export const seedLegends: PersonaSnapshot[] = [
     relation: "OTHER",
     ageBand: "adult",
     adultOnlyEligible: true,
-    traitVector: vector({
-      charm: 41,
-      resilience: 68,
-      focus: 84,
-      empathy: 52,
-      strategy: 88,
-      chaos: 18,
-      courage: 39,
-    }),
+    traitVector: vector({ charm: 41, resilience: 68, focus: 84, empathy: 52, strategy: 88, chaos: 18, courage: 39 }),
     publicTraitTags: ["慢热", "逻辑派", "回避试探", "稳定输出"],
     fears: ["被强行热场", "过快推进"],
     interests: ["推理小说", "数据可视化", "深夜电台"],
@@ -197,16 +164,8 @@ export const seedLegends: PersonaSnapshot[] = [
     relation: "OTHER",
     ageBand: "adult",
     adultOnlyEligible: true,
-    traitVector: vector({
-      charm: 57,
-      resilience: 86,
-      focus: 76,
-      empathy: 70,
-      strategy: 54,
-      chaos: 12,
-      courage: 66,
-    }),
-    publicTraitTags: ["平静", "治愈感", "低刺激", "安全依恋"],
+    traitVector: vector({ charm: 57, resilience: 86, focus: 76, empathy: 70, strategy: 54, chaos: 12, courage: 66 }),
+    publicTraitTags: ["平静", "疗愈感", "低刺激", "安全依恋"],
     fears: ["情绪绑架", "无边界试探"],
     interests: ["茶道", "山路徒步", "极简生活"],
     communicationStyle: "grounded calm",
@@ -224,15 +183,7 @@ export const seedLegends: PersonaSnapshot[] = [
     relation: "OTHER",
     ageBand: "adult",
     adultOnlyEligible: true,
-    traitVector: vector({
-      charm: 63,
-      resilience: 51,
-      focus: 79,
-      empathy: 44,
-      strategy: 83,
-      chaos: 49,
-      courage: 72,
-    }),
+    traitVector: vector({ charm: 63, resilience: 51, focus: 79, empathy: 44, strategy: 83, chaos: 49, courage: 72 }),
     publicTraitTags: ["嘴硬", "高智商", "边界感强", "危险吸引力"],
     fears: ["失控暴露", "被读透"],
     interests: ["破解游戏", "电子音乐", "匿名论坛"],
@@ -251,15 +202,7 @@ export const seedLegends: PersonaSnapshot[] = [
     relation: "OTHER",
     ageBand: "adult",
     adultOnlyEligible: true,
-    traitVector: vector({
-      charm: 74,
-      resilience: 62,
-      focus: 55,
-      empathy: 81,
-      strategy: 43,
-      chaos: 37,
-      courage: 58,
-    }),
+    traitVector: vector({ charm: 74, resilience: 62, focus: 55, empathy: 81, strategy: 43, chaos: 37, courage: 58 }),
     publicTraitTags: ["亲和力强", "高共情", "日常感", "容易让人放松"],
     fears: ["冷暴力", "过度炫技"],
     interests: ["咖啡", "独立电影", "城市散步"],
@@ -280,11 +223,10 @@ export const seedWorlds: WorldPack[] = [
     factions: ["翡翠庄家", "赤墨执笔人", "失落皇票猎手"],
     conflicts: ["谁能改写命运本金", "旧王朝债券即将到期"],
     tone: "opulent-pressure",
-    tabooRules: ["不可明说真正愿望", "不可在月蚀钟响后撒谎"],
+    tabooRules: ["不可明说真正愿望", "不可在月蚀钟响后撤牌"],
     derivedFrom: "curated",
     safetyStatus: "clean",
-    sanitizedSummary:
-      "一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。",
+    sanitizedSummary: "一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。",
     sourceDigest: "curated",
     expiresAt: addDays(365),
   },
@@ -299,8 +241,7 @@ export const seedWorlds: WorldPack[] = [
     tabooRules: ["第一眼不可暴露全部底牌"],
     derivedFrom: "curated",
     safetyStatus: "clean",
-    sanitizedSummary:
-      "每一场相亲都像一场外交仪式，微笑是最便宜的盾牌，沉默才是最高级的武器。",
+    sanitizedSummary: "每一场相亲都像一场外交仪式，微笑是最便宜的盾牌，沉默才是最高级的武器。",
     sourceDigest: "curated",
     expiresAt: addDays(365),
   },
@@ -309,8 +250,8 @@ export const seedWorlds: WorldPack[] = [
 export function createSeedDatabase(): AppDatabase {
   return {
     users: [demoUser],
-    personas: [personaA, ...seedLegends],
-    overlays: [overlayA],
+    personas: [seedSelfPersona, ...seedLegends],
+    overlays: [seedSelfOverlay],
     memoryTraits: [],
     worldPacks: seedWorlds,
     matches: [],

@@ -1,16 +1,51 @@
-# 主角人生模拟器（Hero Life Arena）
+# 🔮 图灵命运大厅 (Turing Destiny Arena)
 
-> 深空赛博玻璃拟物风格的主角人生竞技场与相亲局 —— 文字优先的 MVP。
+> 深空赛博玻璃拟物风格的主角人生竞技场与相亲局 —— 文字优先的叙事引擎。
+
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB)](https://react.dev/)
+[![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC)](https://tailwindcss.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6)](https://www.typescriptlang.org/)
+
+---
 
 ## 项目简介
 
-主角人生模拟器是一个基于 Next.js 16 构建的 Web 应用，核心玩法包括：
+图灵命运大厅是一个基于 Next.js 16 + React 19 构建的叙事驱动型 Web 应用，核心玩法包括：
 
-- **主角铸造** —— 锁定不可变的人格快照（PersonaSnapshot），外层画像可编辑
-- **命运竞技场** —— 异步 4 人竞技，规则引擎决定胜负，AI 只润色叙事
-- **塔罗相亲排练** —— 从简历提炼相亲档案，生成对话排练脚本
-- **世界包锻造** —— 上传世界观素材，护栏清洗 + AI 重写摘要/阵营/禁忌
-- **AgentPit + A2A 集成** —— Agent 对战与 Webhook 接入面
+- **🎭 主角铸造** —— 锁定不可变的人格快照（PersonaSnapshot），外层画像可编辑
+- **⚔️ 命运竞技场** —— 异步 4 人竞技，规则引擎决定胜负，AI 只润色叙事
+- **💕 塔罗相亲排练** —— 从简历提炼相亲档案，生成对话排练脚本
+- **🌍 世界包锻造** —— 上传世界观素材，护栏清洗 + AI 重写摘要/阵营/禁忌
+- **🤖 AgentPit + A2A 集成** —— Agent 对战与 Webhook 接入面
+
+---
+
+## ✨ Phase 1: 视觉与外壳重构 (已完成)
+
+### 深空 Glassmorphism 设计系统
+
+- **深空背景**: `#0f0c29` → `#302b63` → `#24243e` 渐变
+- **玻璃拟态**: `backdrop-blur-xl` + `bg-white/5` + `border-white/10`
+- **霓虹强调**: 粉紫渐变 `#ec4899` → `#a855f7` / 青色 `#22d3ee`
+- **字体**: Space Grotesk / Manrope / PingFang SC
+
+### 新增组件
+
+| 组件 | 说明 |
+|------|------|
+| `PersonaQuickDrawer` | 右侧滑出抽屉，只读展示分身 DNA 五维属性、特征标签、记忆碎片 |
+
+### 重构页面
+
+| 页面 | 变更 |
+|------|------|
+| `/` (FateLobbyHome) | 深色大厅卡片瀑布流，点击角色头像打开 DNA 抽屉 |
+| `/arena/prep/[id]` | 准备室玻璃拟态增强，座位可点击查看分身详情 |
+| `/arena/[matchId]` | 主战场心动值/压力条发光效果，点击参与者打开抽屉 |
+| 全局导航 | FateSiteHeader 深色玻璃主题，星云背景增强 |
+
+---
 
 ## 技术栈
 
@@ -23,52 +58,61 @@
 | 数据 | 本地 JSON 存储（`data/app-db.json`） |
 | 校验 | Zod 4 |
 
+---
+
 ## 页面路由
 
 | 路由 | 说明 |
 |------|------|
-| `/` | 首页大厅 — 赛季快照、用户中心、竞技房间列表 |
+| `/` | **命运大厅** — 赛季快照、用户中心、竞技房间卡片瀑布流 |
 | `/guide` | 用户操作地图 — 架构说明、操作流程、边界说明 |
-| `/personas` | 主角库 — 铸造/导入主角、编辑外层画像 |
-| `/arena` | 竞技控制台 — 创建/加入对局、支持角色、装配技能 |
-| `/arena/[matchId]` | 房间详情 — SSE 打字机式章节流、回合推进 |
-| `/dating` | 相亲排练 — 模式选择、档案分析、对话脚本 |
+| `/personas` | **我的分身** — 铸造/导入主角、编辑外层画像、AIliangbiao 同步 |
+| `/dating` | **相亲市场** — 1v1 邂逅、心动爆灯、对话排练 |
+| `/dating/room/[roomId]` | 相亲房间 — SSE 打字机式对话流、心跳/默契度实时更新 |
+| `/arena` | 战局放映厅 — 竞技房间列表、房间预览 |
+| `/arena/prep/[id]` | **准备室** — 入座分身编队、极速/沉浸模式选择 |
+| `/arena/[matchId]` | **主战场** — SSE 章节流、回合推进、技能装配、围观支持 |
 | `/worlds` | 世界锻造 — 上传素材、提炼世界包、安全清洗 |
-| `/admin` | 后台诊断 — 模型连通性测试 |
-| `/login` | 登录面板 |
+| `/login` | 用户中心 — AgentPit 授权、钱包、赛季数据 |
 | `/auth` | 认证回调 |
+
+---
 
 ## 项目结构
 
 ```
 ├── app/                    # Next.js App Router 页面与 API
-│   ├── api/                #   API 路由（13 个模块）
-│   ├── arena/              #   竞技场页面
-│   ├── dating/             #   相亲排练页面
+│   ├── api/                #   API 路由（14+ 个模块）
+│   ├── arena/              #   竞技场页面（准备室、主战场）
+│   ├── dating/             #   相亲市场页面
 │   ├── guide/              #   用户地图页面
-│   ├── personas/           #   主角库页面
+│   ├── personas/           #   我的分身页面
 │   ├── worlds/             #   世界锻造页面
-│   └── ...
+│   ├── globals.css         #   深空设计令牌
+│   ├── layout.tsx          #   根布局（星云背景）
+│   └── page.tsx            #   命运大厅首页
 ├── components/             # React 组件
-│   ├── ArenaControlHub.tsx
-│   ├── ArenaRoomView.tsx
-│   ├── DatingMarketHub.tsx
-│   ├── DatingRoomView.tsx
-│   ├── PersonaStudioClient.tsx
-│   ├── WorldForgeHub.tsx
-│   ├── FateSiteHeader.tsx
+│   ├── FateLobbyHome.tsx   #   命运大厅卡片瀑布流
+│   ├── FateSiteHeader.tsx  #   深空玻璃导航栏
+│   ├── PersonaQuickDrawer.tsx  # ⭐ 分身 DNA 抽屉（新增）
+│   ├── PersonaVaultPage.tsx    #   分身库管理
+│   ├── ArenaPrepRoom.tsx   #   准备室
+│   ├── ArenaRoomView.tsx   #   主战场
+│   ├── DatingMarketHub.tsx #   相亲市场
+│   ├── DatingRoomView.tsx  #   相亲房间
+│   ├── arena-room-data.ts  #   战局数据构建
 │   └── ...
 ├── lib/                    # 核心业务逻辑
 │   ├── app-service.ts      #   编排层：主角、世界、对局、支持、排练、隐私
+│   ├── fate-arena.ts       #   竞技大厅房间构建、座位编排
 │   ├── view-models.ts      #   聚合页面数据
 │   ├── db.ts               #   读写 data/app-db.json
 │   ├── game-engine.ts      #   分数、淘汰、胜者、奖励结算
-│   ├── guardrails.ts       #   世界包风险指令清洗
-│   ├── dating.ts           #   规则型相亲排练回退
+│   ├── dating.ts           #   相亲排练回退逻辑
 │   ├── dating-market.ts    #   相亲市场逻辑
 │   ├── llm-features.ts     #   Gemini 重写世界/排练/章节
 │   ├── one-api-gemini.ts   #   One-API / Gemini 代理封装
-│   ├── fate-arena.ts       #   竞技大厅房间构建
+│   ├── guardrails.ts       #   世界包风险指令清洗
 │   ├── agentpit.ts         #   AgentPit 集成
 │   ├── ai-liangbiao.ts     #   AI 量表数据绑定
 │   ├── catalog.ts          #   目录/枚举
@@ -81,6 +125,8 @@
 └── package.json
 ```
 
+---
+
 ## 快速开始
 
 ```bash
@@ -92,6 +138,8 @@ npm run dev
 ```
 
 然后访问 `http://localhost:3000`。
+
+---
 
 ## 环境变量
 
@@ -113,6 +161,8 @@ cp .env.example .env.local
 | `ONE_API_GEMINI_MODEL` | 文本生成模型名 | 是 |
 | `ONE_API_GEMINI_VISION_MODEL` | 视觉分析模型名 | 是 |
 
+---
+
 ## One-API / Gemini 代理
 
 `lib/one-api-gemini.ts` 封装了 OpenAI 兼容网关，支持：
@@ -130,7 +180,7 @@ import { createOneApiGeminiProxy } from "@/lib/one-api-gemini";
 const proxy = createOneApiGeminiProxy();
 
 // 文本生成
-const text = await proxy.generateText("用三句话介绍主角人生模拟器");
+const text = await proxy.generateText("用三句话介绍图灵命运大厅");
 
 // 多轮对话
 const reply = await proxy.chat(
@@ -145,13 +195,15 @@ const reply = await proxy.chat(
 # 文本生成
 curl -X POST http://localhost:3000/api/llm/test \
   -H "Content-Type: application/json" \
-  -d '{"mode":"generate","prompt":"用三句话介绍主角人生模拟器"}'
+  -d '{"mode":"generate","prompt":"用三句话介绍图灵命运大厅"}'
 
 # 多轮对话
 curl -X POST http://localhost:3000/api/llm/test \
   -H "Content-Type: application/json" \
   -d '{"mode":"chat","systemPrompt":"你是恋爱排练顾问","messages":[{"role":"user","content":"给我写一句自然的相亲开场白"}]}'
 ```
+
+---
 
 ## API 端点
 
@@ -161,6 +213,7 @@ curl -X POST http://localhost:3000/api/llm/test \
 |------|------|------|
 | POST | `/api/bind/ailiangbiao/complete` | AI 量表绑定完成回调 |
 | POST | `/api/personas/import` | 导入/铸造主角快照 |
+| POST | `/api/personas/:personaId/overlay` | 保存分身外层画像 |
 
 ### 竞技场
 
@@ -169,14 +222,17 @@ curl -X POST http://localhost:3000/api/llm/test \
 | POST | `/api/matches` | 创建对局 |
 | POST | `/api/matches/:matchId/support` | 支持角色（消耗 Renown） |
 | POST | `/api/matches/:matchId/rounds/:round/trigger` | 触发回合推进 |
-| GET | `/api/streams/:streamId` | 获取章节流 |
+| POST | `/api/matches/:matchId/prep` | 保存准备室编排 |
+| GET | `/api/streams/:streamId` | 获取章节 SSE 流 |
 
 ### 相亲排练
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
 | POST | `/api/dating/dossiers` | 提炼相亲档案 |
-| POST | `/api/dating/rehearsals` | 执行排练 |
+| POST | `/api/dating/matches` | 创建相亲对局 |
+| POST | `/api/dating/matches/:roomId/interact` | 执行互动动作 |
+| GET | `/api/dating/streams/:streamId` | 获取对话 SSE 流 |
 
 ### 世界包
 
@@ -203,25 +259,30 @@ curl -X POST http://localhost:3000/api/llm/test \
 | POST | `/api/privacy/delete-me` | 隐私删除请求 |
 | POST | `/api/llm/test` | LLM 代理测试 |
 
+---
+
 ## 核心设计
 
 ### 规则引擎 vs AI
 
 | 职责 | 执行者 | 说明 |
 |------|--------|------|
-| 资格判断、分数、淘汰、奖励结算、记忆碎片生成 | 规则引擎 | 公平性关键，不依赖 AI |
-| 世界包摘要重写、相亲排练文案、章节润色 | Gemini | 仅叙事增强，在结果固定后执行 |
+| 资格判断、分数、淘汰、奖励结算、记忆碎片生成 | **规则引擎** | 公平性关键，不依赖 AI |
+| 世界包摘要重写、相亲排练文案、章节润色 | **Gemini** | 仅叙事增强，在结果固定后执行 |
 
 ### 经济系统
 
 - **Renown（声望）** — 唯一可公开支持角色的货币
-- **Diamonds（钻石）** — 在钱包模型中可见，但不参与公开支持
+- **Diamonds（钻石）** — 在钱包模型中可见，用于技能发动
+- **Season Points（赛季点）** — 赛季排名依据
 
 ### 数据与隐私
 
 - 上传的简历和世界素材缓存在 `data/app-db.json`，TTL 自动清理
 - 主角删除会幽灵化公开记录，并从本地演示数据中移除 PII
 - 主角快照（PersonaSnapshot）创建后锁定不可变，外层画像（PersonaOverlay）可编辑
+
+---
 
 ## 脚本命令
 
@@ -231,3 +292,20 @@ npm run build      # 生产构建
 npm run start      # 启动生产服务器
 npm run typecheck  # 类型检查
 ```
+
+---
+
+## 架构演进路线图
+
+| 阶段 | 状态 | 内容 |
+|------|------|------|
+| **Phase 1** | ✅ 已完成 | 视觉与外壳重构 — 深空 glassmorphism、PersonaQuickDrawer |
+| Phase 2 | 📝 计划中 | 引擎 & BFF 桥接 — Python FastAPI 游戏引擎、SSE 流桥接 |
+| Phase 3 | 📝 计划中 | 核心循环集成 — 多 Agent 编排、裁判/叙事者分离 |
+| Phase 4 | 📝 规划中 | 经济 & 多人 — 赛季系统、多人实时观战 |
+
+---
+
+## 许可证
+
+MIT License

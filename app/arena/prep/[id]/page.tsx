@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 
 import { ArenaPrepRoom } from "@/components/ArenaPrepRoom";
-import { findFateRoomById } from "@/lib/fate-arena";
+import { buildFatePrepView } from "@/lib/fate-arena";
 import { getArenaView } from "@/lib/view-models";
+import { getDb } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -13,16 +14,23 @@ export default async function ArenaPrepPage({
 }) {
   const { id } = await params;
   const data = await getArenaView();
-  const room = findFateRoomById(id, {
+  const db = await getDb();
+  const prepView = buildFatePrepView(id, {
     worldPacks: data.worldPacks,
     matches: data.matches,
     participants: data.participants,
     personas: data.personas,
   });
 
-  if (!room) {
+  if (!prepView) {
     notFound();
   }
 
-  return <ArenaPrepRoom room={room} />;
+  return (
+    <ArenaPrepRoom
+      prepView={prepView}
+      personas={db.personas.filter((p) => !p.deletedAt)}
+      overlays={db.overlays}
+    />
+  );
 }

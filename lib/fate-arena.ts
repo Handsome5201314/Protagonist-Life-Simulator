@@ -1,4 +1,4 @@
-import type { ArenaMatch, MatchParticipant, PersonaSnapshot, WorldPack } from "@/lib/types";
+﻿import type { ArenaMatch, MatchParticipant, PersonaSnapshot, WorldPack } from "@/lib/types";
 
 export type FateCategory = "romance" | "survival" | "business" | "mystery";
 export type FateRoomStatus = "recruiting" | "running" | "replay";
@@ -11,6 +11,7 @@ export type FateSeat = {
   tags: string[];
   hue: "pink" | "violet" | "cyan" | "amber";
   isUserOwned: boolean;
+  personaId: string;
 };
 
 export type FateRoomCard = {
@@ -27,11 +28,30 @@ export type FateRoomCard = {
   status: FateRoomStatus;
   statusLabel: string;
   ctaLabel: string;
+  ctaHref: string;
   prepHref: string;
   roomHref: string;
   roster: FateSeat[];
   signalLine: string;
   worldPackId?: string;
+  isPreviewRoom: boolean;
+};
+
+export type FatePrepView = {
+  id: string;
+  title: string;
+  description: string;
+  signalLine: string;
+  typeTags: string[];
+  statusLabel: string;
+  maxPlayers: number;
+  selectedMode: FateModeId;
+  activeSeats: FateSeat[];
+  reserveSeats: FateSeat[];
+  roomHref: string;
+  prepHref: string;
+  canPersist: boolean;
+  helperText?: string;
 };
 
 type BuildLobbyInput = {
@@ -41,7 +61,7 @@ type BuildLobbyInput = {
   personas: PersonaSnapshot[];
 };
 
-type RoomBlueprint = Omit<FateRoomCard, "prepHref" | "roomHref" | "roster"> & {
+type RoomBlueprint = Omit<FateRoomCard, "ctaHref" | "prepHref" | "roomHref" | "roster" | "isPreviewRoom"> & {
   rosterOffset: number;
 };
 
@@ -57,38 +77,21 @@ const traitLabels = {
 
 const fallbackBlueprints: RoomBlueprint[] = [
   {
-    id: "world_curated_tarot",
-    title: "塔罗使团·婚约外交",
-    category: "romance",
-    typeTags: ["相亲", "秘仪"],
-    hook: "每一次眨眼都是一张暗牌，每一句客套都在争夺婚约主导权。",
-    description: "使团宴会厅已经升温，三位数字分身就位，剩下一席等你注入。",
-    players: 3,
-    maxPlayers: 4,
-    spectators: 2684,
-    prizePool: 82000,
-    status: "recruiting",
-    statusLabel: "招募中",
-    ctaLabel: "注入分身",
-    signalLine: "礼仪越完美，越说明有人已经准备翻桌。",
-    rosterOffset: 1,
-  },
-  {
     id: "wasteland-signal",
-    title: "废土信号塔·第七次相亲",
+    title: "废土信号塔·第七次求生广播",
     category: "survival",
-    typeTags: ["废土", "相亲"],
-    hook: "氧气只够四个人活到黎明，爱意和物资只能保住一样。",
-    description: "塔顶广播正在招募最后的共生对象，谁先坦白底牌，谁就先暴露弱点。",
+    typeTags: ["废土", "生存"],
+    hook: "氧气只够四个人活到黎明，任何信任都带着倒计时。",
+    description: "塔顶广播正在招募最后的共生对象，谁先暴露底牌，谁就会被风沙记住。",
     players: 2,
     maxPlayers: 4,
     spectators: 1432,
     prizePool: 38600,
     status: "recruiting",
-    statusLabel: "招募中",
-    ctaLabel: "注入分身",
-    signalLine: "夜风会先吹灭火堆，还是先吹散同盟。",
-    rosterOffset: 3,
+    statusLabel: "房间预览",
+    ctaLabel: "查看准备室",
+    signalLine: "夜风会先吹灭火堆，还是先吹散临时同盟。",
+    rosterOffset: 2,
   },
   {
     id: "boardroom-eclipse",
@@ -96,50 +99,33 @@ const fallbackBlueprints: RoomBlueprint[] = [
     category: "business",
     typeTags: ["财阀", "博弈"],
     hook: "董事会灯光只照亮桌面，不照亮每个人真正想拿走的心脏。",
-    description: "四席已满，观众正在押注谁会先用温柔完成一次资本级收网。",
-    players: 4,
+    description: "牌桌已经搭好，危险的人正在等一个愿意先开口的人。",
+    players: 3,
     maxPlayers: 4,
     spectators: 5012,
     prizePool: 146000,
     status: "running",
-    statusLabel: "进行中",
-    ctaLabel: "立即围观",
+    statusLabel: "房间预览",
+    ctaLabel: "查看准备室",
     signalLine: "最危险的人从来不是最会说话的人，而是最会等待的人。",
-    rosterOffset: 5,
+    rosterOffset: 4,
   },
   {
     id: "mirror-hearing",
     title: "镜像法庭·心动听证会",
     category: "mystery",
     typeTags: ["悬疑", "秘审"],
-    hook: "每位当事人都有一份被篡改过的记忆证词，真相只在裂缝里发光。",
+    hook: "每位当事人都有一份被篡改过的证词，真相只在裂缝里发光。",
     description: "审判席仍空着两位证人，你的分身可以决定这场听证会更像告白还是围猎。",
     players: 2,
     maxPlayers: 4,
     spectators: 1988,
     prizePool: 62400,
     status: "recruiting",
-    statusLabel: "招募中",
-    ctaLabel: "注入分身",
+    statusLabel: "房间预览",
+    ctaLabel: "查看准备室",
     signalLine: "最先说出真心的人，未必是最诚实的人。",
-    rosterOffset: 2,
-  },
-  {
-    id: "orbital-salon",
-    title: "深潜轨道·零重力晚宴",
-    category: "romance",
-    typeTags: ["赛博", "相亲"],
-    hook: "失重让谎言浮起来，也让克制失去最后一层重力约束。",
-    description: "观景舱中已经有三位分身互探底牌，围观席的弹幕正在逼近峰值。",
-    players: 3,
-    maxPlayers: 4,
-    spectators: 3276,
-    prizePool: 93400,
-    status: "running",
-    statusLabel: "进行中",
-    ctaLabel: "立即围观",
-    signalLine: "当心动开始漂浮，理性也会失重。",
-    rosterOffset: 4,
+    rosterOffset: 1,
   },
 ];
 
@@ -181,7 +167,7 @@ function getTopTraits(persona: PersonaSnapshot) {
     .map(([key]) => key as keyof typeof persona.traitVector);
 }
 
-function deriveSeat(persona: PersonaSnapshot, index: number): FateSeat {
+function deriveSeat(persona: PersonaSnapshot, index: number, participantId?: string): FateSeat {
   const topTraits = getTopTraits(persona);
   const lead = topTraits[0];
 
@@ -212,8 +198,9 @@ function deriveSeat(persona: PersonaSnapshot, index: number): FateSeat {
             : "violet";
 
   return {
-    id: persona.id,
-    name: persona.name,
+    id: participantId || persona.id,
+    personaId: persona.id,
+    name: persona.dataGhost?.displayAlias || persona.name,
     role,
     tags: topTraits.map((trait) => traitLabels[trait]),
     hue,
@@ -222,7 +209,7 @@ function deriveSeat(persona: PersonaSnapshot, index: number): FateSeat {
 }
 
 function buildSeatPool(personas: PersonaSnapshot[]) {
-  const adultPool = personas.filter((persona) => persona.adultOnlyEligible);
+  const adultPool = personas.filter((persona) => persona.adultOnlyEligible || persona.source === "legend");
   return adultPool.map((persona, index) => deriveSeat(persona, index));
 }
 
@@ -231,34 +218,18 @@ function rotateSeats(pool: FateSeat[], offset: number, count: number) {
   return Array.from({ length: count }, (_, index) => pool[(offset + index) % pool.length]);
 }
 
-function buildMatchRoom(match: ArenaMatch, input: BuildLobbyInput, seatPool: FateSeat[]): FateRoomCard {
+function buildMatchRoom(match: ArenaMatch, input: BuildLobbyInput): FateRoomCard {
   const world = input.worldPacks.find((item) => item.id === match.worldPackId);
   const category = inferCategory(world);
-  const roomParticipants = input.participants.filter((participant) => match.participantIds.includes(participant.id));
-  const roster = roomParticipants
-    .map((participant, index) => {
-      const persona = input.personas.find((item) => item.id === participant.personaId);
-      if (!persona) {
-        return {
-          id: participant.id,
-          name: participant.displayName,
-          role: participant.isUserOwned ? "玩家分身" : "剧情分身",
-          tags: ["在场", "活跃", "同步"],
-          hue: index % 2 === 0 ? "pink" : "violet",
-          isUserOwned: participant.isUserOwned,
-        } satisfies FateSeat;
-      }
-
-      return {
-        ...deriveSeat(persona, index),
-        id: participant.id,
-        name: participant.displayName,
-        isUserOwned: participant.isUserOwned,
-      };
+  const matchParticipants = input.participants.filter((participant) => participant.matchId === match.id || match.participantIds.includes(participant.id));
+  const participantByPersona = new Map(matchParticipants.map((participant) => [participant.personaId, participant] as const));
+  const roster = match.prep.seatOrder
+    .map((personaId, index) => {
+      const persona = input.personas.find((item) => item.id === personaId);
+      const participant = participantByPersona.get(personaId);
+      return persona && participant ? deriveSeat(persona, index, participant.id) : null;
     })
-    .concat(rotateSeats(seatPool, 2, 6))
-    .filter((seat, index, collection) => collection.findIndex((item) => item.id === seat.id) === index)
-    .slice(0, Math.max(6, roomParticipants.length));
+    .filter((seat): seat is FateSeat => Boolean(seat));
 
   const status: FateRoomStatus =
     match.publicStoryStatus === "complete"
@@ -267,8 +238,11 @@ function buildMatchRoom(match: ArenaMatch, input: BuildLobbyInput, seatPool: Fat
         ? "running"
         : "recruiting";
 
-  const prizePool = Math.max(24600, match.supportPool * 120 + roomParticipants.length * 8800);
-  const spectators = 900 + roomParticipants.length * 260 + (status === "running" ? 1800 : 420);
+  const prizePool = Math.max(24600, match.supportPool * 120 + roster.length * 8800);
+  const spectators = 900 + roster.length * 260 + (status === "running" ? 1800 : 420);
+  const ctaLabel = status === "recruiting" ? "查看准备室" : status === "replay" ? "打开回放" : "立即围观";
+  const prepHref = `/arena/prep/${match.id}`;
+  const roomHref = `/arena/room/${match.id}`;
 
   return {
     id: match.id,
@@ -277,41 +251,110 @@ function buildMatchRoom(match: ArenaMatch, input: BuildLobbyInput, seatPool: Fat
     typeTags: normalizeTags(category, world),
     hook: world?.theme || "命运正在重组剧本结构。",
     description: world?.sanitizedSummary || "故事核心尚未公开，但所有下注都已经开始流动。",
-    players: roomParticipants.length,
+    players: roster.length,
     maxPlayers: match.maxParticipants,
     spectators,
     prizePool,
     status,
     statusLabel: status === "running" ? "进行中" : status === "replay" ? "可回放" : "招募中",
-    ctaLabel: status === "recruiting" ? "注入分身" : status === "replay" ? "打开回放" : "立即围观",
-    prepHref: `/arena/prep/${match.id}`,
-    roomHref: `/arena/room/${match.id}`,
+    ctaLabel,
+    ctaHref: status === "recruiting" ? prepHref : roomHref,
+    prepHref,
+    roomHref,
     roster,
     signalLine: toneToSignal(world, category),
     worldPackId: world?.id,
+    isPreviewRoom: false,
   };
 }
 
 function buildBlueprintRoom(blueprint: RoomBlueprint, seatPool: FateSeat[]): FateRoomCard {
+  const prepHref = `/arena/prep/${blueprint.id}`;
   return {
     ...blueprint,
-    prepHref: `/arena/prep/${blueprint.id}`,
-    roomHref: blueprint.status === "recruiting" ? `/arena/prep/${blueprint.id}` : `/arena/room/${blueprint.id}`,
+    ctaHref: prepHref,
+    prepHref,
+    roomHref: `/arena/room/${blueprint.id}`,
     roster: rotateSeats(seatPool, blueprint.rosterOffset, 6),
+    isPreviewRoom: true,
   };
 }
 
 export function buildFateLobbyRooms(input: BuildLobbyInput) {
   const seatPool = buildSeatPool(input.personas);
-  const matchRooms = input.matches.map((match) => buildMatchRoom(match, input, seatPool));
+  const matchRooms = input.matches.map((match) => buildMatchRoom(match, input));
   const existingIds = new Set(matchRooms.map((room) => room.id));
-  const extraRooms = fallbackBlueprints
+  const previewRooms = fallbackBlueprints
     .filter((blueprint) => !existingIds.has(blueprint.id))
     .map((blueprint) => buildBlueprintRoom(blueprint, seatPool));
 
-  return [...matchRooms, ...extraRooms];
+  return [...matchRooms, ...previewRooms];
 }
 
 export function findFateRoomById(roomId: string, input: BuildLobbyInput) {
   return buildFateLobbyRooms(input).find((room) => room.id === roomId) ?? null;
+}
+
+export function buildFatePrepView(roomId: string, input: BuildLobbyInput): FatePrepView | null {
+  const match = input.matches.find((item) => item.id === roomId);
+  if (match) {
+    const world = input.worldPacks.find((item) => item.id === match.worldPackId);
+    const participants = input.participants.filter((participant) => participant.matchId === match.id || match.participantIds.includes(participant.id));
+    const participantByPersona = new Map(participants.map((participant) => [participant.personaId, participant] as const));
+    const activeSeats = match.prep.seatOrder
+      .map((personaId, index) => {
+        const persona = input.personas.find((item) => item.id === personaId);
+        const participant = participantByPersona.get(personaId);
+        return persona && participant ? deriveSeat(persona, index, participant.id) : null;
+      })
+      .filter((seat): seat is FateSeat => Boolean(seat));
+    const reserveSeats = match.prep.reservePersonaIds
+      .map((personaId, index) => {
+        const persona = input.personas.find((item) => item.id === personaId);
+        const participant = participantByPersona.get(personaId);
+        return persona ? deriveSeat(persona, index + activeSeats.length, participant?.id) : null;
+      })
+      .filter((seat): seat is FateSeat => Boolean(seat));
+
+    return {
+      id: match.id,
+      title: normalizeTitle(world),
+      description: world?.sanitizedSummary || "这个房间仍在凝结自己的命运规则。",
+      signalLine: toneToSignal(world, inferCategory(world)),
+      typeTags: normalizeTags(inferCategory(world), world),
+      statusLabel: match.publicStoryStatus === "draft" ? "待开始" : match.publicStoryStatus === "streaming" ? "进行中" : "已封存",
+      maxPlayers: match.maxParticipants,
+      selectedMode: match.prep.mode,
+      activeSeats,
+      reserveSeats,
+      roomHref: `/arena/${match.id}`,
+      prepHref: `/arena/prep/${match.id}`,
+      canPersist: match.publicStoryStatus === "draft",
+      helperText:
+        match.publicStoryStatus === "draft"
+          ? "当前编排会实时写回房间状态，刷新后仍会保留。"
+          : "该房间已经开始推演，准备室只保留只读视图。",
+    };
+  }
+
+  const blueprint = fallbackBlueprints.find((item) => item.id === roomId);
+  if (!blueprint) return null;
+
+  const seatPool = buildSeatPool(input.personas);
+  return {
+    id: blueprint.id,
+    title: blueprint.title,
+    description: blueprint.description,
+    signalLine: blueprint.signalLine,
+    typeTags: blueprint.typeTags,
+    statusLabel: blueprint.statusLabel,
+    maxPlayers: blueprint.maxPlayers,
+    selectedMode: "rapid",
+    activeSeats: rotateSeats(seatPool, blueprint.rosterOffset, blueprint.players),
+    reserveSeats: rotateSeats(seatPool, blueprint.rosterOffset + blueprint.players, 6),
+    roomHref: `/arena/room/${blueprint.id}`,
+    prepHref: `/arena/prep/${blueprint.id}`,
+    canPersist: false,
+    helperText: "这是一个大厅预览房间。注入分身并创建真实牌桌后，才会启用持久化编排。",
+  };
 }

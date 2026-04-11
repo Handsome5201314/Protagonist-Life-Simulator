@@ -1,4 +1,4 @@
-import { getSkillById, rewardTiers, worldToneWeights } from "@/lib/catalog";
+﻿import { getSkillById, rewardTiers, worldToneWeights } from "@/lib/catalog";
 import type { Locale } from "@/lib/i18n";
 import type {
   ArenaMatch,
@@ -26,11 +26,7 @@ function vectorToScore(vector: TraitVector) {
   ]);
 }
 
-function applySkillSynergy(
-  persona: PersonaSnapshot,
-  skillId: string | undefined,
-  mode: "arena" | "dating"
-) {
+function applySkillSynergy(persona: PersonaSnapshot, skillId: string | undefined, mode: "arena" | "dating") {
   const notes: string[] = [];
   let modifier: Partial<TraitVector> = {};
 
@@ -44,23 +40,25 @@ function applySkillSynergy(
   }
 
   modifier = { ...skill.modifier };
-  notes.push(`${skill.name}: ${skill.flavor}`);
+  notes.push(`${skill.name}：${skill.flavor}`);
 
-  const hasSocialAnxiety = persona.publicTraitTags.some((tag) => /慢热|高敏|社恐/i.test(tag)) || persona.fears.some((fear) => /误解|喧嚣/.test(fear));
+  const hasSocialAnxiety =
+    persona.publicTraitTags.some((tag) => /慢热|高敏|社恐/i.test(tag)) ||
+    persona.fears.some((fear) => /误解|喧闹/.test(fear));
 
   if (hasSocialAnxiety && skillId === "spotlight_burst" && mode === "arena") {
     modifier = { ...modifier, charm: -8, resilience: -10 };
-    notes.push("撕裂的反差: Spotlight Burst 把社恐主角直接推向失控边缘。");
+    notes.push("撕裂的反差：Spotlight Burst 把社恐分身直接推向失控边缘。")
   }
 
   if (hasSocialAnxiety && skillId === "spotlight_burst" && mode === "dating") {
     modifier = { ...modifier, charm: 6, empathy: 8 };
-    notes.push("笨拙的真诚: 过亮的开场反而让对方看见了真实心跳。");
+    notes.push("笨拙的真诚：过亮的开场反而让对方看见了真实心跳。")
   }
 
   if (skillId === "cold_geometry" && mode === "dating") {
     modifier = { ...modifier, empathy: -12, charm: -6 };
-    notes.push("理性过载: 约会不是审讯，Cold Geometry 让气氛立刻降温。");
+    notes.push("理性过载：约会不是审讯，Cold Geometry 让气氛迅速降温。")
   }
 
   return { modifier, notes };
@@ -73,16 +71,17 @@ function applyMemoryTrait(personaVector: TraitVector, memory?: MemoryTrait) {
 
   return {
     vector: mergeTraitVector(personaVector, memory.modifier),
-    notes: [`Memory Trait - ${memory.name}: ${memory.summary}`],
+    notes: [`记忆碎片 - ${memory.name}：${memory.summary}`],
   };
 }
 
 export function buildMatchParticipants(
   personas: PersonaSnapshot[],
-  participantIds: string[],
-  memoryTraits: MemoryTrait[]
+  personaIds: string[],
+  memoryTraits: MemoryTrait[],
+  matchId: string
 ) {
-  return participantIds.map((personaId) => {
+  return personaIds.map((personaId) => {
     const persona = personas.find((item) => item.id === personaId);
     if (!persona) {
       throw new Error(`Missing persona ${personaId}`);
@@ -92,6 +91,7 @@ export function buildMatchParticipants(
 
     const participant: MatchParticipant = {
       id: createId("participant"),
+      matchId,
       personaId: persona.id,
       displayName: persona.deletedAt ? "[Destroyed Data Ghost]" : persona.name,
       supportTotal: 0,
@@ -125,14 +125,10 @@ export function evaluateRound(args: {
   let elimination: string | undefined;
 
   for (const participant of args.participants) {
-    if (participant.eliminated) {
-      continue;
-    }
+    if (participant.eliminated) continue;
 
     const persona = args.personas.find((item) => item.id === participant.personaId);
-    if (!persona) {
-      continue;
-    }
+    if (!persona) continue;
 
     const memory = args.memoryTraits.find((item) => item.id === participant.memoryTraitId);
     const skillId = participant.skillLoadout.at(-1);
@@ -235,7 +231,7 @@ export function buildStreamRecord(args: {
           : "Final Seal";
   const opening =
     locale === "zh"
-      ? `${title}\n${args.world.title} 又一次撕开了丝绒般的伤口。${args.world.sanitizedSummary}`
+      ? `${title}\n${args.world.title} 又一次掀开了丝绒般的伤口。${args.world.sanitizedSummary}`
       : `${title}\n${args.world.title} opens another velvet wound. ${args.world.sanitizedSummary}`;
   const scoreLines = args.scoreBoard.map((score) => {
     const participant = args.participants.find((item) => item.id === score.participantId);
@@ -245,13 +241,9 @@ export function buildStreamRecord(args: {
   });
 
   const finalChapter = [opening, ...args.storyLines, ...scoreLines].join("\n\n");
+  const segments = finalChapter.split(/\n\n/).map((segment) => segment.trim()).filter(Boolean);
 
-  const segments = finalChapter
-    .split(/\n\n/)
-    .map((segment) => segment.trim())
-    .filter(Boolean);
-
-  const stream: StreamRecord = {
+  return {
     id: createId("stream"),
     matchId: args.match.id,
     round: args.round,
@@ -261,9 +253,7 @@ export function buildStreamRecord(args: {
     elimination: args.elimination,
     scoreBoard: args.scoreBoard,
     winnerId: args.match.winnerId,
-  };
-
-  return stream;
+  } satisfies StreamRecord;
 }
 
 export function settleSupportRewards(args: {
@@ -271,9 +261,7 @@ export function settleSupportRewards(args: {
   match: ArenaMatch;
   supportTickets: SupportTicket[];
 }) {
-  if (!args.match.winnerId) {
-    return;
-  }
+  if (!args.match.winnerId) return;
 
   for (const ticket of args.supportTickets.filter((item) => item.matchId === args.match.id && item.status === "active")) {
     if (ticket.participantId === args.match.winnerId) {
@@ -296,7 +284,6 @@ export function createMemoryTrait(args: {
 }) {
   const participant = args.participants.find((item) => item.id === args.match.winnerId);
   const triggerType = participant?.personaId === args.personaId ? "champion" : "survivor";
-
   const rarity = triggerType === "champion" ? "legendary" : "rare";
   const modifier = triggerType === "champion" ? { courage: 8, strategy: 7 } : { resilience: 6, empathy: 4 };
 

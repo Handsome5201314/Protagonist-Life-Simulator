@@ -2,18 +2,7 @@
 
 import { useDeferredValue, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Briefcase,
-  ChevronRight,
-  Coins,
-  Eye,
-  Flame,
-  Heart,
-  Search,
-  Sparkles,
-  Star,
-  Users,
-} from "lucide-react";
+import { Briefcase, ChevronRight, Coins, Eye, Flame, Heart, Search, Sparkles, Star } from "lucide-react";
 
 import type { DatingMarketCandidate } from "@/lib/dating-market";
 import type { PersonaSnapshot, UserRecord } from "@/lib/types";
@@ -24,7 +13,7 @@ type Props = {
   candidates: Array<DatingMarketCandidate & { statusLine: string }>;
 };
 
-type DatingLobbyCategory = "all" | "romance" | "voltage" | "gentle";
+type DatingLobbyCategory = "all" | "voltage" | "gentle" | "steady";
 
 type MarketRoom = {
   id: string;
@@ -43,18 +32,16 @@ type MarketRoom = {
 };
 
 const categories = [
-  { id: "all" as const, name: "全部邂逅", icon: Sparkles },
-  { id: "romance" as const, name: "图灵相亲", icon: Heart },
+  { id: "all" as const, name: "全部相遇", icon: Sparkles },
   { id: "voltage" as const, name: "高压拉扯", icon: Flame },
-  { id: "gentle" as const, name: "温柔慢热", icon: Star },
+  { id: "gentle" as const, name: "温柔慢热", icon: Heart },
+  { id: "steady" as const, name: "稳定配对", icon: Star },
 ];
 
 function buildMarketRooms(selfPersona: PersonaSnapshot | null, candidates: Array<DatingMarketCandidate & { statusLine: string }>): MarketRoom[] {
   return candidates.map((candidate, index) => {
-    const highVoltage = candidate.matchScore >= 84;
-    const gentle = candidate.matchScore < 84 && candidate.matchScore >= 70;
-    const category: DatingLobbyCategory = highVoltage ? "voltage" : gentle ? "gentle" : "romance";
-    const status = highVoltage ? "推演中" : gentle ? "等待加入" : "招募中";
+    const category: DatingLobbyCategory = candidate.matchScore >= 84 ? "voltage" : candidate.matchScore >= 72 ? "gentle" : "steady";
+    const status = category === "voltage" ? "推演中" : category === "gentle" ? "等待加入" : "招募中";
 
     return {
       id: candidate.personaId,
@@ -63,7 +50,7 @@ function buildMarketRooms(selfPersona: PersonaSnapshot | null, candidates: Array
           ? `${candidate.name} · 心动爆灯局`
           : category === "gentle"
             ? `${candidate.name} · 慢热试探局`
-            : `${candidate.name} · 图灵相亲局`,
+            : `${candidate.name} · 稳定配对局`,
       category,
       typeLabel: "相亲局",
       participants: selfPersona ? 2 : 1,
@@ -78,13 +65,13 @@ function buildMarketRooms(selfPersona: PersonaSnapshot | null, candidates: Array
           ? "border-pink-500/30"
           : category === "gentle"
             ? "border-purple-500/30"
-            : "border-fuchsia-500/30",
+            : "border-indigo-500/30",
       theme:
         category === "voltage"
           ? "from-pink-500/20 to-purple-500/20"
           : category === "gentle"
             ? "from-purple-500/20 to-indigo-500/20"
-            : "from-rose-500/20 to-fuchsia-500/20",
+            : "from-indigo-500/20 to-blue-500/20",
     };
   });
 }
@@ -100,7 +87,7 @@ export function DatingMarketHub({ user, selfPersona, candidates }: Props) {
   const marketRooms = useMemo(() => buildMarketRooms(selfPersona, candidates), [selfPersona, candidates]);
   const filteredRooms = useMemo(() => {
     return marketRooms.filter((room) => {
-      const categoryPass = activeCategory === "all" || room.category === activeCategory || (activeCategory === "romance" && room.category !== "all");
+      const categoryPass = activeCategory === "all" || room.category === activeCategory;
       const queryPass =
         !deferredQuery.trim() ||
         `${room.title} ${room.candidate.tagline} ${room.candidate.tags.join(" ")} ${room.candidate.vibeHint}`
@@ -135,43 +122,61 @@ export function DatingMarketHub({ user, selfPersona, candidates }: Props) {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-[1440px] px-4 pb-16 pt-8 text-white md:px-6 lg:px-8">
-      <div className="mb-12 h-48 w-full cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-black/40 p-8 shadow-2xl md:h-64 md:p-12 relative group flex items-center">
-        <div className="absolute inset-0 z-0 bg-gradient-to-r from-pink-600/40 to-transparent" />
-        <div className="relative z-10 max-w-lg">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-pink-500/30 bg-pink-500/20 px-3 py-1 text-xs font-bold text-pink-300">
-            <Flame className="h-3 w-3" />
-            今日最热相亲局
+      <section className="mb-12 grid gap-6 overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl lg:grid-cols-[1.15fr_0.85fr] lg:p-8">
+        <div className="relative min-h-[18rem] overflow-hidden rounded-[28px] border border-white/10 bg-black/40 p-8">
+          <div className="absolute inset-0 bg-gradient-to-r from-pink-600/40 to-transparent" />
+          <div className="relative z-10 max-w-lg">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-pink-500/30 bg-pink-500/20 px-3 py-1 text-xs font-bold text-pink-300">
+              <Flame className="h-3 w-3" />
+              今日最热相亲局
+            </div>
+            <h1 className="mb-4 text-3xl font-bold text-white drop-shadow-lg md:text-5xl">
+              {featured ? featured.title : "图灵相亲局：谁能拿到心动爆灯？"}
+            </h1>
+            <p className="mb-6 line-clamp-2 text-sm text-white/70">
+              {featured
+                ? `${featured.candidate.tagline} ${featured.candidate.statusLine}`
+                : "当前奖金池已突破 200,000 星币。两位高共情分身的极致拉扯，速来强势围观或投入你的数字分身。"}
+            </p>
+            <button type="button" onClick={() => featured && void enterRoom(featured.id)} className="flex items-center gap-2 rounded-full bg-white px-6 py-2 font-bold text-black transition-colors hover:bg-pink-100">
+              立即进入
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
-          <h1 className="mb-4 text-3xl font-bold text-white drop-shadow-lg md:text-5xl">
-            {featured ? featured.title : "图灵相亲局：谁能拿到心动爆灯？"}
-          </h1>
-          <p className="mb-6 line-clamp-2 text-sm text-white/70">
-            {featured
-              ? `${featured.candidate.tagline} ${featured.candidate.statusLine}`
-              : "当前奖金池已突破 200,000 星币！两位高共情分身的极致拉扯，速来强势围观或投入你的数字分身！"}
+          <Heart className="absolute right-12 top-1/2 h-48 w-48 -translate-y-1/2 -rotate-12 text-pink-500/20 transition-transform duration-700 group-hover:scale-110" />
+        </div>
+
+        <div className="rounded-[28px] border border-white/10 bg-black/30 p-6">
+          <div className="inline-flex rounded-full border border-pink-500/30 bg-pink-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-pink-200">
+            相亲市场 / Turing Dating
+          </div>
+          <h2 className="mt-4 text-3xl font-black text-white">为你的分身挑一个第一眼就会起波澜的人</h2>
+          <p className="mt-4 text-sm leading-7 text-white/68">
+            左侧焦点海报承载当日最热相亲局，右侧固定为当前分身状态与操作入口。这里不再混入废土、生存或商战房间，只服务 1v1 相遇与心动链路。
           </p>
-          <button
-            type="button"
-            onClick={() => featured && void enterRoom(featured.id)}
-            className="flex items-center gap-2 rounded-full bg-white px-6 py-2 font-bold text-black transition-colors hover:bg-pink-100"
-          >
-            立即进入
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
+              <p className="text-xs uppercase tracking-[0.18em] text-white/35">当前用户</p>
+              <strong className="mt-2 block text-lg font-black text-white">{user.displayName}</strong>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
+              <p className="text-xs uppercase tracking-[0.18em] text-white/35">相亲分身</p>
+              <strong className="mt-2 block text-lg font-black text-white">{selfPersona ? selfPersona.name : "未准备"}</strong>
+            </div>
+          </div>
+
+          <button type="button" disabled={isPending || !featured} onClick={() => featured && void enterRoom(featured.id)} className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 px-5 py-4 text-sm font-semibold text-white shadow-[0_0_24px_rgba(232,121,249,0.28)] transition hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-45">
+            进入当前焦点相亲局
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
-        <Heart className="absolute right-12 top-1/2 h-48 w-48 -translate-y-1/2 -rotate-12 text-pink-500/20 transition-transform duration-700 group-hover:scale-110" />
-      </div>
+      </section>
 
       <div className="mb-8 flex flex-col items-center justify-between gap-4 md:flex-row">
         <div className="relative w-full md:w-96">
           <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/40" />
-          <input
-            type="text"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="搜索房名、匹配对象或氛围标签..."
-            className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-10 pr-4 text-sm text-white placeholder-white/40 transition-colors focus:border-purple-500/50 focus:outline-none"
-          />
+          <input type="text" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索房名、匹配对象或氛围标签..." className="w-full rounded-xl border border-white/10 bg-black/30 py-3 pl-10 pr-4 text-sm text-white placeholder-white/40 transition-colors focus:border-purple-500/50 focus:outline-none" />
         </div>
 
         <div className="custom-scrollbar flex w-full gap-2 overflow-x-auto pb-2 md:w-auto md:pb-0">
@@ -179,16 +184,7 @@ export function DatingMarketHub({ user, selfPersona, candidates }: Props) {
             const Icon = category.icon;
             const active = activeCategory === category.id;
             return (
-              <button
-                key={category.id}
-                type="button"
-                onClick={() => setActiveCategory(category.id)}
-                className={`flex items-center gap-2 whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
-                  active
-                    ? "border-purple-500/50 bg-purple-500/20 text-purple-200 shadow-[0_0_10px_rgba(168,85,247,0.2)]"
-                    : "border-white/5 bg-black/20 text-white/60 hover:bg-white/5 hover:text-white"
-                }`}
-              >
+              <button key={category.id} type="button" onClick={() => setActiveCategory(category.id)} className={`flex items-center gap-2 whitespace-nowrap rounded-xl border px-4 py-2 text-sm font-medium transition-all ${active ? "border-purple-500/50 bg-purple-500/20 text-purple-200 shadow-[0_0_10px_rgba(168,85,247,0.2)]" : "border-white/5 bg-black/20 text-white/60 hover:bg-white/5 hover:text-white"}`}>
                 <Icon className="h-4 w-4" />
                 {category.name}
               </button>
@@ -203,41 +199,25 @@ export function DatingMarketHub({ user, selfPersona, candidates }: Props) {
         </div>
       ) : null}
 
-      {statusText ? (
-        <div className="mb-8 rounded-[24px] border border-pink-300/20 bg-pink-400/10 px-5 py-4 text-sm text-pink-50">
-          {statusText}
-        </div>
-      ) : null}
+      {statusText ? <div className="mb-8 rounded-[24px] border border-pink-300/20 bg-pink-400/10 px-5 py-4 text-sm text-pink-50">{statusText}</div> : null}
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="columns-1 gap-6 md:columns-2 lg:columns-3">
         {filteredRooms.map((room) => (
-          <article
-            key={room.id}
-            className={`group relative flex flex-col overflow-hidden rounded-2xl border ${room.border} bg-white/5 p-5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)]`}
-          >
+          <article key={room.id} className={`group relative mb-6 flex break-inside-avoid flex-col overflow-hidden rounded-2xl border ${room.border} bg-white/5 p-5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)]`}>
             <div className={`absolute inset-0 z-0 bg-gradient-to-br ${room.theme} opacity-50 transition-opacity group-hover:opacity-100`} />
-
             <div className="relative z-10 mb-4 flex items-start justify-between">
               <div>
-                <span className="mb-2 inline-flex items-center gap-1 rounded-md border border-white/10 bg-black/40 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white/80">
-                  {room.typeLabel}
-                </span>
-                <h3 className="text-lg font-bold text-white transition-colors group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/70 group-hover:bg-clip-text group-hover:text-transparent">
-                  {room.title}
-                </h3>
+                <span className="mb-2 inline-flex items-center gap-1 rounded-md border border-white/10 bg-black/40 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white/80">{room.typeLabel}</span>
+                <h3 className="text-lg font-bold text-white transition-colors group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/70 group-hover:bg-clip-text group-hover:text-transparent">{room.title}</h3>
               </div>
-              <div className={`rounded-full border px-2 py-1 text-xs ${room.status === "推演中" ? "animate-pulse border-pink-500/50 bg-pink-500/10 text-pink-300" : "border-white/20 bg-black/40 text-white/60"}`}>
-                {room.status}
-              </div>
+              <div className={`rounded-full border px-2 py-1 text-xs ${room.status === "推演中" ? "animate-pulse border-pink-500/50 bg-pink-500/10 text-pink-300" : "border-white/20 bg-black/40 text-white/60"}`}>{room.status}</div>
             </div>
 
             <div className="relative z-10 mb-6 flex-1">
               <p className="mb-2 text-xs text-white/50">当前在场分身 ({room.participants}/{room.maxParticipants})：</p>
               <div className="flex flex-wrap gap-1">
                 {room.agents.map((agent, index) => (
-                  <span key={`${agent}-${index}`} className="rounded border border-white/5 bg-black/30 px-2 py-1 text-[11px] text-white/80">
-                    {agent}
-                  </span>
+                  <span key={`${agent}-${index}`} className="rounded border border-white/5 bg-black/30 px-2 py-1 text-[11px] text-white/80">{agent}</span>
                 ))}
               </div>
               <p className="mt-4 text-sm leading-7 text-white/70">{room.candidate.vibeHint}</p>
@@ -247,33 +227,19 @@ export function DatingMarketHub({ user, selfPersona, candidates }: Props) {
               <div className="flex gap-4">
                 <div className="flex flex-col">
                   <span className="mb-0.5 text-[10px] text-white/40">吃瓜群众</span>
-                  <span className="flex items-center gap-1 text-xs font-bold text-white/80">
-                    <Eye className="h-3 w-3" />
-                    {room.viewers}
-                  </span>
+                  <span className="flex items-center gap-1 text-xs font-bold text-white/80"><Eye className="h-3 w-3" /> {room.viewers}</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="mb-0.5 text-[10px] text-white/40">奖金池</span>
-                  <span className="flex items-center gap-1 text-xs font-bold text-yellow-400">
-                    <Coins className="h-3 w-3" />
-                    {room.pool.toLocaleString()}
-                  </span>
+                  <span className="flex items-center gap-1 text-xs font-bold text-yellow-400"><Coins className="h-3 w-3" /> {room.pool.toLocaleString()}</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="mb-0.5 text-[10px] text-white/40">匹配值</span>
-                  <span className="flex items-center gap-1 text-xs font-bold text-pink-200">
-                    <Briefcase className="h-3 w-3" />
-                    {room.candidate.matchScore}
-                  </span>
+                  <span className="flex items-center gap-1 text-xs font-bold text-pink-200"><Briefcase className="h-3 w-3" /> {room.candidate.matchScore}</span>
                 </div>
               </div>
 
-              <button
-                type="button"
-                disabled={isPending || !selfPersona}
-                onClick={() => void enterRoom(room.id)}
-                className="rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold text-white backdrop-blur-md transition-colors hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-45"
-              >
+              <button type="button" disabled={isPending || !selfPersona} onClick={() => void enterRoom(room.id)} className="rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold text-white backdrop-blur-md transition-colors hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-45">
                 {room.status === "推演中" ? "立即心动" : "注入分身"}
               </button>
             </div>
@@ -284,7 +250,7 @@ export function DatingMarketHub({ user, selfPersona, candidates }: Props) {
       {!filteredRooms.length ? (
         <div className="mt-8 rounded-[28px] border border-dashed border-white/12 bg-white/5 p-10 text-center shadow-2xl backdrop-blur-xl">
           <p className="text-lg font-semibold text-white">当前筛选条件下没有相亲局</p>
-          <p className="mt-3 text-sm leading-7 text-white/55">试着切回“全部邂逅”或更换搜索关键词。</p>
+          <p className="mt-3 text-sm leading-7 text-white/55">试着切回“全部相遇”或更换搜索关键词。</p>
         </div>
       ) : null}
 

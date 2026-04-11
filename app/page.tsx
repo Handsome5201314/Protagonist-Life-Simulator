@@ -1,11 +1,13 @@
 import { FateLobbyHome } from "@/components/FateLobbyHome";
 import { buildFateLobbyRooms } from "@/lib/fate-arena";
 import { getArenaView } from "@/lib/view-models";
+import { getDb } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const data = await getArenaView();
+  const db = await getDb();
   const rooms = buildFateLobbyRooms({
     worldPacks: data.worldPacks,
     matches: data.matches,
@@ -13,5 +15,12 @@ export default async function HomePage() {
     personas: data.personas,
   });
 
-  return <FateLobbyHome user={data.user} rooms={rooms.filter((room) => room.category !== "romance")} />;
+  return (
+    <FateLobbyHome
+      user={data.user}
+      rooms={rooms.filter((room) => room.category !== "romance")}
+      personas={db.personas.filter((p) => !p.deletedAt)}
+      overlays={db.overlays}
+    />
+  );
 }

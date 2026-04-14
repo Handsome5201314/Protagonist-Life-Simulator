@@ -43,7 +43,10 @@ export async function GET(
             emit("final", {
               phase: "final",
               chapter: streamRecord.finalChapter,
+              messages: streamRecord.messages,
               scoreBoard: streamRecord.scoreBoard,
+              proxyPlans: streamRecord.proxyPlans,
+              eventCard: streamRecord.eventCard,
               elimination: streamRecord.elimination,
               winnerId: streamRecord.winnerId,
             })

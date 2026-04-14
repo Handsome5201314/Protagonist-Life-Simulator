@@ -42,9 +42,11 @@ export async function GET(
             emit("final", {
               phase: "final",
               text: streamRecord.finalText,
+              messages: streamRecord.messages,
               heartbeat: streamRecord.heartbeat,
               vibe: streamRecord.vibe,
               status: streamRecord.status,
+              scene: streamRecord.scene,
               options: streamRecord.options,
             })
           )

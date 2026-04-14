@@ -2,7 +2,7 @@ import type { Locale } from "@/lib/i18n";
 import { getDatingMarket, getDatingMatchBundle } from "@/lib/app-service";
 import { getDb } from "@/lib/db";
 
-export async function getHomeView(locale: Locale = "en") {
+export async function getHomeView(locale: Locale = "zh") {
   const db = await getDb();
   const market = await getDatingMarket({ locale });
 

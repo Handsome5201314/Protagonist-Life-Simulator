@@ -1,4 +1,10 @@
-﻿import type { ArenaMatch, MatchParticipant, PersonaSnapshot, WorldPack } from "@/lib/types";
+import type {
+  ArenaMatch,
+  ArenaProxyMode,
+  MatchParticipant,
+  PersonaSnapshot,
+  WorldPack,
+} from "@/lib/types";
 
 export type FateCategory = "romance" | "survival" | "business" | "mystery";
 export type FateRoomStatus = "recruiting" | "running" | "replay";
@@ -46,6 +52,8 @@ export type FatePrepView = {
   statusLabel: string;
   maxPlayers: number;
   selectedMode: FateModeId;
+  proxyMode: ArenaProxyMode;
+  briefing: string;
   activeSeats: FateSeat[];
   reserveSeats: FateSeat[];
   roomHref: string;
@@ -221,7 +229,9 @@ function rotateSeats(pool: FateSeat[], offset: number, count: number) {
 function buildMatchRoom(match: ArenaMatch, input: BuildLobbyInput): FateRoomCard {
   const world = input.worldPacks.find((item) => item.id === match.worldPackId);
   const category = inferCategory(world);
-  const matchParticipants = input.participants.filter((participant) => participant.matchId === match.id || match.participantIds.includes(participant.id));
+  const matchParticipants = input.participants.filter(
+    (participant) => participant.matchId === match.id || match.participantIds.includes(participant.id)
+  );
   const participantByPersona = new Map(matchParticipants.map((participant) => [participant.personaId, participant] as const));
   const roster = match.prep.seatOrder
     .map((personaId, index) => {
@@ -299,7 +309,9 @@ export function buildFatePrepView(roomId: string, input: BuildLobbyInput): FateP
   const match = input.matches.find((item) => item.id === roomId);
   if (match) {
     const world = input.worldPacks.find((item) => item.id === match.worldPackId);
-    const participants = input.participants.filter((participant) => participant.matchId === match.id || match.participantIds.includes(participant.id));
+    const participants = input.participants.filter(
+      (participant) => participant.matchId === match.id || match.participantIds.includes(participant.id)
+    );
     const participantByPersona = new Map(participants.map((participant) => [participant.personaId, participant] as const));
     const activeSeats = match.prep.seatOrder
       .map((personaId, index) => {
@@ -325,6 +337,8 @@ export function buildFatePrepView(roomId: string, input: BuildLobbyInput): FateP
       statusLabel: match.publicStoryStatus === "draft" ? "待开始" : match.publicStoryStatus === "streaming" ? "进行中" : "已封存",
       maxPlayers: match.maxParticipants,
       selectedMode: match.prep.mode,
+      proxyMode: match.prep.proxyMode === "ai" ? "ai" : "self",
+      briefing: match.prep.briefing || world?.sanitizedSummary || "这个房间仍在凝结自己的命运规则。",
       activeSeats,
       reserveSeats,
       roomHref: `/arena/${match.id}`,
@@ -350,6 +364,8 @@ export function buildFatePrepView(roomId: string, input: BuildLobbyInput): FateP
     statusLabel: blueprint.statusLabel,
     maxPlayers: blueprint.maxPlayers,
     selectedMode: "rapid",
+    proxyMode: "self",
+    briefing: blueprint.description,
     activeSeats: rotateSeats(seatPool, blueprint.rosterOffset, blueprint.players),
     reserveSeats: rotateSeats(seatPool, blueprint.rosterOffset + blueprint.players, 6),
     roomHref: `/arena/room/${blueprint.id}`,

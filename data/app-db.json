@@ -58,7 +58,8 @@
         "private_only"
       ],
       "lockedHash": "1bcfcc710de1666f10d663839b30bfdbb3a7125f8da3a02338a370611ebe40fa",
-      "expiresAt": "2026-05-10T12:46:59.510Z"
+      "expiresAt": "2026-05-10T12:46:59.510Z",
+      "traitFragmentIds": []
     },
     {
       "id": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
@@ -98,7 +99,8 @@
       "careerTilt": "strategy-led",
       "riskFlags": [],
       "lockedHash": "68ed0f67f5056e7d171f9fdc73a211f6bb6a7cfba9ca1f1f378fc194ce448423",
-      "expiresAt": "2026-05-10T12:46:59.509Z"
+      "expiresAt": "2026-05-10T12:46:59.509Z",
+      "traitFragmentIds": []
     },
     {
       "id": "persona_demo_self",
@@ -138,7 +140,7 @@
       "riskFlags": [],
       "lockedHash": "8b6a279198bece83db51509057254923175c4996b6735ad22fde48bcd5a86af7",
       "overlayId": "overlay_demo_self",
-      "expiresAt": "2026-05-11T15:06:55.414Z"
+      "expiresAt": "2026-05-13T02:54:25.496Z"
     },
     {
       "id": "persona_legend_lamplight",
@@ -177,7 +179,7 @@
       "careerTilt": "cultural icon",
       "riskFlags": [],
       "lockedHash": "1206743c33ba21335c6060b1d3769f90ebd9a03f99a63e517e00e7ee92e4b61d",
-      "expiresAt": "2026-05-11T15:06:55.414Z"
+      "expiresAt": "2026-05-13T02:54:25.496Z"
     },
     {
       "id": "persona_legend_tycoon",
@@ -216,7 +218,7 @@
       "careerTilt": "frontier builder",
       "riskFlags": [],
       "lockedHash": "585a21ad0ef5cde9acf9616c03858085f18f31410063b2fb32dc57ab0a5826cf",
-      "expiresAt": "2026-05-11T15:06:55.414Z"
+      "expiresAt": "2026-05-13T02:54:25.496Z"
     },
     {
       "id": "persona_legend_orchid",
@@ -255,7 +257,7 @@
       "careerTilt": "creative spotlight",
       "riskFlags": [],
       "lockedHash": "ae1c40e5bebad14d09d8dabd74716006ba10f778bddf87f77c1c7364253efba0",
-      "expiresAt": "2026-05-11T15:06:55.414Z"
+      "expiresAt": "2026-05-13T02:54:25.496Z"
     },
     {
       "id": "persona_legend_analyst",
@@ -294,7 +296,7 @@
       "careerTilt": "research and systems",
       "riskFlags": [],
       "lockedHash": "d54b1e479f0af962fd013ae6bad54767a55e2bd846cafac1b06b9ad6d8f3d6ad",
-      "expiresAt": "2026-05-11T15:06:55.414Z"
+      "expiresAt": "2026-05-13T02:54:25.496Z"
     },
     {
       "id": "persona_legend_monk",
@@ -333,7 +335,7 @@
       "careerTilt": "healing and mentoring",
       "riskFlags": [],
       "lockedHash": "f0663872ea63d6f3c1da5f7666ea58c9e320604edd079ffdb5e6e0601fc13bca",
-      "expiresAt": "2026-05-11T15:06:55.414Z"
+      "expiresAt": "2026-05-13T02:54:25.496Z"
     },
     {
       "id": "persona_legend_hacker",
@@ -372,7 +374,7 @@
       "careerTilt": "security and counterplay",
       "riskFlags": [],
       "lockedHash": "25de4bf1fa24185ea51b348b1877a78b4a98a27f279612f74e12ab1665c71f17",
-      "expiresAt": "2026-05-11T15:06:55.414Z"
+      "expiresAt": "2026-05-13T02:54:25.496Z"
     },
     {
       "id": "persona_legend_barista",
@@ -411,7 +413,7 @@
       "careerTilt": "hospitality and art",
       "riskFlags": [],
       "lockedHash": "ecbd63285d15e3d5d70e7d6568af8b71030a1f1afcc5a9648434b4cc1d92a4a1",
-      "expiresAt": "2026-05-11T15:06:55.414Z"
+      "expiresAt": "2026-05-13T02:54:25.496Z"
     }
   ],
   "overlays": [
@@ -473,7 +475,7 @@
       "safetyStatus": "clean",
       "sanitizedSummary": "一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。",
       "sourceDigest": "curated",
-      "expiresAt": "2027-04-11T15:06:55.414Z"
+      "expiresAt": "2027-04-13T02:54:25.496Z"
     },
     {
       "id": "world_curated_tarot",
@@ -497,10 +499,133 @@
       "safetyStatus": "clean",
       "sanitizedSummary": "每一场相亲都像一场外交仪式，微笑是最便宜的盾牌，沉默才是最高级的武器。",
       "sourceDigest": "curated",
-      "expiresAt": "2027-04-11T15:06:55.414Z"
+      "expiresAt": "2027-04-13T02:54:25.496Z"
     }
   ],
   "matches": [
+    {
+      "id": "match_e83b05fc-838d-461e-ad59-99329e1d461f",
+      "userId": "user_demo",
+      "seed": 180835,
+      "mode": "public",
+      "worldPackId": "world_curated_clock",
+      "maxParticipants": 2,
+      "participantIds": [
+        "participant_679ade9c-e9b2-4fc2-9697-4486e127a9a8",
+        "participant_6887cd0d-3ab4-4a55-900f-752acddcdc04"
+      ],
+      "publicStoryStatus": "streaming",
+      "supportPool": 0,
+      "prep": {
+        "mode": "rapid",
+        "seatOrder": [
+          "persona_demo_self",
+          "persona_legend_tycoon"
+        ],
+        "reservePersonaIds": [],
+        "proxyMode": "ai",
+        "briefing": "???????,??????????",
+        "updatedAt": "2026-04-13T02:55:25.562Z"
+      },
+      "roundStates": [
+        {
+          "round": 1,
+          "title": "Opening Stake",
+          "status": "done",
+          "checkpointCount": 5,
+          "scores": [
+            {
+              "participantId": "participant_679ade9c-e9b2-4fc2-9697-4486e127a9a8",
+              "delta": 3,
+              "total": 3,
+              "notes": [
+                "Crimson Archivist 带着 慎密 / 压场感 / 故事脑 踏入 Clockwork Jade Casino。",
+                "记忆碎片 - Crown Echo: 上一代在残局里把命运往自己这边扳了半寸。",
+                "主导进场 判定失败，掷骰 0.88，阈值 0.52。",
+                "托管意图：第 1 回合优先执行LEAD，沿着“???????,??????????”推进，并利用 慎密 / 压场感 制造局面差。",
+                "裁判指令：旁白必须体现对手没有被说服，并让压力回流到行动者身上。",
+                "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+              ],
+              "referee": {
+                "actionType": "LEAD",
+                "success": false,
+                "roll": 0.8818361172152436,
+                "threshold": 0.523536,
+                "heartbeatDelta": -11,
+                "pressureDelta": 11,
+                "summary": "裁判判定 失败：roll 0.88 vs threshold 0.52.",
+                "directives": [
+                  "旁白必须体现对手没有被说服，并让压力回流到行动者身上。"
+                ]
+              }
+            },
+            {
+              "participantId": "participant_6887cd0d-3ab4-4a55-900f-752acddcdc04",
+              "delta": 2,
+              "total": 2,
+              "notes": [
+                "Orbital Tycoon Muskcore 带着 高压推进 / 赌徒勇气 / 争议引力 踏入 Clockwork Jade Casino。",
+                "逻辑压制 判定失败，掷骰 0.81，阈值 0.64。",
+                "托管意图：第 1 回合优先执行DEBATE，沿着“???????,??????????”推进，并利用 高压推进 / 赌徒勇气 制造局面差。",
+                "裁判指令：旁白必须体现对手没有被说服，并让压力回流到行动者身上。",
+                "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+              ],
+              "referee": {
+                "actionType": "DEBATE",
+                "success": false,
+                "roll": 0.8118488129121033,
+                "threshold": 0.6400319999999999,
+                "heartbeatDelta": -11,
+                "pressureDelta": 11,
+                "summary": "裁判判定 失败：roll 0.81 vs threshold 0.64.",
+                "directives": [
+                  "旁白必须体现对手没有被说服，并让压力回流到行动者身上。"
+                ]
+              }
+            }
+          ],
+          "skillEquips": [],
+          "chapter": "开局落注\n\n第 1 回合在 Clockwork Jade Casino 展开。一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。\n\n伪证词：所有人都拿到了一份不完全真实的版本，关键在于谁先意识到它是假的。 目标是读懂房间里的偏差，而不是只回答表面问题。，代价是如果你把假信息当真，后续会一路踩错节奏。\n\nCrimson Archivist 这一回合的出手意图是：第 1 回合优先执行LEAD，沿着“???????,??????????”推进，并利用 慎密 / 压场感 制造局面差。 推进过急，主动权还没立住就先泄了一口气。 这一手带来 +3 的势头变化，总分来到 3。\n\nOrbital Tycoon Muskcore 这一回合的出手意图是：第 1 回合优先执行DEBATE，沿着“???????,??????????”推进，并利用 高压推进 / 赌徒勇气 制造局面差。 锋利没有形成压制，反而让自己的意图暴露得更早。 这一手带来 +2 的势头变化，总分来到 2。",
+          "proxyPlans": [
+            {
+              "participantId": "participant_679ade9c-e9b2-4fc2-9697-4486e127a9a8",
+              "actionType": "LEAD",
+              "intent": "第 1 回合优先执行LEAD，沿着“???????,??????????”推进，并利用 慎密 / 压场感 制造局面差。"
+            },
+            {
+              "participantId": "participant_6887cd0d-3ab4-4a55-900f-752acddcdc04",
+              "actionType": "DEBATE",
+              "intent": "第 1 回合优先执行DEBATE，沿着“???????,??????????”推进，并利用 高压推进 / 赌徒勇气 制造局面差。"
+            }
+          ],
+          "eventCard": {
+            "id": "false_testimony",
+            "title": "伪证词",
+            "summary": "所有人都拿到了一份不完全真实的版本，关键在于谁先意识到它是假的。",
+            "objective": "读懂房间里的偏差，而不是只回答表面问题。",
+            "stakes": "如果你把假信息当真，后续会一路踩错节奏。"
+          }
+        },
+        {
+          "round": 2,
+          "title": "Reverse Ledger",
+          "status": "pending",
+          "checkpointCount": 0,
+          "scores": [],
+          "skillEquips": []
+        },
+        {
+          "round": 3,
+          "title": "Final Seal",
+          "status": "pending",
+          "checkpointCount": 0,
+          "scores": [],
+          "skillEquips": []
+        }
+      ],
+      "createdAt": "2026-04-13T02:55:25.516Z",
+      "updatedAt": "2026-04-13T02:55:35.995Z"
+    },
     {
       "id": "match_12dd7306-d5ad-4088-b9e9-cc989eef4df3",
       "userId": "user_demo",
@@ -528,7 +653,9 @@
           "persona_legend_monk",
           "persona_legend_hacker"
         ],
-        "updatedAt": "2026-04-11T04:28:32.714Z"
+        "updatedAt": "2026-04-11T04:28:32.714Z",
+        "proxyMode": "self",
+        "briefing": "房间 briefing 尚未补充，建议在准备室中补齐当前剧本背景和首轮策略。"
       },
       "roundStates": [
         {
@@ -700,7 +827,9 @@
           "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3"
         ],
         "reservePersonaIds": [],
-        "updatedAt": "2026-04-11T04:28:17.557Z"
+        "updatedAt": "2026-04-11T04:28:17.557Z",
+        "proxyMode": "self",
+        "briefing": "房间 briefing 尚未补充，建议在准备室中补齐当前剧本背景和首轮策略。"
       }
     }
   ],
@@ -861,6 +990,85 @@
       "roundScore": 0,
       "totalScore": 0,
       "ghosted": false
+    },
+    {
+      "id": "participant_679ade9c-e9b2-4fc2-9697-4486e127a9a8",
+      "matchId": "match_e83b05fc-838d-461e-ad59-99329e1d461f",
+      "personaId": "persona_demo_self",
+      "displayName": "Crimson Archivist",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "memoryTraitId": "memory_86dbf002-6d1f-4b8e-ae9e-ce9d4c97fb09",
+      "isUserOwned": true,
+      "eliminated": false,
+      "roundScore": 3,
+      "totalScore": 3,
+      "ghosted": false
+    },
+    {
+      "id": "participant_6887cd0d-3ab4-4a55-900f-752acddcdc04",
+      "matchId": "match_e83b05fc-838d-461e-ad59-99329e1d461f",
+      "personaId": "persona_legend_tycoon",
+      "displayName": "Orbital Tycoon Muskcore",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 2,
+      "totalScore": 2,
+      "ghosted": false
+    },
+    {
+      "id": "participant_fa0aa600-59bb-40da-a3bb-0897253ece45",
+      "matchId": "match_e83b05fc-838d-461e-ad59-99329e1d461f",
+      "personaId": "persona_008b3212-6a9a-418e-b7ab-58cc53f57fc3",
+      "displayName": "Measure-born Hero",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": true,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
+      "ghosted": false
+    },
+    {
+      "id": "participant_2ab6268e-e085-481f-8b0c-b87ccfff4497",
+      "matchId": "match_e83b05fc-838d-461e-ad59-99329e1d461f",
+      "personaId": "persona_legend_lamplight",
+      "displayName": "Lamplight Lin Daiyu.exe",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
+      "ghosted": false
+    },
+    {
+      "id": "participant_f0336a75-6bdc-495c-bec4-5c12fbee8bfe",
+      "matchId": "match_e83b05fc-838d-461e-ad59-99329e1d461f",
+      "personaId": "persona_legend_orchid",
+      "displayName": "Neon Orchid",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
+      "ghosted": false
+    },
+    {
+      "id": "participant_f6b27f14-51cb-4258-91ad-618dba82db1b",
+      "matchId": "match_e83b05fc-838d-461e-ad59-99329e1d461f",
+      "personaId": "persona_legend_analyst",
+      "displayName": "Quiet Analyst",
+      "supportTotal": 0,
+      "skillLoadout": [],
+      "isUserOwned": false,
+      "eliminated": false,
+      "roundScore": 0,
+      "totalScore": 0,
+      "ghosted": false
     }
   ],
   "supportTickets": [
@@ -877,6 +1085,90 @@
   ],
   "datingDossiers": [],
   "streams": [
+    {
+      "id": "stream_84411c73-5b70-4bd4-a188-84548401128c",
+      "matchId": "match_e83b05fc-838d-461e-ad59-99329e1d461f",
+      "round": 1,
+      "phase": "queued",
+      "segments": [
+        "开局落注",
+        "第 1 回合在 Clockwork Jade Casino 展开。一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。",
+        "伪证词：所有人都拿到了一份不完全真实的版本，关键在于谁先意识到它是假的。 目标是读懂房间里的偏差，而不是只回答表面问题。，代价是如果你把假信息当真，后续会一路踩错节奏。",
+        "Crimson Archivist 这一回合的出手意图是：第 1 回合优先执行LEAD，沿着“???????,??????????”推进，并利用 慎密 / 压场感 制造局面差。 推进过急，主动权还没立住就先泄了一口气。 这一手带来 +3 的势头变化，总分来到 3。",
+        "Orbital Tycoon Muskcore 这一回合的出手意图是：第 1 回合优先执行DEBATE，沿着“???????,??????????”推进，并利用 高压推进 / 赌徒勇气 制造局面差。 锋利没有形成压制，反而让自己的意图暴露得更早。 这一手带来 +2 的势头变化，总分来到 2。"
+      ],
+      "finalChapter": "开局落注\n\n第 1 回合在 Clockwork Jade Casino 展开。一座以命运筹码为能源的蒸汽都城，所有人都戴着礼貌，所有礼貌都藏着刀。\n\n伪证词：所有人都拿到了一份不完全真实的版本，关键在于谁先意识到它是假的。 目标是读懂房间里的偏差，而不是只回答表面问题。，代价是如果你把假信息当真，后续会一路踩错节奏。\n\nCrimson Archivist 这一回合的出手意图是：第 1 回合优先执行LEAD，沿着“???????,??????????”推进，并利用 慎密 / 压场感 制造局面差。 推进过急，主动权还没立住就先泄了一口气。 这一手带来 +3 的势头变化，总分来到 3。\n\nOrbital Tycoon Muskcore 这一回合的出手意图是：第 1 回合优先执行DEBATE，沿着“???????,??????????”推进，并利用 高压推进 / 赌徒勇气 制造局面差。 锋利没有形成压制，反而让自己的意图暴露得更早。 这一手带来 +2 的势头变化，总分来到 2。",
+      "scoreBoard": [
+        {
+          "participantId": "participant_679ade9c-e9b2-4fc2-9697-4486e127a9a8",
+          "delta": 3,
+          "total": 3,
+          "notes": [
+            "Crimson Archivist 带着 慎密 / 压场感 / 故事脑 踏入 Clockwork Jade Casino。",
+            "记忆碎片 - Crown Echo: 上一代在残局里把命运往自己这边扳了半寸。",
+            "主导进场 判定失败，掷骰 0.88，阈值 0.52。",
+            "托管意图：第 1 回合优先执行LEAD，沿着“???????,??????????”推进，并利用 慎密 / 压场感 制造局面差。",
+            "裁判指令：旁白必须体现对手没有被说服，并让压力回流到行动者身上。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ],
+          "referee": {
+            "actionType": "LEAD",
+            "success": false,
+            "roll": 0.8818361172152436,
+            "threshold": 0.523536,
+            "heartbeatDelta": -11,
+            "pressureDelta": 11,
+            "summary": "裁判判定 失败：roll 0.88 vs threshold 0.52.",
+            "directives": [
+              "旁白必须体现对手没有被说服，并让压力回流到行动者身上。"
+            ]
+          }
+        },
+        {
+          "participantId": "participant_6887cd0d-3ab4-4a55-900f-752acddcdc04",
+          "delta": 2,
+          "total": 2,
+          "notes": [
+            "Orbital Tycoon Muskcore 带着 高压推进 / 赌徒勇气 / 争议引力 踏入 Clockwork Jade Casino。",
+            "逻辑压制 判定失败，掷骰 0.81，阈值 0.64。",
+            "托管意图：第 1 回合优先执行DEBATE，沿着“???????,??????????”推进，并利用 高压推进 / 赌徒勇气 制造局面差。",
+            "裁判指令：旁白必须体现对手没有被说服，并让压力回流到行动者身上。",
+            "世界氛围 opulent-pressure 正把剧情推向 谁能改写命运本金 / 旧王朝债券即将到期。"
+          ],
+          "referee": {
+            "actionType": "DEBATE",
+            "success": false,
+            "roll": 0.8118488129121033,
+            "threshold": 0.6400319999999999,
+            "heartbeatDelta": -11,
+            "pressureDelta": 11,
+            "summary": "裁判判定 失败：roll 0.81 vs threshold 0.64.",
+            "directives": [
+              "旁白必须体现对手没有被说服，并让压力回流到行动者身上。"
+            ]
+          }
+        }
+      ],
+      "proxyPlans": [
+        {
+          "participantId": "participant_679ade9c-e9b2-4fc2-9697-4486e127a9a8",
+          "actionType": "LEAD",
+          "intent": "第 1 回合优先执行LEAD，沿着“???????,??????????”推进，并利用 慎密 / 压场感 制造局面差。"
+        },
+        {
+          "participantId": "participant_6887cd0d-3ab4-4a55-900f-752acddcdc04",
+          "actionType": "DEBATE",
+          "intent": "第 1 回合优先执行DEBATE，沿着“???????,??????????”推进，并利用 高压推进 / 赌徒勇气 制造局面差。"
+        }
+      ],
+      "eventCard": {
+        "id": "false_testimony",
+        "title": "伪证词",
+        "summary": "所有人都拿到了一份不完全真实的版本，关键在于谁先意识到它是假的。",
+        "objective": "读懂房间里的偏差，而不是只回答表面问题。",
+        "stakes": "如果你把假信息当真，后续会一路踩错节奏。"
+      }
+    },
     {
       "id": "stream_0b4cef7e-e28b-47d1-8af2-dae169ea3a4f",
       "matchId": "match_57aa3786-6aed-4c9b-9deb-8d34c626d6c0",
@@ -1075,6 +1367,80 @@
   "scratchUploads": [],
   "webhooks": [],
   "datingMatches": [
+    {
+      "id": "dating_66f1b2c9-da7b-490b-af32-9517c723bea7",
+      "userId": "user_demo",
+      "selfPersonaId": "persona_demo_self",
+      "counterpartPersonaId": "persona_legend_barista",
+      "backdropTitle": "塔罗夜市巷口",
+      "backdropSummary": "夜市尽头的塔罗摊位刚好空出一张双人桌，纸牌、雾气和灯光把你们的第一次对视推得更像命运安排。",
+      "scene": {
+        "id": "shared_topic",
+        "title": "塔罗夜市巷口 · 共同话题",
+        "summary": "话题正在从天气和场景转向真正的兴趣与价值判断。",
+        "objective": "找到一个能让两个人都投入的主题，把对话从寒暄拉进真实。",
+        "risk": "如果你只顾着展示自己，房间会迅速失去互动感。"
+      },
+      "heartbeat": 51,
+      "vibe": 51,
+      "turnCount": 1,
+      "status": "active",
+      "transcript": [
+        {
+          "id": "msg_a1819f22-a8d8-4c9a-b3ba-31cd0b667ce5",
+          "speaker": "other",
+          "text": ", let's craft an opening line fitting \"The Whisperer of Desire\" persona, adhering to the tight constraints: 1-2 lines, direct narrative (no explanation), matching the character profiles (me: Crimson Archivist, cautious observer; them: Sunlit Barista, warm, relaxing), and set in the \"Tarot Night Market Alley.\" The goal is to capture subtext and tension immediately.\n\nUser's persona (Crimson Archivist) is the one I am rendering the reaction *to*, or am I rendering the scene from a neutral/omniscient perspective focusing on the interaction? The prompt asks for \"第一句开场白\" (first opening line) and provides a \"fallback\" which describes the Barista reacting to the Archivist. The prompt is \"请为 1v1 相亲房生成“第一句开场白”.\"\n\nLet's look at the fallback: \"Sunlit Barista 看着你落座时，先给了一个不急不缓的眼神，像是在判断你会不会把这场相遇演成模板。\" (Wait, the fallback's description of Barista seems a bit more calculating than \"Sunlit Barista\" profile suggests, maybe it's blending the Archivist's expectation into it. Let's make the Barista warm but the scene tense/layered).\n\nActually, the Barista is the \"对方\" (Them), and the user is \"我方\" (Crimson Archivist). Since I am rendering the narrative *for* the user playing as Crimson Archivist, I should describe the Barista's action and the immediate vibe, keeping it brief (1-2 lines).\n\nLet's focus on the Barista's warmth contrasting with the Archivist's observation in the mystical setting.\nThe Barista's nature: High empathy, everyday feel, relaxing.\nThe Archivist's nature: Cautious, observant, story-minded.\nScene: Tarot stall at night market, fog, lights.\n\nDraft 1:\n她把面前那叠略显陈旧的塔罗牌随意拨开一点，推过来一杯还在冒热气的茶，嘴角的笑意比夜市的雾气更自然：“不用急着抽牌，先暖暖手吧。”\n\nLet's refine it to be more \"Whisperer of Desire\" style - slightly more tension, showing the contrast between the mystical setting and her grounding, everyday warmth, which immediately disarms the \"cautious observer\" (the user).\n\nDraft 2:\n在昏暗且刻意营造神秘感的塔罗灯光下，她只是熟练地把桌上的杂物拨开，递来一杯温度刚好温手的热茶。\n“这里的氛围有点重，先喝口水缓一缓？”她眼角的笑意没有半分算计，却轻易卸掉了你进门前叠好的防备。\n\nLet's shorten it to strictly 1-2 sentences.\n\nDraft 3:\n她并没有像塔罗师那样故弄玄虚，只是自然地把桌上的塔罗牌往旁边拨了拨，递来一杯热气腾腾的茶。\n“这里的雾气有些凉，先暖暖手再猜命运也不迟。”她眼角那抹毫无防备的笑意，轻易就打乱了你原本准备好的审视节奏。\n\nThis fits the constraints:\n1-2 lines? Yes, 2 sentences.\nNo explanation, direct narrative? Yes.\nCharacter personalities fit? Yes (Barista is grounding/warm, directly countering the Archivist's observant/cautious nature by disarming them).\n\nWait, the prompt asks for \"第一句开场白\" (opening line). Does it mean just the spoken line, or the narrative action + line? The fallback has action + subtext. Let's provide a blend.\n\nLet's look at Draft 3 again. It's very good, fits the SOUL.md perfectly (restrained, subtext of power shifting—she disarms his observation effortlessly).\n\nLet's try one more variation, focusing on the contrast of the \"Sunlit\" persona in the \"dark alley\".\n\nDraft 4:\n她将一张没翻开的塔罗牌随意压在温热的茶杯下，暖黄的光线柔和了她毫无防备的笑意。\n“相亲和算命一样累人，”她单手托腮，语气里带着日常的松弛感，“所以我们要不要先从喝口热水开始？”\n\nDraft 4 is excellent. It captures the \"Sunlit Barista\" perfectly (relaxing, everyday, high empathy) while acknowledging the setting, and immediately shifts the power dynamic by ignoring the \"rules\" of the tense setting, making the \"Crimson Archivist\" (who observes and plans) have to adapt to her relaxed pace.\n\nLet's check constraints:\n- 1-2 lines: Yes, 2 lines.\n- Direct narrative: Yes.\n- Fits profiles: Yes.\n\nDraft 4 it is.她将一张没翻开的塔罗牌随意压在温热的纸杯下，暖黄的摊位灯光柔和了她毫无防备的笑意。\n“相亲和算命一样累人，”她单手托腮，语气里带着日常的松弛感，“所以我们要不要先放下剧本，从喝口热水开始？”",
+          "heartbeat": 50,
+          "vibe": 50,
+          "createdAt": "2026-04-13T02:56:21.250Z"
+        },
+        {
+          "id": "msg_93260e25-5159-49bc-8e82-463758619a72",
+          "speaker": "self",
+          "text": "你把气氛往心动方向推近了一步。",
+          "heartbeat": 51,
+          "vibe": 51,
+          "createdAt": "2026-04-13T02:56:35.054Z"
+        },
+        {
+          "id": "msg_1e807233-7476-4f84-bc14-3341abc3ef34",
+          "speaker": "other",
+          "text": ", let's write this dialogue scene based on the rules and context provided.\n\n1.  **Analyze the inputs:**\n    *   **My Character:** Crimson Archivist (Meticulous, commanding presence, story-driven, observant before acting).\n    *   **Their Character:** Sunlit Barista (Approachable, highly empathetic, grounded in everyday life, sets people at ease).\n    *   **Scene:** Alleyway at a Tarot Night Market.\n    *   **Action:** FLIRT.\n    *   **Result:** Success.\n    *   **Delta:** Heartbeat +1, Rapport +1.\n    *   **Current State:** Heartbeat 51, Rapport 51.\n    *   **Fallback Concept:** Pushed the vibe a step forward. They didn't pull away but caught the subtle flirtation.\n    *   **Constraints:** 2-4 sentences. Pure text (no markdown). Do not change the result. Focus on tension, power dynamics, and subtext (per SOUL.md).\n\n2.  **Drafting - Step 1: Establish the atmosphere and the observant nature of the Crimson Archivist.**\n    The night market is chaotic, but I (Crimson Archivist) focus on a detail. Let's use the lighting.\n    *Draft:* 塔罗摊位幽暗的紫灯打在你那杯没喝完的拿铁上，我停顿了半秒，目光从杯缘的浅淡唇印移向你带笑的眼睛。\n\n3.  **Drafting - Step 2: The flirtation (verbal + subtext) and the shift in power/vibe.**\n    Needs to be subtle, a slight tease that tests boundaries without being overt. The result is a small win (+1/+1).\n    *Draft:* “原来能让人放松的魔法，也会在这条巷子里迷路吗？”\n\n4.  **Drafting - Step 3: The Barista's reaction.**\n    They are empathetic and approachable, so they don't get defensive. They catch the vibe and hold their ground, softening my \"commanding presence.\"\n    *Draft:* 你没有躲开这句带着审视的试探，反而将咖啡杯轻轻往我这边推了推，眼底漾起一点心照不宣的温和。\n\n5.  **Review and Refine (Checking against constraints):**\n    *   *Sentence count:* 3 sentences. (Pass)\n    *   *No markdown:* Need to strip quotes and formatting for the final output. (Pass)\n    *   *Result:* Reflects +1/+1 (a slight, successful step forward, not a massive leap). (Pass)\n    *   *Tone:* Matches SOUL.md (subtle, eye contact, physical distance changing via the cup, subtext). (Pass)\n\n6.  **Final Polish (Pure text):**\n    塔罗摊位幽暗的紫灯打在那杯半冷的拿铁上，我停顿了半秒，目光从杯缘的浅淡唇印缓缓移向你。原来能让人放松的魔法，也会在气氛暧昧的巷口里短暂失效。你并没有退缩，只是将咖啡杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。\n\nLet's double check the prompt: \"不要输出 markdown\" and \"只输出纯文本\".\nI will output exactly the 3 sentences, nothing else.\n\nSentence 1: 塔罗摊位幽暗的紫灯打在那杯半冷的拿铁上，我停顿了半秒，目光从杯缘缓缓移向你。\nSentence 2: “原来能让人放松的魔法，也会在气氛暧昧的巷口里短暂失效。”\nSentence 3: 你并没有躲开这句带着审视的试探，反而将纸杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。\n\nWait, let's remove the dialogue quotes just to be safe about \"pure text\", or leave them as Chinese quotes which aren't markdown. Chinese quotes are fine. Let's combine them into a tight paragraph.\n\n塔罗摊位幽暗的紫灯打在半冷的拿铁上，我停顿了半秒，目光从杯缘缓缓移向你的眼睛。我说原来能让人放松的魔法，也会在这条巷口短暂失效。你没有躲开这句带着审视的试探，反而将纸杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。\n\nThis is exactly 3 sentences, pure text, captures the +1/+1 success, uses the scene, and fits the personas.塔罗摊位幽暗的紫灯打在半冷的拿铁上，我停顿了半秒，目光从杯缘缓缓移向你的眼睛。我说原来能让人放松的魔法，也会在这条巷口短暂失效。你没有躲开这句带着审视的试探，反而将纸杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。",
+          "heartbeat": 51,
+          "vibe": 51,
+          "createdAt": "2026-04-13T02:56:35.054Z"
+        }
+      ],
+      "currentOptions": [
+        {
+          "id": "opt_7bbd71bd-af44-4956-80d3-2431be7665bc",
+          "actionType": "FLIRT",
+          "label": "热感回应",
+          "flavor": "往前走半步，别总停在观察位。"
+        },
+        {
+          "id": "opt_d91053f8-64b9-436f-9fb7-cee411efb270",
+          "actionType": "LOGIC_TALK",
+          "label": "理性切入",
+          "flavor": "顺着当前话题往深处切，让你们的价值观真的碰一下。"
+        },
+        {
+          "id": "opt_a848cd50-3d92-4a4e-9876-82e07d827f4b",
+          "actionType": "PULL_BACK",
+          "label": "收束试探",
+          "flavor": "这一步风险更高，容易被误读成兴趣不足。"
+        },
+        {
+          "id": "opt_fb5bb190-0867-4cb0-80c4-85971b5561f9",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：情绪加速",
+          "flavor": "消耗钻石，强行把这一回合推向更高张力的方向。",
+          "costDiamonds": 3
+        }
+      ],
+      "createdAt": "2026-04-13T02:56:21.250Z",
+      "updatedAt": "2026-04-13T02:56:35.054Z"
+    },
     {
       "id": "dating_b378ea72-f05f-46e9-8831-e8c3676f19f2",
       "userId": "user_demo",
@@ -1569,6 +1935,107 @@
   ],
   "datingStreams": [
     {
+      "id": "dating_stream_be3e2ad5-4f40-4228-a672-364583e4f424",
+      "roomId": "dating_66f1b2c9-da7b-490b-af32-9517c723bea7",
+      "phase": "queued",
+      "segments": [
+        ", let's write this dialogue scene based on the rules and context provided.",
+        "1.",
+        "**Analyze the inputs:**\n    *   **My Character:** Crimson Archivist (Meticulous, commanding presence, story-driven, observant before acting).",
+        "*   **Their Character:** Sunlit Barista (Approachable, highly empathetic, grounded in everyday life, sets people at ease).",
+        "*   **Scene:** Alleyway at a Tarot Night Market.",
+        "*   **Action:** FLIRT.",
+        "*   **Result:** Success.",
+        "*   **Delta:** Heartbeat +1, Rapport +1.",
+        "*   **Current State:** Heartbeat 51, Rapport 51.",
+        "*   **Fallback Concept:** Pushed the vibe a step forward.",
+        "They didn't pull away but caught the subtle flirtation.",
+        "*   **Constraints:** 2-4 sentences.",
+        "Pure text (no markdown).",
+        "Do not change the result.",
+        "Focus on tension, power dynamics, and subtext (per SOUL.",
+        "md).",
+        "2.",
+        "**Drafting - Step 1: Establish the atmosphere and the observant nature of the Crimson Archivist.",
+        "**\n    The night market is chaotic, but I (Crimson Archivist) focus on a detail.",
+        "Let's use the lighting.",
+        "*Draft:* 塔罗摊位幽暗的紫灯打在你那杯没喝完的拿铁上，我停顿了半秒，目光从杯缘的浅淡唇印移向你带笑的眼睛。",
+        "3.",
+        "**Drafting - Step 2: The flirtation (verbal + subtext) and the shift in power/vibe.",
+        "**\n    Needs to be subtle, a slight tease that tests boundaries without being overt.",
+        "The result is a small win (+1/+1).",
+        "*Draft:* “原来能让人放松的魔法，也会在这条巷子里迷路吗？",
+        "”\n\n4.",
+        "**Drafting - Step 3: The Barista's reaction.",
+        "**\n    They are empathetic and approachable, so they don't get defensive.",
+        "They catch the vibe and hold their ground, softening my \"commanding presence.",
+        "\"\n    *Draft:* 你没有躲开这句带着审视的试探，反而将咖啡杯轻轻往我这边推了推，眼底漾起一点心照不宣的温和。",
+        "5.",
+        "**Review and Refine (Checking against constraints):**\n    *   *Sentence count:* 3 sentences.",
+        "(Pass)\n    *   *No markdown:* Need to strip quotes and formatting for the final output.",
+        "(Pass)\n    *   *Result:* Reflects +1/+1 (a slight, successful step forward, not a massive leap).",
+        "(Pass)\n    *   *Tone:* Matches SOUL.",
+        "md (subtle, eye contact, physical distance changing via the cup, subtext).",
+        "(Pass)\n\n6.",
+        "**Final Polish (Pure text):**\n    塔罗摊位幽暗的紫灯打在那杯半冷的拿铁上，我停顿了半秒，目光从杯缘的浅淡唇印缓缓移向你。",
+        "原来能让人放松的魔法，也会在气氛暧昧的巷口里短暂失效。",
+        "你并没有退缩，只是将咖啡杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。",
+        "Let's double check the prompt: \"不要输出 markdown\" and \"只输出纯文本\".",
+        "I will output exactly the 3 sentences, nothing else.",
+        "Sentence 1: 塔罗摊位幽暗的紫灯打在那杯半冷的拿铁上，我停顿了半秒，目光从杯缘缓缓移向你。",
+        "Sentence 2: “原来能让人放松的魔法，也会在气氛暧昧的巷口里短暂失效。",
+        "”\nSentence 3: 你并没有躲开这句带着审视的试探，反而将纸杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。",
+        "Wait, let's remove the dialogue quotes just to be safe about \"pure text\", or leave them as Chinese quotes which aren't markdown.",
+        "Chinese quotes are fine.",
+        "Let's combine them into a tight paragraph.",
+        "塔罗摊位幽暗的紫灯打在半冷的拿铁上，我停顿了半秒，目光从杯缘缓缓移向你的眼睛。",
+        "我说原来能让人放松的魔法，也会在这条巷口短暂失效。",
+        "你没有躲开这句带着审视的试探，反而将纸杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。",
+        "This is exactly 3 sentences, pure text, captures the +1/+1 success, uses the scene, and fits the personas.",
+        "塔罗摊位幽暗的紫灯打在半冷的拿铁上，我停顿了半秒，目光从杯缘缓缓移向你的眼睛。",
+        "我说原来能让人放松的魔法，也会在这条巷口短暂失效。",
+        "你没有躲开这句带着审视的试探，反而将纸杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。"
+      ],
+      "finalText": ", let's write this dialogue scene based on the rules and context provided.\n\n1.  **Analyze the inputs:**\n    *   **My Character:** Crimson Archivist (Meticulous, commanding presence, story-driven, observant before acting).\n    *   **Their Character:** Sunlit Barista (Approachable, highly empathetic, grounded in everyday life, sets people at ease).\n    *   **Scene:** Alleyway at a Tarot Night Market.\n    *   **Action:** FLIRT.\n    *   **Result:** Success.\n    *   **Delta:** Heartbeat +1, Rapport +1.\n    *   **Current State:** Heartbeat 51, Rapport 51.\n    *   **Fallback Concept:** Pushed the vibe a step forward. They didn't pull away but caught the subtle flirtation.\n    *   **Constraints:** 2-4 sentences. Pure text (no markdown). Do not change the result. Focus on tension, power dynamics, and subtext (per SOUL.md).\n\n2.  **Drafting - Step 1: Establish the atmosphere and the observant nature of the Crimson Archivist.**\n    The night market is chaotic, but I (Crimson Archivist) focus on a detail. Let's use the lighting.\n    *Draft:* 塔罗摊位幽暗的紫灯打在你那杯没喝完的拿铁上，我停顿了半秒，目光从杯缘的浅淡唇印移向你带笑的眼睛。\n\n3.  **Drafting - Step 2: The flirtation (verbal + subtext) and the shift in power/vibe.**\n    Needs to be subtle, a slight tease that tests boundaries without being overt. The result is a small win (+1/+1).\n    *Draft:* “原来能让人放松的魔法，也会在这条巷子里迷路吗？”\n\n4.  **Drafting - Step 3: The Barista's reaction.**\n    They are empathetic and approachable, so they don't get defensive. They catch the vibe and hold their ground, softening my \"commanding presence.\"\n    *Draft:* 你没有躲开这句带着审视的试探，反而将咖啡杯轻轻往我这边推了推，眼底漾起一点心照不宣的温和。\n\n5.  **Review and Refine (Checking against constraints):**\n    *   *Sentence count:* 3 sentences. (Pass)\n    *   *No markdown:* Need to strip quotes and formatting for the final output. (Pass)\n    *   *Result:* Reflects +1/+1 (a slight, successful step forward, not a massive leap). (Pass)\n    *   *Tone:* Matches SOUL.md (subtle, eye contact, physical distance changing via the cup, subtext). (Pass)\n\n6.  **Final Polish (Pure text):**\n    塔罗摊位幽暗的紫灯打在那杯半冷的拿铁上，我停顿了半秒，目光从杯缘的浅淡唇印缓缓移向你。原来能让人放松的魔法，也会在气氛暧昧的巷口里短暂失效。你并没有退缩，只是将咖啡杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。\n\nLet's double check the prompt: \"不要输出 markdown\" and \"只输出纯文本\".\nI will output exactly the 3 sentences, nothing else.\n\nSentence 1: 塔罗摊位幽暗的紫灯打在那杯半冷的拿铁上，我停顿了半秒，目光从杯缘缓缓移向你。\nSentence 2: “原来能让人放松的魔法，也会在气氛暧昧的巷口里短暂失效。”\nSentence 3: 你并没有躲开这句带着审视的试探，反而将纸杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。\n\nWait, let's remove the dialogue quotes just to be safe about \"pure text\", or leave them as Chinese quotes which aren't markdown. Chinese quotes are fine. Let's combine them into a tight paragraph.\n\n塔罗摊位幽暗的紫灯打在半冷的拿铁上，我停顿了半秒，目光从杯缘缓缓移向你的眼睛。我说原来能让人放松的魔法，也会在这条巷口短暂失效。你没有躲开这句带着审视的试探，反而将纸杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。\n\nThis is exactly 3 sentences, pure text, captures the +1/+1 success, uses the scene, and fits the personas.塔罗摊位幽暗的紫灯打在半冷的拿铁上，我停顿了半秒，目光从杯缘缓缓移向你的眼睛。我说原来能让人放松的魔法，也会在这条巷口短暂失效。你没有躲开这句带着审视的试探，反而将纸杯轻轻往我这边推了半寸，眼底漾起一点心照不宣的温和反击。",
+      "heartbeat": 51,
+      "vibe": 51,
+      "status": "active",
+      "scene": {
+        "id": "shared_topic",
+        "title": "塔罗夜市巷口 · 共同话题",
+        "summary": "话题正在从天气和场景转向真正的兴趣与价值判断。",
+        "objective": "找到一个能让两个人都投入的主题，把对话从寒暄拉进真实。",
+        "risk": "如果你只顾着展示自己，房间会迅速失去互动感。"
+      },
+      "options": [
+        {
+          "id": "opt_7bbd71bd-af44-4956-80d3-2431be7665bc",
+          "actionType": "FLIRT",
+          "label": "热感回应",
+          "flavor": "往前走半步，别总停在观察位。"
+        },
+        {
+          "id": "opt_d91053f8-64b9-436f-9fb7-cee411efb270",
+          "actionType": "LOGIC_TALK",
+          "label": "理性切入",
+          "flavor": "顺着当前话题往深处切，让你们的价值观真的碰一下。"
+        },
+        {
+          "id": "opt_a848cd50-3d92-4a4e-9876-82e07d827f4b",
+          "actionType": "PULL_BACK",
+          "label": "收束试探",
+          "flavor": "这一步风险更高，容易被误读成兴趣不足。"
+        },
+        {
+          "id": "opt_fb5bb190-0867-4cb0-80c4-85971b5561f9",
+          "actionType": "USE_SKILL",
+          "label": "使用技能：情绪加速",
+          "flavor": "消耗钻石，强行把这一回合推向更高张力的方向。",
+          "costDiamonds": 3
+        }
+      ]
+    },
+    {
       "id": "dating_stream_b7d382a9-6d4f-41a9-98b2-ab727153b449",
       "roomId": "dating_38d90aa0-1fc1-49f0-82d4-43c40fee8db5",
       "phase": "queued",
@@ -1644,6 +2111,129 @@
           "flavor": "消耗钻石，强行把这一回合推向更真诚的方向。",
           "costDiamonds": 3
         }
+      ]
+    }
+  ],
+  "telemetryEvents": [
+    {
+      "id": "telemetry_d398efb6-4056-4815-adcf-0a5cd33e7706",
+      "type": "dating.turn_played",
+      "userId": "user_demo",
+      "entityId": "dating_66f1b2c9-da7b-490b-af32-9517c723bea7",
+      "createdAt": "2026-04-13T02:56:35.054Z",
+      "metadata": {
+        "actionType": "FLIRT",
+        "success": true,
+        "heartbeatDelta": 1,
+        "vibeDelta": 1,
+        "turnCount": 1,
+        "roomStatus": "active",
+        "sceneTitle": "塔罗夜市巷口 · 共同话题"
+      }
+    },
+    {
+      "id": "telemetry_37aac612-347c-477c-8dcf-879b8abfb9b7",
+      "type": "dating.room_created",
+      "userId": "user_demo",
+      "entityId": "dating_66f1b2c9-da7b-490b-af32-9517c723bea7",
+      "createdAt": "2026-04-13T02:56:21.250Z",
+      "metadata": {
+        "selfPersona": "Crimson Archivist",
+        "counterpartPersona": "Sunlit Barista",
+        "backdropTitle": "塔罗夜市巷口",
+        "sceneTitle": "塔罗夜市巷口 · 初次对视"
+      }
+    },
+    {
+      "id": "telemetry_f98fadf9-57a9-4647-bfc6-1d341a3620cd",
+      "type": "arena.round_triggered",
+      "userId": "user_demo",
+      "entityId": "match_e83b05fc-838d-461e-ad59-99329e1d461f",
+      "createdAt": "2026-04-13T02:56:06.879Z",
+      "metadata": {
+        "round": 1,
+        "worldTitle": "Clockwork Jade Casino",
+        "proxyMode": "ai",
+        "eventCardTitle": "伪证词",
+        "elimination": null
+      }
+    },
+    {
+      "id": "telemetry_55911cea-0afc-4c85-a974-6b535e099726",
+      "type": "arena.prep_saved",
+      "userId": "user_demo",
+      "entityId": "match_e83b05fc-838d-461e-ad59-99329e1d461f",
+      "createdAt": "2026-04-13T02:55:25.562Z",
+      "metadata": {
+        "mode": "rapid",
+        "proxyMode": "ai",
+        "seatCount": 2,
+        "reserveCount": 0
+      }
+    },
+    {
+      "id": "telemetry_de7b959d-3cee-41ff-92a1-d3ddc8acb655",
+      "type": "arena.match_created",
+      "userId": "user_demo",
+      "entityId": "match_e83b05fc-838d-461e-ad59-99329e1d461f",
+      "createdAt": "2026-04-13T02:55:25.516Z",
+      "metadata": {
+        "worldTitle": "Clockwork Jade Casino",
+        "mode": "public",
+        "maxParticipants": 2,
+        "selectedSeats": 2
+      }
+    }
+  ],
+  "insightSnapshots": [
+    {
+      "id": "insight_d5241da2-86a2-46bc-8c05-452d8b83c3d8",
+      "generatedAt": "2026-04-13T02:56:44.385Z",
+      "windowHours": 168,
+      "eventCount": 5,
+      "summaryHash": "dce161f1dbca5a44b78d2f4a3946f6ba4d6d099e2c1ee1801b06d8e7c82b7131",
+      "source": "heuristic",
+      "headline": "当前 telemetry 说明房间主循环已经活了，但首幕摩擦仍然是最主要的漏斗。",
+      "findings": [
+        "Second-turn dating retention is only 0%, which suggests scene escalation is too flat."
+      ],
+      "recommendations": [
+        {
+          "priority": "next",
+          "title": "第二回合前必须升级冲突",
+          "why": "只有 0% 的相亲房进入了第二个玩家回合。",
+          "action": "在第一轮交换后立刻插入一个明确分支或揭示，让房间像在推进剧情，而不是原地打转。"
+        }
+      ],
+      "watchlist": [
+        "哪些竞技场事件卡会带来复玩，而不是一轮新鲜感？",
+        "哪些相亲开场能保住张力，又不会掉进油腻调情？",
+        "用户理解 AI 托管之后，它是否真的能提升回合触发率？"
+      ]
+    },
+    {
+      "id": "insight_1046ccd8-bd9c-4f9b-9f9b-6a4d0a00b8ab",
+      "generatedAt": "2026-04-13T02:55:15.608Z",
+      "windowHours": 168,
+      "eventCount": 0,
+      "summaryHash": "e4c420545f00347726e22095bee9e78671d63ac1404e0b7f076870c5dedeec60",
+      "source": "heuristic",
+      "headline": "Current telemetry suggests the room loops are alive, but early-scene friction is still the main leak.",
+      "findings": [
+        "Core room loops are moving, but telemetry volume is still small enough that every new room changes the trendline."
+      ],
+      "recommendations": [
+        {
+          "priority": "watch",
+          "title": "Increase telemetry volume",
+          "why": "The system is stable enough that higher sample size matters more than another intuition-driven tweak.",
+          "action": "Drive more rooms through the current loops before changing balance."
+        }
+      ],
+      "watchlist": [
+        "Which arena event cards correlate with repeat play instead of one-round novelty?",
+        "Which dating scene openings preserve tension without collapsing into generic flirting?",
+        "Does AI proxy increase round trigger rate after users understand what it does?"
       ]
     }
   ]

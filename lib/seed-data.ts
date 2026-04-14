@@ -247,6 +247,20 @@ export const seedWorlds: WorldPack[] = [
   },
 ];
 
+export const seedGameplayConfig: AppDatabase["gameplayConfig"] = {
+  dating: {
+    forceTrustCrisisAfterFirstTurn: false,
+    tensionBoost: 0,
+    environmentPressure: 0,
+    skillCostDiamonds: 3,
+  },
+  arena: {
+    defaultProxyMode: "self",
+    openingPressureBoost: 0,
+    eventIntensity: 1,
+  },
+};
+
 export function createSeedDatabase(): AppDatabase {
   return {
     users: [demoUser],
@@ -262,6 +276,12 @@ export function createSeedDatabase(): AppDatabase {
     datingStreams: [],
     streams: [],
     scratchUploads: [],
+    gameplayConfig: seedGameplayConfig,
+    gameplayConfigHistory: [],
+    projectChangeProposals: [],
+    projectChangeHistory: [],
+    telemetryEvents: [],
+    insightSnapshots: [],
     webhooks: [],
   };
 }

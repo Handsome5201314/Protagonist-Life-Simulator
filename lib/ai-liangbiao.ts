@@ -1,4 +1,10 @@
-﻿import type { PersonaSnapshot, TraitVector } from "@/lib/types";
+import {
+  coreDimensionsToTraitVector,
+  looksLikeDigitalGeneProtocol,
+  verifyDigitalGeneProtocol,
+  type DigitalGeneProtocol,
+} from "@/lib/digital-gene-protocol";
+import type { PersonaSnapshot, TraitVector } from "@/lib/types";
 import { addDays, createId, createLockedHash } from "@/lib/utils";
 
 type ImportedAssessment = {
@@ -15,6 +21,7 @@ type ImportedProfile = {
   interests?: string[];
   fears?: string[];
   assessments?: ImportedAssessment[];
+  protocolSnapshot?: DigitalGeneProtocol;
 };
 
 type PartnerProfilePayload = {
@@ -62,29 +69,44 @@ function createVectorFromAssessments(assessments: ImportedAssessment[] = []): Tr
   return base;
 }
 
-export async function createPersonaFromAiliangbiaoProfile(userId: string, profile: ImportedProfile): Promise<PersonaSnapshot> {
-  const interests = profile.interests ?? ["叙事设计", "人格实验"];
-  const fears = profile.fears ?? ["被错误定义"];
-  const assessments = profile.assessments ?? [];
-  const vector = createVectorFromAssessments(assessments);
-  const ageMonths = profile.ageMonths ?? 360;
-  const ageBand = ageMonths >= 216 ? "adult" : ageMonths >= 156 ? "teen" : "child";
-  const relation = String(profile.relation || "SELF").toUpperCase() === "SELF" ? "SELF" : "OTHER";
-  const adultOnlyEligible = relation === "SELF" && ageBand === "adult";
+function resolveAgeMonths(protocolSnapshot?: DigitalGeneProtocol, ageMonths?: number | null) {
+  if (ageMonths != null) return ageMonths;
+  if (protocolSnapshot?.age_band === "adult") return 336;
+  if (protocolSnapshot?.age_band === "teen") return 180;
+  if (protocolSnapshot?.age_band === "child") return 120;
+  return 360;
+}
 
-  const publicTraitTags = [
-    adultOnlyEligible ? "成年主角" : "私密档案",
-    vector.strategy > 60 ? "策略型" : "感受型",
-    vector.charm > 60 ? "镜头感" : "慢热",
-    vector.resilience > 60 ? "抗压" : "高敏",
-  ];
+function resolveImportedVector(protocolSnapshot: DigitalGeneProtocol | undefined, assessments: ImportedAssessment[]) {
+  return protocolSnapshot ? coreDimensionsToTraitVector(protocolSnapshot.core_dimensions) : createVectorFromAssessments(assessments);
+}
+
+export async function createPersonaFromAiliangbiaoProfile(userId: string, profile: ImportedProfile): Promise<PersonaSnapshot> {
+  const protocolSnapshot = profile.protocolSnapshot;
+  const interests = profile.interests ?? protocolSnapshot?.interests ?? ["叙事设计", "人格实验"];
+  const fears = profile.fears ?? protocolSnapshot?.fears ?? ["被错误定义"];
+  const assessments = profile.assessments ?? [];
+  const vector = resolveImportedVector(protocolSnapshot, assessments);
+  const ageMonths = resolveAgeMonths(protocolSnapshot, profile.ageMonths);
+  const ageBand = protocolSnapshot?.age_band ?? (ageMonths >= 216 ? "adult" : ageMonths >= 156 ? "teen" : "child");
+  const relation = protocolSnapshot?.relation ?? (String(profile.relation || "SELF").toUpperCase() === "SELF" ? "SELF" : "OTHER");
+  const adultOnlyEligible = protocolSnapshot?.adult_only_eligible ?? (relation === "SELF" && ageBand === "adult");
+
+  const publicTraitTags = protocolSnapshot?.personality_tags?.length
+    ? protocolSnapshot.personality_tags
+    : [
+        adultOnlyEligible ? "成年主角" : "私密档案",
+        vector.strategy > 60 ? "策略型" : "感受型",
+        vector.charm > 60 ? "镜头感" : "慢热",
+        vector.resilience > 60 ? "抗压" : "高敏",
+      ];
 
   return {
     id: createId("persona"),
     userId,
     source: "ailiangbiao",
-    sourceProfileId: profile.id,
-    assessmentVersion: "ailiangbiao-prototype",
+    sourceProfileId: protocolSnapshot?.dna_id || profile.id,
+    assessmentVersion: protocolSnapshot?.version || "ailiangbiao-prototype",
     name: profile.nickname,
     relation,
     ageBand,
@@ -93,10 +115,11 @@ export async function createPersonaFromAiliangbiaoProfile(userId: string, profil
     publicTraitTags,
     fears,
     interests,
-    communicationStyle: vector.charm > 60 ? "theatrical-intimate" : "quiet-precise",
-    careerTilt: vector.strategy > vector.empathy ? "strategy-led" : "people-led",
+    communicationStyle: protocolSnapshot?.communication_style || (vector.charm > 60 ? "theatrical-intimate" : "quiet-precise"),
+    careerTilt: protocolSnapshot?.career_tilt || (vector.strategy > vector.empathy ? "strategy-led" : "people-led"),
     riskFlags: adultOnlyEligible ? [] : ["private_only"],
-    lockedHash: createLockedHash({ profile: profile.nickname, interests, fears, assessments }),
+    traitFragmentIds: protocolSnapshot?.initial_traits?.map((item) => item.split(":")[0].trim()) || [],
+    lockedHash: protocolSnapshot?.integrity_hash || createLockedHash({ profile: profile.nickname, interests, fears, assessments }),
     expiresAt: addDays(30),
   };
 }
@@ -139,6 +162,10 @@ function getPartnerHeaders() {
   return token ? { Authorization: `Bearer ${token}` } : undefined;
 }
 
+function extractProtocolSnapshot(input: unknown) {
+  return looksLikeDigitalGeneProtocol(input) ? verifyDigitalGeneProtocol(input) : undefined;
+}
+
 export async function fetchPartnerImportPayload() {
   const baseUrl = getPartnerBaseUrl();
   if (!baseUrl) return null;
@@ -172,21 +199,22 @@ export async function fetchPartnerImportPayload() {
     const snapshotPayload = (await snapshotResponse.json()) as {
       sourceProfileId?: string;
       publicTraitTags?: string[];
-      traitVector?: TraitVector;
       riskFlags?: string[];
     };
     const assessmentsPayload = assessmentsResponse.ok
       ? ((await assessmentsResponse.json()) as { items?: ImportedAssessment[] })
       : { items: [] };
+    const protocolSnapshot = extractProtocolSnapshot(snapshotPayload);
 
     profiles.push({
-      id: snapshotPayload.sourceProfileId || profile.profileId,
+      id: protocolSnapshot?.dna_id || snapshotPayload.sourceProfileId || profile.profileId,
       nickname: profile.name,
-      relation: profile.adultOnlyEligible ? "SELF" : "OTHER",
-      ageMonths: profile.adultOnlyEligible ? 336 : 144,
-      interests: snapshotPayload.publicTraitTags || ["partner import"],
-      fears: snapshotPayload.riskFlags || [],
+      relation: protocolSnapshot?.relation || (profile.adultOnlyEligible ? "SELF" : "OTHER"),
+      ageMonths: resolveAgeMonths(protocolSnapshot, profile.adultOnlyEligible ? 336 : 144),
+      interests: protocolSnapshot?.interests || snapshotPayload.publicTraitTags || ["partner import"],
+      fears: protocolSnapshot?.fears || snapshotPayload.riskFlags || [],
       assessments: assessmentsPayload.items || [],
+      protocolSnapshot,
     });
   }
 
@@ -213,20 +241,21 @@ export async function fetchSinglePartnerPersona(profileId: string) {
   const snapshotPayload = (await snapshotResponse.json()) as {
     sourceProfileId?: string;
     publicTraitTags?: string[];
-    traitVector?: TraitVector;
     riskFlags?: string[];
   };
   const assessmentsPayload = assessmentsResponse.ok
     ? ((await assessmentsResponse.json()) as { items?: ImportedAssessment[] })
     : { items: [] };
+  const protocolSnapshot = extractProtocolSnapshot(snapshotPayload);
 
   return {
-    id: snapshotPayload.sourceProfileId || profileId,
+    id: protocolSnapshot?.dna_id || snapshotPayload.sourceProfileId || profileId,
     nickname: `Linked ${profileId.slice(0, 6)}`,
-    relation: "SELF",
-    ageMonths: 336,
-    interests: snapshotPayload.publicTraitTags || ["partner import"],
-    fears: snapshotPayload.riskFlags || [],
+    relation: protocolSnapshot?.relation || "SELF",
+    ageMonths: resolveAgeMonths(protocolSnapshot, 336),
+    interests: protocolSnapshot?.interests || snapshotPayload.publicTraitTags || ["partner import"],
+    fears: protocolSnapshot?.fears || snapshotPayload.riskFlags || [],
     assessments: assessmentsPayload.items || [],
+    protocolSnapshot,
   } satisfies ImportedProfile;
 }

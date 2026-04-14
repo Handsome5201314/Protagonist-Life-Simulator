@@ -309,3 +309,108 @@ npm run typecheck  # 类型检查
 ## 许可证
 
 MIT License
+
+---
+
+## Production Deployment
+
+The current production server is:
+
+- `https://xiaozhiserver.cloud`
+- `http://xiaozhiserver.cloud` will redirect to HTTPS
+
+The app is deployed as:
+
+- App directory: `/home/ubuntu/apps/turing-destiny-arena/current`
+- Internal app port: `3001`
+- Public entry: `nginx :80 -> 127.0.0.1:3001`
+- TLS: `Let's Encrypt` via `certbot`, auto-renew enabled
+- Process supervisor: `systemd` service `turing-destiny-arena.service`
+
+### One-Command Deploy Script
+
+Use the local deploy helper:
+
+```bash
+python scripts/deploy_production.py \
+  --host 129.211.70.41 \
+  --username ubuntu \
+  --password 'YOUR_PASSWORD' \
+  --server-name xiaozhiserver.cloud
+```
+
+Optional flags:
+
+- `--skip-nginx`: only update the app service, do not touch nginx
+- `--app-port 3001`: change internal service port
+- `--base-dir /home/ubuntu/apps/turing-destiny-arena`: change remote install directory
+
+### Server Notes
+
+- The current nginx site config lives at `/etc/nginx/sites-available/turing-destiny-arena`
+- The current systemd unit lives at `/etc/systemd/system/turing-destiny-arena.service`
+- There is an older unrelated root-owned service still listening on `3000`; this project now runs independently on `3001`
+- Future redeploys should prefer `--skip-nginx` so the existing Certbot-managed HTTPS config is preserved
+
+## Python Engine Bridge
+
+The repo now includes a Python dual-engine backend bootstrap:
+
+- `main.py`
+- `core/referee.py`
+- `core/orchestrator.py`
+- `requirements.engine.txt`
+
+### Local startup
+
+```bash
+pip install -r requirements.engine.txt
+uvicorn main:app --reload --port 8000
+```
+
+### Next.js BFF proxy
+
+The Next.js layer now exposes:
+
+```text
+POST /api/interact
+```
+
+Expected request shape:
+
+```json
+{
+  "roomId": "room_xxx",
+  "action": "FLIRT",
+  "sourceDna": {
+    "social_energy": 0.66,
+    "empathy_resonance": 0.58,
+    "rational_logic": 0.62,
+    "stress_resilience": 0.71,
+    "behavioral_flexibility": 0.44
+  },
+  "targetDna": {
+    "social_energy": 0.52,
+    "empathy_resonance": 0.73,
+    "rational_logic": 0.49,
+    "stress_resilience": 0.61,
+    "behavioral_flexibility": 0.57
+  },
+  "traits": [
+    {
+      "id": "T001:反PUA雷达",
+      "modifier": -0.08,
+      "applies_to": ["FLIRT", "SEDUCE"]
+    }
+  ],
+  "locale": "zh"
+}
+```
+
+It forwards to:
+
+```text
+POST http://127.0.0.1:8000/engine/trigger
+```
+
+and returns `text/event-stream` back to the browser.

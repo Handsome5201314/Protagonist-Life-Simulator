@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { personaSnapshotToDigitalGene } from "@/lib/digital-gene-protocol";
 import { getDb } from "@/lib/db";
 
 export async function GET(
@@ -16,7 +17,10 @@ export async function GET(
     return NextResponse.json({ error: "Profile not found" }, { status: 404 });
   }
 
+  const protocol = personaSnapshotToDigitalGene(persona);
+
   return NextResponse.json({
+    ...protocol,
     id: persona.id,
     source: persona.source,
     sourceProfileId: persona.sourceProfileId,

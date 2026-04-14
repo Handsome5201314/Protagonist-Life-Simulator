@@ -1,11 +1,13 @@
 import { FateLobbyHome } from "@/components/FateLobbyHome";
-import { buildFateLobbyRooms } from "@/lib/fate-arena";
-import { getArenaView } from "@/lib/view-models";
 import { getDb } from "@/lib/db";
+import { buildFateLobbyRooms } from "@/lib/fate-arena";
+import { getLocale } from "@/lib/i18n-server";
+import { getArenaView } from "@/lib/view-models";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
+  const locale = await getLocale();
   const data = await getArenaView();
   const db = await getDb();
   const rooms = buildFateLobbyRooms({
@@ -17,6 +19,7 @@ export default async function HomePage() {
 
   return (
     <FateLobbyHome
+      locale={locale}
       user={data.user}
       rooms={rooms.filter((room) => room.category !== "romance")}
       personas={db.personas.filter((p) => !p.deletedAt)}

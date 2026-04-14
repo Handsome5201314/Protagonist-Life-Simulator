@@ -10,35 +10,68 @@ import { getSkillById, rewardTiers } from "@/lib/catalog";
 import { getDb, updateDb } from "@/lib/db";
 import { createDatingDossier, runDatingRehearsal } from "@/lib/dating";
 import {
+  buildFallbackOpeningBeat,
+  buildFallbackTurnBeat,
+  buildDatingScene,
   buildDefaultDatingOptions,
   buildDatingMarketCandidates,
   buildMarketStatusLine,
   buildQuickPersonaFromAnswers,
   createDatingBackdrop,
-  fallbackOpeningLine,
-  fallbackTurnNarrative,
   getPrimaryDatingPersona,
   resolveDatingTurn,
 } from "@/lib/dating-market";
-import { buildMatchParticipants, buildStreamRecord, createMemoryTrait, evaluateRound, settleSupportRewards } from "@/lib/game-engine";
+import {
+  digitalGeneToPersonaSnapshot,
+  looksLikeDigitalGeneProtocol,
+  verifyDigitalGeneProtocol,
+} from "@/lib/digital-gene-protocol";
+import {
+  buildArenaEventCard,
+  buildMatchParticipants,
+  buildStreamRecord,
+  createMemoryTrait,
+  evaluateRound,
+  settleSupportRewards,
+  type ArenaProxyPlan,
+} from "@/lib/game-engine";
 import { sanitizeWorldInput } from "@/lib/guardrails";
 import type { Locale } from "@/lib/i18n";
 import {
   generateArenaChapterWithGemini,
+  generateArenaProxyPlansWithGemini,
+  generateDirectorInsightsWithGemini,
+  askDirectorWithGemini,
+  generateDatingOpeningBeatWithGemini,
   generateDatingOpeningWithGemini,
   generateDatingRehearsalWithGemini,
+  generateDatingTurnBeatWithGemini,
   generateDatingTurnWithGemini,
   generateWorldPackWithGemini,
 } from "@/lib/llm-features";
+import {
+  applyGameplayConfigPatch,
+  buildGameplayConfigProposals,
+  createGameplayConfigHistoryEntry,
+} from "@/lib/gameplay-config";
+import { pickRefereeAction, type RefereeActionType } from "@/lib/referee-engine";
+import { buildHeuristicDirectorInsightForLocale, summarizeTelemetry, trackTelemetry } from "@/lib/telemetry";
 import type {
   ArenaMatch,
+  DirectorInsightSnapshot,
+  DatingBeat,
   DatingMatch,
   DatingMatchOption,
+  DatingMessage,
   DatingStreamRecord,
+  GameplayConfigPatch,
+  GameplayConfigHistoryEntry,
+  GameplayConfigProposal,
   MatchParticipant,
   PersonaOverlay,
   PersonaSnapshot,
   StreamRecord,
+  TelemetrySummary,
   WorldPack,
 } from "@/lib/types";
 import { addDays, addHours, createId, createLockedHash, nowIso, normalizeDigest } from "@/lib/utils";
@@ -87,6 +120,8 @@ const prepSchema = z.object({
   mode: z.enum(["rapid", "immersive"]),
   seatOrder: z.array(z.string()).min(1).max(4),
   reservePersonaIds: z.array(z.string()).max(8).default([]),
+  proxyMode: z.enum(["self", "ai"]).default("self"),
+  briefing: z.string().max(1500).default(""),
 });
 
 const dossierSchema = z.object({
@@ -139,6 +174,209 @@ function resolveDefaultMatchCapacity(world: WorldPack) {
   return /(romance|date|tarot|love|embassy)/i.test(text) ? 2 : 4;
 }
 
+function buildDefaultPrepBriefing(world: WorldPack, personas: PersonaSnapshot[]) {
+  const castLine = personas.map((persona) => persona.name).join("、");
+  return `舞台设定：${world.title}。${world.sanitizedSummary} 当前首发分身为 ${castLine}，先用一轮试探确认权力结构，再决定是否亮出真正底牌。`;
+}
+
+function inferActionFromBriefing(defaultAction: RefereeActionType, briefing: string) {
+  const text = briefing.toLowerCase();
+  if (/(告白|暧昧|拉近|heart|flirt|亲密)/i.test(text)) return "FLIRT";
+  if (/(辩论|逻辑|质询|debate|argument|proof)/i.test(text)) return "DEBATE";
+  if (/(主导|带节奏|推进|压场|lead|push)/i.test(text)) return "LEAD";
+  if (/(稳住|抗压|守住|resist|hold)/i.test(text)) return "RESIST";
+  if (/(误导|陷阱|诱导|诈|deceive|fake)/i.test(text)) return "DECEIVE";
+  return defaultAction;
+}
+
+function buildFallbackArenaProxyPlans(args: {
+  locale: Locale;
+  round: number;
+  briefing: string;
+  world: WorldPack;
+  participants: MatchParticipant[];
+  personas: PersonaSnapshot[];
+}) {
+  return args.participants.map((participant) => {
+    const persona = args.personas.find((item) => item.id === participant.personaId);
+    const baseAction = persona ? pickRefereeAction(persona.traitVector, args.world.tone) : "RESIST";
+    const actionType = inferActionFromBriefing(baseAction, args.briefing);
+    const leadTags = persona?.publicTraitTags.slice(0, 2).join(" / ") || "未公开标签";
+    const intent =
+      args.locale === "zh"
+        ? `第 ${args.round} 回合优先执行${actionType}，沿着“${args.briefing.slice(0, 36)}”推进，并利用 ${leadTags} 制造局面差。`
+        : `Round ${args.round} should lean on ${actionType}, follow "${args.briefing.slice(0, 36)}", and weaponize ${leadTags}.`;
+
+    return {
+      participantId: participant.id,
+      actionType,
+      intent,
+    } satisfies ArenaProxyPlan;
+  });
+}
+
+async function resolveArenaProxyPlans(args: {
+  locale: Locale;
+  match: ArenaMatch;
+  round: number;
+  world: WorldPack;
+  participants: MatchParticipant[];
+  personas: PersonaSnapshot[];
+}) {
+  const briefing = args.match.prep.briefing?.trim() || args.world.sanitizedSummary;
+  const fallbackPlans = buildFallbackArenaProxyPlans({
+    locale: args.locale,
+    round: args.round,
+    briefing,
+    world: args.world,
+    participants: args.participants,
+    personas: args.personas,
+  });
+
+  if (args.match.prep.proxyMode !== "ai") {
+    return fallbackPlans;
+  }
+
+  const llmPlans = await generateArenaProxyPlansWithGemini({
+    locale: args.locale,
+    round: args.round,
+    world: args.world,
+    briefing,
+    participants: fallbackPlans.map((plan) => {
+      const participant = args.participants.find((item) => item.id === plan.participantId);
+      const persona = args.personas.find((item) => item.id === participant?.personaId);
+      return {
+        participantId: plan.participantId,
+        displayName: participant?.displayName || plan.participantId,
+        tags: persona?.publicTraitTags.slice(0, 3) || [],
+        fallbackActionType: plan.actionType,
+        fallbackIntent: plan.intent,
+      };
+    }),
+  });
+
+  if (!llmPlans?.plans?.length) {
+    return fallbackPlans;
+  }
+
+  return fallbackPlans.map((fallbackPlan) => {
+    const matched = llmPlans.plans?.find((plan) => plan.participantId === fallbackPlan.participantId);
+    const nextAction = matched?.actionType && ["FLIRT", "DEBATE", "LEAD", "RESIST", "DECEIVE"].includes(matched.actionType)
+      ? (matched.actionType as RefereeActionType)
+      : fallbackPlan.actionType;
+    const nextIntent = matched?.intent?.trim() || fallbackPlan.intent;
+
+    return {
+      participantId: fallbackPlan.participantId,
+      actionType: nextAction,
+      intent: nextIntent,
+    } satisfies ArenaProxyPlan;
+  });
+}
+
+function normalizeInsightSnapshot(
+  summary: TelemetrySummary,
+  locale: Locale,
+  llmInsight: Awaited<ReturnType<typeof generateDirectorInsightsWithGemini>> | null
+): DirectorInsightSnapshot {
+  const fallback = buildHeuristicDirectorInsightForLocale(summary, locale);
+  if (!llmInsight) {
+    return fallback;
+  }
+
+  return {
+    ...fallback,
+    source: "openclaw",
+    headline: llmInsight.headline?.trim() || fallback.headline,
+    findings: llmInsight.findings?.filter(Boolean).slice(0, 5) || fallback.findings,
+    recommendations:
+      llmInsight.recommendations
+        ?.filter((item) => item?.title && item?.why && item?.action)
+        .slice(0, 4)
+        .map((item) => ({
+          title: item.title!.trim(),
+          why: item.why!.trim(),
+          action: item.action!.trim(),
+          priority: item.priority === "now" || item.priority === "next" || item.priority === "watch" ? item.priority : "next",
+        })) || fallback.recommendations,
+    watchlist: llmInsight.watchlist?.filter(Boolean).slice(0, 4) || fallback.watchlist,
+  };
+}
+
+function buildFallbackDirectorReply(summary: TelemetrySummary, question: string, locale: Locale) {
+  const focus =
+    summary.metrics.datingContinuationRate < summary.metrics.arenaActivationRate
+      ? locale === "zh"
+        ? "相亲开场场景"
+        : "dating opening scenes"
+      : locale === "zh"
+        ? "竞技场准备到开局的转化"
+        : "arena prep-to-round conversion";
+
+  if (locale === "zh") {
+    return [
+      `当前最该盯住的是${focus}，因为这里还在持续漏掉最多的推进动能。`,
+      `你刚才问的是：${question}`,
+      `这个窗口里系统记录到 ${summary.metrics.arenaMatchesCreated} 局竞技场创建、${summary.metrics.arenaRoomsActivated} 局真正开打，以及 ${summary.metrics.datingRoomsCreated} 个相亲房启动。`,
+      `我会先只改一个高摩擦点，然后继续看下一轮 telemetry，而不是一次性叠很多改动把判断搅乱。`,
+    ].join("");
+  }
+
+  return [
+    `The immediate focus should be ${focus}, because that is where the current telemetry is leaking the most momentum.`,
+    `You asked: ${question}`,
+    `Right now the system is seeing ${summary.metrics.arenaMatchesCreated} arena rooms, ${summary.metrics.arenaRoomsActivated} activated arena rooms, and ${summary.metrics.datingRoomsCreated} dating rooms in the selected window.`,
+    `My next move would be to change one high-friction surface only, then compare the next telemetry window instead of stacking multiple design changes at once.`,
+  ].join(" ");
+}
+
+function buildDatingMessagesFromBeat(args: {
+  beat: DatingBeat;
+  heartbeat: number;
+  vibe: number;
+  createdAt?: string;
+}) {
+  const createdAt = args.createdAt || nowIso();
+  const messages: DatingMessage[] = [];
+
+  if (args.beat.narration) {
+    messages.push({
+      id: createId("msg"),
+      speaker: "system",
+      text: args.beat.narration,
+      heartbeat: args.heartbeat,
+      vibe: args.vibe,
+      createdAt,
+    });
+  }
+
+  if (args.beat.self?.action || args.beat.self?.dialogue) {
+    messages.push({
+      id: createId("msg"),
+      speaker: "self",
+      action: args.beat.self?.action,
+      dialogue: args.beat.self?.dialogue,
+      heartbeat: args.heartbeat,
+      vibe: args.vibe,
+      createdAt,
+    });
+  }
+
+  if (args.beat.other?.action || args.beat.other?.dialogue) {
+    messages.push({
+      id: createId("msg"),
+      speaker: "other",
+      action: args.beat.other?.action,
+      dialogue: args.beat.other?.dialogue,
+      heartbeat: args.heartbeat,
+      vibe: args.vibe,
+      createdAt,
+    });
+  }
+
+  return messages;
+}
+
 function createUploadPersona(input: z.infer<typeof personaImportSchema>): PersonaSnapshot {
   const adultOnlyEligible = input.relation === "SELF" && input.ageBand === "adult";
   const digest = normalizeDigest(input.rawText || input.name || "persona");
@@ -174,6 +412,7 @@ function createUploadPersona(input: z.infer<typeof personaImportSchema>): Person
     communicationStyle: input.communicationStyle,
     careerTilt: input.careerTilt,
     riskFlags: adultOnlyEligible ? [] : ["private_only"],
+    traitFragmentIds: [],
     lockedHash: createLockedHash(input),
     expiresAt: addDays(input.source === "upload" ? 7 : 30),
   };
@@ -240,6 +479,17 @@ export async function completeAiliangbiaoLink() {
       const existing = db.personas.find((item) => item.sourceProfileId === persona.sourceProfileId);
       if (!existing) {
         db.personas.unshift(persona);
+        trackTelemetry(db, {
+          type: "persona.imported",
+          userId: user.id,
+          entityId: persona.id,
+          metadata: {
+            source: persona.source,
+            relation: persona.relation,
+            ageBand: persona.ageBand,
+            name: persona.name,
+          },
+        });
         imported.push(persona);
       }
     }
@@ -265,11 +515,44 @@ export async function updateUserProfile(input: unknown) {
       bio: data.bio || "",
     };
     user.updatedAt = nowIso();
+    trackTelemetry(db, {
+      type: "user.profile_updated",
+      userId: user.id,
+      entityId: user.id,
+      metadata: {
+        city: data.city,
+        hasEmail: Boolean(data.email),
+      },
+    });
     return user;
   });
 }
 
 export async function importPersona(input: unknown) {
+  if (looksLikeDigitalGeneProtocol(input)) {
+    const payload = verifyDigitalGeneProtocol(input);
+    return updateDb((db) => {
+      const persona = digitalGeneToPersonaSnapshot({
+        userId: ensureDemoUserId(),
+        payload,
+        source: "upload",
+      });
+      db.personas.unshift(persona);
+      trackTelemetry(db, {
+        type: "persona.imported",
+        userId: persona.userId,
+        entityId: persona.id,
+        metadata: {
+          source: "digital-gene",
+          relation: persona.relation,
+          ageBand: persona.ageBand,
+          name: persona.name,
+        },
+      });
+      return persona;
+    });
+  }
+
   const data = personaImportSchema.parse(input);
 
   if (data.source === "ailiangbiao" && data.profileId) {
@@ -281,6 +564,17 @@ export async function importPersona(input: unknown) {
     return updateDb(async (db) => {
       const persona = await createPersonaFromAiliangbiaoProfile(ensureDemoUserId(), partnerProfile);
       db.personas.unshift(persona);
+      trackTelemetry(db, {
+        type: "persona.imported",
+        userId: persona.userId,
+        entityId: persona.id,
+        metadata: {
+          source: persona.source,
+          relation: persona.relation,
+          ageBand: persona.ageBand,
+          name: persona.name,
+        },
+      });
       return persona;
     });
   }
@@ -288,6 +582,17 @@ export async function importPersona(input: unknown) {
   return updateDb((db) => {
     const persona = createUploadPersona(data);
     db.personas.unshift(persona);
+    trackTelemetry(db, {
+      type: "persona.imported",
+      userId: persona.userId,
+      entityId: persona.id,
+      metadata: {
+        source: data.source,
+        relation: persona.relation,
+        ageBand: persona.ageBand,
+        name: persona.name,
+      },
+    });
 
     return persona;
   });
@@ -332,6 +637,17 @@ export async function updatePersonaOverlay(personaId: string, input: unknown) {
       overlay.privacyLevel = data.privacyLevel;
       overlay.updatedAt = nowIso();
     }
+
+    trackTelemetry(db, {
+      type: "persona.overlay_updated",
+      userId: persona.userId,
+      entityId: personaId,
+      metadata: {
+        privacyLevel: data.privacyLevel,
+        visualSkin: data.visualSkin,
+        tonePreset: data.tonePreset,
+      },
+    });
 
     return overlay;
   });
@@ -385,6 +701,16 @@ export async function uploadWorldPack(args: {
     };
 
     db.worldPacks.unshift(world);
+    trackTelemetry(db, {
+      type: "worldpack.uploaded",
+      userId: world.userId,
+      entityId: world.id,
+      metadata: {
+        title: world.title,
+        tone: world.tone,
+        safetyStatus: world.safetyStatus,
+      },
+    });
     return world;
   });
 }
@@ -471,6 +797,8 @@ export async function createMatch(input: unknown) {
         mode: "rapid",
         seatOrder: selectedPersonas.map((persona) => persona.id),
         reservePersonaIds: reservePersonas.map((persona) => persona.id),
+        proxyMode: db.gameplayConfig.arena.defaultProxyMode,
+        briefing: buildDefaultPrepBriefing(world, selectedPersonas),
         updatedAt: nowIso(),
       },
       roundStates: [
@@ -492,6 +820,17 @@ export async function createMatch(input: unknown) {
     db.participants.push(...activeParticipants, ...reserveParticipants);
     match.participantIds = activeParticipants.map((participant) => participant.id);
     db.matches.unshift(match);
+    trackTelemetry(db, {
+      type: "arena.match_created",
+      userId: user.id,
+      entityId: match.id,
+      metadata: {
+        worldTitle: world.title,
+        mode: match.mode,
+        maxParticipants: match.maxParticipants,
+        selectedSeats: selectedPersonas.length,
+      },
+    });
 
     return {
       match,
@@ -539,6 +878,16 @@ export async function supportMatch(matchId: string, input: unknown) {
     } as const;
 
     db.supportTickets.unshift(ticket);
+    trackTelemetry(db, {
+      type: "arena.support_added",
+      userId: user.id,
+      entityId: match.id,
+      metadata: {
+        participantId: participant.id,
+        renownSpent: data.renownSpent,
+        rewardTier: reward.tier,
+      },
+    });
     return ticket;
   });
 }
@@ -578,6 +927,16 @@ export async function joinMatch(matchId: string, input: unknown) {
     match.prep.reservePersonaIds = match.prep.reservePersonaIds.filter((personaId) => personaId !== persona.id);
     match.prep.updatedAt = nowIso();
     syncMatchParticipantsFromPrep(db, match);
+    trackTelemetry(db, {
+      type: "arena.match_joined",
+      userId: db.users[0].id,
+      entityId: match.id,
+      metadata: {
+        personaId: persona.id,
+        currentParticipants: match.participantIds.length,
+        maxParticipants: match.maxParticipants,
+      },
+    });
 
     return {
       matchId: match.id,
@@ -624,9 +983,22 @@ export async function updateMatchPrep(matchId: string, input: unknown) {
       mode: data.mode,
       seatOrder,
       reservePersonaIds,
+      proxyMode: data.proxyMode,
+      briefing: data.briefing.trim() || match.prep.briefing || "",
       updatedAt: nowIso(),
     };
     syncMatchParticipantsFromPrep(db, match);
+    trackTelemetry(db, {
+      type: "arena.prep_saved",
+      userId: db.users[0].id,
+      entityId: match.id,
+      metadata: {
+        mode: data.mode,
+        proxyMode: data.proxyMode,
+        seatCount: seatOrder.length,
+        reserveCount: reservePersonaIds.length,
+      },
+    });
 
     return {
       matchId: match.id,
@@ -673,6 +1045,16 @@ export async function equipSkill(matchId: string, round: number, input: unknown)
       appliedAt: nowIso(),
     });
     match.updatedAt = nowIso();
+    trackTelemetry(db, {
+      type: "arena.skill_equipped",
+      userId: db.users[0].id,
+      entityId: match.id,
+      metadata: {
+        participantId: participant.id,
+        skillId: skill.id,
+        round,
+      },
+    });
 
     return {
       participantId: participant.id,
@@ -682,7 +1064,7 @@ export async function equipSkill(matchId: string, round: number, input: unknown)
   });
 }
 
-export async function triggerRound(matchId: string, round: number, locale: Locale = "en") {
+export async function triggerRound(matchId: string, round: number, locale: Locale = "zh") {
   return updateDb(async (db) => {
     const match = db.matches.find((item) => item.id === matchId);
     if (!match) {
@@ -703,6 +1085,16 @@ export async function triggerRound(matchId: string, round: number, locale: Local
       throw new Error("World pack not found");
     }
 
+    const proxyPlans = await resolveArenaProxyPlans({
+      locale,
+      match,
+      round,
+      world,
+      participants,
+      personas,
+    });
+    const eventCard = buildArenaEventCard({ locale, world, round, config: db.gameplayConfig });
+
     const result = evaluateRound({
       locale,
       match,
@@ -711,13 +1103,19 @@ export async function triggerRound(matchId: string, round: number, locale: Local
       personas,
       world,
       memoryTraits: db.memoryTraits,
+      proxyPlans: match.prep.proxyMode === "ai" ? proxyPlans : undefined,
+      eventCard,
+      config: db.gameplayConfig,
     });
 
     roundState.status = "done";
     roundState.chapter = result.storyLines.join("\n\n");
-    roundState.checkpointCount = result.storyLines.length + 2;
+    roundState.messages = result.messages;
+    roundState.checkpointCount = result.storyLines.length;
     roundState.scores = result.scores;
     roundState.elimination = result.elimination;
+    roundState.proxyPlans = match.prep.proxyMode === "ai" ? proxyPlans : [];
+    roundState.eventCard = eventCard;
     match.updatedAt = nowIso();
     match.publicStoryStatus = round === 3 ? "complete" : "streaming";
 
@@ -729,8 +1127,13 @@ export async function triggerRound(matchId: string, round: number, locale: Local
       participants,
       scoreBoard: result.scores,
       storyLines: result.storyLines,
+      messages: result.messages,
       elimination: result.elimination,
+      proxyPlans: match.prep.proxyMode === "ai" ? proxyPlans : [],
+      eventCard,
     });
+    roundState.chapter = stream.finalChapter;
+    roundState.checkpointCount = stream.segments.length;
 
     const llmChapter = await generateArenaChapterWithGemini({
       locale,
@@ -739,7 +1142,16 @@ export async function triggerRound(matchId: string, round: number, locale: Local
       participants,
       personas,
       scoreBoard: result.scores,
-      deterministicNotes: result.storyLines,
+      deterministicNotes: [
+        ...(match.prep.proxyMode === "ai"
+          ? proxyPlans.map((plan) => {
+              const participant = participants.find((item) => item.id === plan.participantId);
+              return `${participant?.displayName || plan.participantId} / ${plan.actionType} / ${plan.intent}`;
+            })
+          : []),
+        `${eventCard.title} / ${eventCard.summary} / objective: ${eventCard.objective}`,
+        ...result.storyLines,
+      ],
       elimination: result.elimination,
       winnerId: match.winnerId,
     });
@@ -751,6 +1163,18 @@ export async function triggerRound(matchId: string, round: number, locale: Local
       roundState.checkpointCount = llmChapter.chapter.length;
     }
     db.streams.unshift(stream);
+    trackTelemetry(db, {
+      type: "arena.round_triggered",
+      userId: db.users[0].id,
+      entityId: match.id,
+      metadata: {
+        round,
+        worldTitle: world.title,
+        proxyMode: match.prep.proxyMode,
+        eventCardTitle: eventCard.title,
+        elimination: result.elimination || null,
+      },
+    });
 
     if (round === 3) {
       settleSupportRewards({
@@ -778,6 +1202,7 @@ export async function triggerRound(matchId: string, round: number, locale: Local
       streamId: stream.id,
       matchId: match.id,
       round,
+      proxyMode: match.prep.proxyMode,
     };
   });
 }
@@ -847,6 +1272,16 @@ export async function createDossier(input: unknown) {
     });
 
     db.datingDossiers.unshift(dossier);
+    trackTelemetry(db, {
+      type: "dating.dossier_created",
+      userId: dossier.userId,
+      entityId: dossier.id,
+      metadata: {
+        personaId: data.personaId,
+        strengthCount: dossier.strengths.length,
+        redFlagCount: dossier.redFlags.length,
+      },
+    });
     return dossier;
   });
 }
@@ -958,13 +1393,208 @@ export async function processPartnerProfileRevoked(body: { profileId?: string })
   });
 }
 
+export async function getAdminInsights(input?: { locale?: Locale; windowHours?: number }) {
+  const locale = input?.locale || "zh";
+  const windowHours = input?.windowHours ?? 168;
+  const db = await getDb();
+  const summary = summarizeTelemetry(db, windowHours);
+  const cached = db.insightSnapshots.find(
+    (item) => item.windowHours === windowHours && item.summaryHash === summary.summaryHash
+  );
+  const openClawReady = Boolean(process.env.OPENCLAW_GATEWAY_BASE_URL && process.env.OPENCLAW_GATEWAY_TOKEN);
+
+  if (cached && (cached.source === "openclaw" || !openClawReady)) {
+    const proposals = buildGameplayConfigProposals({
+      summary,
+      insight: cached,
+      config: db.gameplayConfig,
+    });
+    return {
+      summary,
+      insight: cached,
+      config: db.gameplayConfig,
+      proposals,
+      history: db.gameplayConfigHistory.slice(0, 8),
+    };
+  }
+
+  const llmInsight = await generateDirectorInsightsWithGemini({ locale, summary });
+  const insight = normalizeInsightSnapshot(summary, locale, llmInsight);
+
+  await updateDb((mutableDb) => {
+    mutableDb.insightSnapshots = mutableDb.insightSnapshots.filter(
+      (item) => !(item.windowHours === insight.windowHours && item.summaryHash === insight.summaryHash)
+    );
+    mutableDb.insightSnapshots.unshift(insight);
+    mutableDb.insightSnapshots = mutableDb.insightSnapshots.slice(0, 24);
+  });
+
+  const proposals = buildGameplayConfigProposals({
+    summary,
+    insight,
+    config: db.gameplayConfig,
+  });
+
+  return {
+    summary,
+    insight,
+    config: db.gameplayConfig,
+    proposals,
+    history: db.gameplayConfigHistory.slice(0, 8),
+  };
+}
+
+export async function askDirectorQuestion(input: { question: string; locale?: Locale; windowHours?: number }) {
+  const question = input.question.trim();
+  if (!question) {
+    throw new Error("Question is required");
+  }
+
+  const locale = input.locale || "zh";
+  const summary = summarizeTelemetry(await getDb(), input.windowHours ?? 168);
+  const answer = await askDirectorWithGemini({
+    locale,
+    summary,
+    question,
+  });
+
+  return {
+    summary,
+    answer: answer || buildFallbackDirectorReply(summary, question, locale),
+  };
+}
+
+export async function updateGameplayConfig(input: {
+  patch?: GameplayConfigPatch;
+  proposalId?: string;
+  locale?: Locale;
+  windowHours?: number;
+}) {
+  const locale = input.locale || "zh";
+  const windowHours = input.windowHours ?? 168;
+  const snapshot = await getAdminInsights({ locale, windowHours });
+
+  const selectedProposal = input.proposalId
+    ? snapshot.proposals.find((proposal) => proposal.id === input.proposalId)
+    : null;
+  const patch = input.patch || selectedProposal?.patch;
+
+  if (!patch) {
+    throw new Error("Gameplay config patch is required");
+  }
+
+  const nextConfig = applyGameplayConfigPatch(snapshot.config, patch);
+  const historyEntry = createGameplayConfigHistoryEntry({
+    action: "apply",
+    proposalId: selectedProposal?.id,
+    proposalTitle: selectedProposal?.title,
+    reason: selectedProposal?.reason || "Manual gameplay config update",
+    patch,
+    previousConfig: snapshot.config,
+    nextConfig,
+  });
+
+  await updateDb((db) => {
+    db.gameplayConfig = nextConfig;
+    db.gameplayConfigHistory.unshift(historyEntry);
+    db.gameplayConfigHistory = db.gameplayConfigHistory.slice(0, 50);
+    trackTelemetry(db, {
+      type: "admin.config_updated",
+      userId: db.users[0].id,
+      entityId: db.users[0].id,
+      metadata: {
+        proposalId: input.proposalId || null,
+        action: "apply",
+        patch: JSON.stringify(patch).slice(0, 800),
+      },
+    });
+  });
+
+  const refreshed = await getAdminInsights({ locale, windowHours });
+
+  return {
+    config: nextConfig,
+    appliedPatch: patch,
+    proposal: selectedProposal || null,
+    summary: refreshed.summary,
+    insight: refreshed.insight,
+    proposals: refreshed.proposals,
+    history: refreshed.history,
+  };
+}
+
+export async function rollbackGameplayConfig(input?: {
+  historyId?: string;
+  locale?: Locale;
+  windowHours?: number;
+}) {
+  const locale = input?.locale || "zh";
+  const windowHours = input?.windowHours ?? 168;
+  const db = await getDb();
+  const historyEntry =
+    (input?.historyId
+      ? db.gameplayConfigHistory.find((item) => item.id === input.historyId)
+      : db.gameplayConfigHistory[0]) || null;
+
+  if (!historyEntry) {
+    throw new Error("No gameplay config history is available for rollback");
+  }
+
+  const rollbackPatch = historyEntry.diff.reduce<GameplayConfigPatch>((acc, item) => {
+    const [scope, key] = item.path.split(".") as ["dating" | "arena", string];
+    if (!acc[scope]) {
+      acc[scope] = {};
+    }
+    (acc[scope] as Record<string, string | number | boolean | null>)[key] = item.before;
+    return acc;
+  }, {});
+
+  const nextConfig = historyEntry.previousConfig;
+  const rollbackEntry = createGameplayConfigHistoryEntry({
+    action: "rollback",
+    proposalId: historyEntry.proposalId,
+    proposalTitle: historyEntry.proposalTitle,
+    reason: `Rollback ${historyEntry.id}`,
+    patch: rollbackPatch,
+    previousConfig: db.gameplayConfig,
+    nextConfig,
+  });
+
+  await updateDb((mutableDb) => {
+    mutableDb.gameplayConfig = nextConfig;
+    mutableDb.gameplayConfigHistory.unshift(rollbackEntry);
+    mutableDb.gameplayConfigHistory = mutableDb.gameplayConfigHistory.slice(0, 50);
+    trackTelemetry(mutableDb, {
+      type: "admin.config_updated",
+      userId: mutableDb.users[0].id,
+      entityId: mutableDb.users[0].id,
+      metadata: {
+        action: "rollback",
+        historyId: historyEntry.id,
+        patch: JSON.stringify(rollbackPatch).slice(0, 800),
+      },
+    });
+  });
+
+  const refreshed = await getAdminInsights({ locale, windowHours });
+
+  return {
+    restoredFrom: historyEntry.id,
+    config: nextConfig,
+    summary: refreshed.summary,
+    insight: refreshed.insight,
+    proposals: refreshed.proposals,
+    history: refreshed.history,
+  };
+}
+
 export async function getA2AState(matchId: string) {
   return getMatchBundle(matchId);
 }
 
 export async function getDatingMarket(input?: { locale?: Locale }) {
   const db = await getDb();
-  const locale = input?.locale || "en";
+  const locale = input?.locale || "zh";
   const owned = db.personas.filter((persona) => persona.source !== "legend" && !persona.deletedAt);
   const self = getPrimaryDatingPersona(owned);
 
@@ -982,7 +1612,7 @@ export async function getDatingMarket(input?: { locale?: Locale }) {
 
 export async function createDatingMatch(input: unknown) {
   const data = createDatingMatchSchema.parse(input);
-  const locale = data.locale || "en";
+  const locale = data.locale || "zh";
   const db = await getDb();
   const self = db.personas.find((persona) => persona.id === data.selfPersonaId);
   const other = db.personas.find((persona) => persona.id === data.counterpartPersonaId);
@@ -996,31 +1626,31 @@ export async function createDatingMatch(input: unknown) {
   }
 
   const backdrop = createDatingBackdrop(self, other);
-  const openingFallback = fallbackOpeningLine(self, other);
-  const openingLine =
-    (await generateDatingOpeningWithGemini({
+  const openingScene = buildDatingScene(self, other, 0, backdrop.title, db.gameplayConfig);
+  const openingFallbackBeat = buildFallbackOpeningBeat({
+    self,
+    other,
+    scene: openingScene,
+  });
+  const openingBeat =
+    (await generateDatingOpeningBeatWithGemini({
       locale,
       self,
       other,
       backdropTitle: backdrop.title,
       backdropSummary: backdrop.summary,
-      fallbackLine: openingFallback,
-    })) || openingFallback;
+      fallbackBeat: openingFallbackBeat,
+    })) || openingFallbackBeat;
 
   return updateDb((mutableDb) => {
     const selfPersona = mutableDb.personas.find((persona) => persona.id === self.id)!;
     const otherPersona = mutableDb.personas.find((persona) => persona.id === other.id)!;
     const matchId = createId("dating");
-    const transcript = [
-      {
-        id: createId("msg"),
-        speaker: "other" as const,
-        text: openingLine,
-        heartbeat: 50,
-        vibe: 50,
-        createdAt: nowIso(),
-      },
-    ];
+    const transcript = buildDatingMessagesFromBeat({
+      beat: openingBeat,
+      heartbeat: 50,
+      vibe: 50,
+    });
     const options = buildDefaultDatingOptions(
       {
         id: matchId,
@@ -1029,6 +1659,7 @@ export async function createDatingMatch(input: unknown) {
         counterpartPersonaId: otherPersona.id,
         backdropTitle: backdrop.title,
         backdropSummary: backdrop.summary,
+        scene: openingScene,
         heartbeat: 50,
         vibe: 50,
         turnCount: 0,
@@ -1039,7 +1670,8 @@ export async function createDatingMatch(input: unknown) {
         updatedAt: nowIso(),
       },
       selfPersona,
-      otherPersona
+      otherPersona,
+      mutableDb.gameplayConfig
     );
 
     const match: DatingMatch = {
@@ -1049,6 +1681,7 @@ export async function createDatingMatch(input: unknown) {
       counterpartPersonaId: otherPersona.id,
       backdropTitle: backdrop.title,
       backdropSummary: backdrop.summary,
+      scene: openingScene,
       heartbeat: 50,
       vibe: 50,
       turnCount: 0,
@@ -1060,6 +1693,17 @@ export async function createDatingMatch(input: unknown) {
     };
 
     mutableDb.datingMatches.unshift(match);
+    trackTelemetry(mutableDb, {
+      type: "dating.room_created",
+      userId: match.userId,
+      entityId: match.id,
+      metadata: {
+        selfPersona: selfPersona.name,
+        counterpartPersona: otherPersona.name,
+        backdropTitle: backdrop.title,
+        sceneTitle: openingScene.title,
+      },
+    });
     return match;
   });
 }
@@ -1092,7 +1736,7 @@ export async function getDatingMatchBundle(roomId: string) {
 
 export async function interactDatingMatch(roomId: string, input: unknown) {
   const data = datingInteractSchema.parse(input);
-  const locale = data.locale || "en";
+  const locale = data.locale || "zh";
 
   return updateDb(async (db) => {
     const room = db.datingMatches.find((match) => match.id === roomId);
@@ -1112,7 +1756,7 @@ export async function interactDatingMatch(roomId: string, input: unknown) {
 
     const user = db.users[0];
     if (data.actionType === "USE_SKILL") {
-      const cost = 3;
+      const cost = db.gameplayConfig.dating.skillCostDiamonds;
       if (user.wallet.diamonds < cost) {
         throw new Error("Not enough Diamonds");
       }
@@ -1123,71 +1767,57 @@ export async function interactDatingMatch(roomId: string, input: unknown) {
       actionType: data.actionType,
       self,
       other,
+      scene: room.scene,
       heartbeat: room.heartbeat,
       vibe: room.vibe,
       usedSkill: data.actionType === "USE_SKILL",
+      config: db.gameplayConfig,
     });
 
-    const fallbackLine = fallbackTurnNarrative({
+    const fallbackBeat = buildFallbackTurnBeat({
       actionType: data.actionType,
       success: result.success,
-      heartbeatDelta: result.heartbeatDelta,
-      vibeDelta: result.vibeDelta,
+      scene: room.scene,
       self,
       other,
     });
 
-    const llmLine =
-      (await generateDatingTurnWithGemini({
+    const llmBeat =
+      (await generateDatingTurnBeatWithGemini({
         locale,
         self,
         other,
         backdropTitle: room.backdropTitle,
+        sceneTitle: room.scene.title,
         actionType: data.actionType,
         heartbeat: result.heartbeat,
         vibe: result.vibe,
         heartbeatDelta: result.heartbeatDelta,
         vibeDelta: result.vibeDelta,
         success: result.success,
-        fallbackLine,
-      })) || fallbackLine;
+        fallbackBeat,
+      })) || fallbackBeat;
 
     room.heartbeat = result.heartbeat;
     room.vibe = result.vibe;
     room.status = result.status;
     room.turnCount += 1;
+    room.scene = buildDatingScene(self, other, room.turnCount, room.backdropTitle, db.gameplayConfig);
     room.updatedAt = nowIso();
 
-    room.transcript.push(
-      {
-        id: createId("msg"),
-        speaker: "self",
-        text:
-          data.actionType === "FLIRT"
-            ? "\u4F60\u628A\u6C14\u6C1B\u5F80\u5FC3\u52A8\u65B9\u5411\u63A8\u8FD1\u4E86\u4E00\u6B65\u3002"
-            : data.actionType === "LOGIC_TALK"
-              ? "\u4F60\u628A\u8BDD\u9898\u62C9\u56DE\u4E00\u4E2A\u66F4\u7A33\u7684\u5207\u5165\u53E3\u3002"
-              : data.actionType === "PULL_BACK"
-                ? "\u4F60\u6545\u610F\u6162\u4E0B\u6765\uFF0C\u89C2\u5BDF\u8FD9\u4EFD\u6C89\u9ED8\u4F1A\u4E0D\u4F1A\u56DE\u6D41\u3002"
-                : "\u4F60\u7528\u4E86\u4E00\u6B21\u6280\u80FD\uFF0C\u8BA9\u8FD9\u4E00\u56DE\u5408\u53D8\u5F97\u66F4\u5766\u767D\u3002",
-        heartbeat: result.heartbeat,
-        vibe: result.vibe,
-        createdAt: nowIso(),
-      },
-      {
-        id: createId("msg"),
-        speaker: "other",
-        text: llmLine,
-        heartbeat: result.heartbeat,
-        vibe: result.vibe,
-        createdAt: nowIso(),
-      }
-    );
+    const generatedMessages = buildDatingMessagesFromBeat({
+      beat: llmBeat,
+      heartbeat: result.heartbeat,
+      vibe: result.vibe,
+    });
 
-    room.currentOptions = buildDefaultDatingOptions(room, self, other);
+    room.transcript.push(...generatedMessages);
+
+    room.currentOptions = buildDefaultDatingOptions(room, self, other, db.gameplayConfig);
 
     // 按句子分割文本，用于流式输出打字机效果
-    const segments = llmLine
+    const narrationText = llmBeat.narration || "";
+    const segments = narrationText
       .split(/(?<=[。！？.?!])(?=\s*[^。！？.?!])/)
       .map((segment) => segment.trim())
       .filter(Boolean);
@@ -1196,15 +1826,31 @@ export async function interactDatingMatch(roomId: string, input: unknown) {
       id: createId("dating_stream"),
       roomId: room.id,
       phase: "queued",
-      segments: segments.length ? segments : [llmLine],
-      finalText: llmLine,
+      segments: segments.length ? segments : [narrationText || " "],
+      finalText: narrationText,
+      messages: generatedMessages,
       heartbeat: room.heartbeat,
       vibe: room.vibe,
       status: room.status,
+      scene: room.scene,
       options: room.currentOptions,
     };
 
     db.datingStreams.unshift(stream);
+    trackTelemetry(db, {
+      type: "dating.turn_played",
+      userId: room.userId,
+      entityId: room.id,
+      metadata: {
+        actionType: data.actionType,
+        success: result.success,
+        heartbeatDelta: result.heartbeatDelta,
+        vibeDelta: result.vibeDelta,
+        turnCount: room.turnCount,
+        roomStatus: room.status,
+        sceneTitle: room.scene.title,
+      },
+    });
 
     return {
       status: 202,

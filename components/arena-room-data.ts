@@ -1,4 +1,4 @@
-﻿import type { ArenaMatch, MatchParticipant, PersonaSnapshot } from "@/lib/types";
+import type { ArenaMatch, ArenaMessage, MatchParticipant, PersonaSnapshot } from "@/lib/types";
 
 const palettes = [
   ["from-pink-400 via-fuchsia-500 to-purple-500", "border-pink-300/20 bg-pink-400/10", "text-pink-100"],
@@ -9,25 +9,18 @@ const palettes = [
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
-// 智能文本分割：优先按段落分割，如果没有段落则按句子分割，确保每段都有完整语义
 const splitText = (text: string): string[] => {
   if (!text || !text.trim()) return [];
-
-  // 先尝试按段落分割（两个以上换行符）
   const paragraphs = text.split(/\n{2,}/).map((item) => item.trim()).filter(Boolean);
   if (paragraphs.length > 1) return paragraphs;
 
-  // 如果只有一段，尝试按句子分割（句号、问号、感叹号后跟空格或换行）
   const sentences = text
-    .replace(/([。！？.!?])([^\s])/g, "$1\n$2") // 在标点后面加换行
+    .replace(/([。！？.!?])([^\s])/g, "$1\n$2")
     .split(/\n/)
     .map((item) => item.trim())
-    .filter((item) => item.length > 5); // 过滤掉太短的片段
+    .filter((item) => item.length > 5);
 
-  if (sentences.length > 1) return sentences;
-
-  // 如果还是没有分割成功，返回原始文本
-  return [text.trim()];
+  return sentences.length > 1 ? sentences : [text.trim()];
 };
 
 export function buildParticipantCards(participants: MatchParticipant[], personas: PersonaSnapshot[]) {
@@ -54,11 +47,33 @@ export function buildParticipantCards(participants: MatchParticipant[], personas
   });
 }
 
-export function buildStoryFeed(match: ArenaMatch, streamChunks: string[]) {
+export function buildStoryFeed(match: ArenaMatch, streamChunks: string[], liveMessages: ArenaMessage[] = []) {
   const feed: Array<
     | { id: string; kind: "system"; title: string; text: string }
-    | { id: string; kind: "speaker"; speakerId: string; text: string }
+    | { id: string; kind: "speaker"; speakerId: string; action?: string; dialogue?: string; text?: string }
   > = [];
+
+  function pushMessages(messages: ArenaMessage[]) {
+    messages.forEach((message) => {
+      if (message.speaker === "system") {
+        if (message.text) {
+          feed.push({ id: message.id, kind: "system", title: "旁白", text: message.text });
+        }
+        return;
+      }
+
+      if (message.participantId) {
+        feed.push({
+          id: message.id,
+          kind: "speaker",
+          speakerId: message.participantId,
+          action: message.action,
+          dialogue: message.dialogue,
+          text: message.text,
+        });
+      }
+    });
+  }
 
   match.roundStates.forEach((round) => {
     feed.push({
@@ -68,15 +83,26 @@ export function buildStoryFeed(match: ArenaMatch, streamChunks: string[]) {
       text: round.status === "pending" ? "等待下一次触发，房间仍在蓄压。" : "当前回合记忆已写入公开战局。",
     });
 
-    round.scores.forEach((score) => {
-      score.notes.forEach((note, index) => {
-        feed.push({ id: `${round.round}-${score.participantId}-${index}`, kind: "speaker", speakerId: score.participantId, text: note });
+    if (round.eventCard) {
+      feed.push({
+        id: `event-${round.round}`,
+        kind: "system",
+        title: round.eventCard.title,
+        text: `${round.eventCard.summary}\n\n目标：${round.eventCard.objective}\n风险：${round.eventCard.stakes}`,
       });
-    });
+    }
 
-    if (!round.scores.length && round.chapter) {
+    if (round.messages?.length) {
+      pushMessages(round.messages);
+    } else if (round.chapter) {
       splitText(round.chapter).forEach((text, index) => {
         feed.push({ id: `chapter-${round.round}-${index}`, kind: "system", title: "旁白", text });
+      });
+    } else {
+      round.scores.forEach((score) => {
+        score.notes.slice(0, 2).forEach((note, index) => {
+          feed.push({ id: `${round.round}-${score.participantId}-${index}`, kind: "speaker", speakerId: score.participantId, text: note });
+        });
       });
     }
 
@@ -88,6 +114,10 @@ export function buildStoryFeed(match: ArenaMatch, streamChunks: string[]) {
   splitText(streamChunks.join("")).forEach((text, index) => {
     feed.push({ id: `live-${index}`, kind: "system", title: "实时流", text });
   });
+
+  if (liveMessages.length) {
+    pushMessages(liveMessages);
+  }
 
   if (!feed.length) {
     feed.push({ id: "empty", kind: "system", title: "静默房间", text: "剧情尚未正式开始，下一回合触发后这里会开始灌入对话与旁白。" });

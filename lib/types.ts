@@ -16,6 +16,14 @@ export type TraitVector = {
   courage: number;
 };
 
+export type CoreDimensionVector = {
+  social_energy: number;
+  empathy_resonance: number;
+  rational_logic: number;
+  stress_resilience: number;
+  behavioral_flexibility: number;
+};
+
 export type PrivacyLevel = "public" | "private";
 
 export type PersonaSource = "ailiangbiao" | "upload" | "legend";
@@ -49,6 +57,7 @@ export type PersonaSnapshot = {
   communicationStyle: string;
   careerTilt: string;
   riskFlags: string[];
+  traitFragmentIds?: string[];
   lockedHash: string;
   overlayId?: string;
   expiresAt: string;
@@ -116,6 +125,40 @@ export type RoundScore = {
   delta: number;
   total: number;
   notes: string[];
+  referee?: {
+    actionType: string;
+    success: boolean;
+    roll: number;
+    threshold: number;
+    heartbeatDelta: number;
+    pressureDelta: number;
+    summary: string;
+    directives: string[];
+  };
+};
+
+export type ArenaMessage = {
+  id: string;
+  speaker: "system" | "participant";
+  participantId?: string;
+  text?: string;
+  action?: string;
+  dialogue?: string;
+  createdAt: string;
+};
+
+export type ArenaEventCard = {
+  id: string;
+  title: string;
+  summary: string;
+  objective: string;
+  stakes: string;
+};
+
+export type ArenaProxyPlanRecord = {
+  participantId: string;
+  actionType: "FLIRT" | "DEBATE" | "LEAD" | "RESIST" | "DECEIVE";
+  intent: string;
 };
 
 export type RoundState = {
@@ -123,16 +166,23 @@ export type RoundState = {
   title: string;
   status: "pending" | "streaming" | "done";
   chapter?: string;
+  messages?: ArenaMessage[];
   checkpointCount: number;
   elimination?: string;
   scores: RoundScore[];
   skillEquips: SkillEquip[];
+  proxyPlans?: ArenaProxyPlanRecord[];
+  eventCard?: ArenaEventCard;
 };
+
+export type ArenaProxyMode = "self" | "ai";
 
 export type ArenaPrepState = {
   mode: "rapid" | "immersive";
   seatOrder: string[];
   reservePersonaIds: string[];
+  proxyMode?: ArenaProxyMode;
+  briefing?: string;
   updatedAt: string;
 };
 
@@ -191,10 +241,32 @@ export type DatingMatchOption = {
 export type DatingMessage = {
   id: string;
   speaker: "self" | "other" | "system";
-  text: string;
+  text?: string;
+  action?: string;
+  dialogue?: string;
   heartbeat: number;
   vibe: number;
   createdAt: string;
+};
+
+export type DatingBeat = {
+  narration?: string;
+  self?: {
+    action: string;
+    dialogue: string;
+  };
+  other?: {
+    action: string;
+    dialogue: string;
+  };
+};
+
+export type DatingSceneCard = {
+  id: string;
+  title: string;
+  summary: string;
+  objective: string;
+  risk: string;
 };
 
 export type DatingMatch = {
@@ -208,6 +280,7 @@ export type DatingMatch = {
   vibe: number;
   turnCount: number;
   status: "active" | "soulmatch" | "collapsed";
+  scene: DatingSceneCard;
   transcript: DatingMessage[];
   currentOptions: DatingMatchOption[];
   createdAt: string;
@@ -220,9 +293,11 @@ export type DatingStreamRecord = {
   phase: "queued" | "typing" | "final";
   segments: string[];
   finalText: string;
+  messages: DatingMessage[];
   heartbeat: number;
   vibe: number;
   status: DatingMatch["status"];
+  scene: DatingSceneCard;
   options: DatingMatchOption[];
 };
 
@@ -233,8 +308,11 @@ export type StreamRecord = {
   phase: "queued" | "typing" | "final";
   segments: string[];
   finalChapter: string;
+  messages?: ArenaMessage[];
   elimination?: string;
   scoreBoard: RoundScore[];
+  proxyPlans?: ArenaProxyPlanRecord[];
+  eventCard?: ArenaEventCard;
   winnerId?: string;
 };
 
@@ -246,6 +324,174 @@ export type ScratchUpload = {
   cachedText: string;
   createdAt: string;
   deleteAfter: string;
+};
+
+export type TelemetryEventType =
+  | "persona.imported"
+  | "persona.overlay_updated"
+  | "worldpack.uploaded"
+  | "user.profile_updated"
+  | "admin.config_updated"
+  | "arena.match_created"
+  | "arena.match_joined"
+  | "arena.prep_saved"
+  | "arena.support_added"
+  | "arena.skill_equipped"
+  | "arena.round_triggered"
+  | "dating.dossier_created"
+  | "dating.room_created"
+  | "dating.turn_played";
+
+export type TelemetryEvent = {
+  id: string;
+  type: TelemetryEventType;
+  userId: string;
+  entityId?: string;
+  createdAt: string;
+  metadata: Record<string, string | number | boolean | null>;
+};
+
+export type TelemetrySummary = {
+  generatedAt: string;
+  windowHours: number;
+  totalEvents: number;
+  countsByType: Partial<Record<TelemetryEventType, number>>;
+  metrics: {
+    personasImported: number;
+    worldPacksUploaded: number;
+    arenaMatchesCreated: number;
+    arenaPrepSaved: number;
+    arenaRoundsTriggered: number;
+    arenaRoomsActivated: number;
+    arenaPrepCompletionRate: number;
+    arenaActivationRate: number;
+    arenaAiProxyShare: number;
+    datingRoomsCreated: number;
+    datingRoomsActivated: number;
+    datingTurnsPlayed: number;
+    datingContinuationRate: number;
+    datingSecondTurnRate: number;
+    datingAverageTurnsPerRoom: number;
+  };
+  topArenaWorlds: Array<{ label: string; count: number }>;
+  topDatingActions: Array<{ label: string; count: number }>;
+  topArenaEventCards: Array<{ label: string; count: number }>;
+  highlights: string[];
+  narrativeSummary: string;
+  summaryHash: string;
+};
+
+export type InsightPriority = "now" | "next" | "watch";
+
+export type DirectorRecommendation = {
+  title: string;
+  why: string;
+  action: string;
+  priority: InsightPriority;
+};
+
+export type DirectorInsightSnapshot = {
+  id: string;
+  generatedAt: string;
+  windowHours: number;
+  eventCount: number;
+  summaryHash: string;
+  source: "openclaw" | "heuristic";
+  headline: string;
+  findings: string[];
+  recommendations: DirectorRecommendation[];
+  watchlist: string[];
+};
+
+export type GameplayConfig = {
+  dating: {
+    forceTrustCrisisAfterFirstTurn: boolean;
+    tensionBoost: number;
+    environmentPressure: number;
+    skillCostDiamonds: number;
+  };
+  arena: {
+    defaultProxyMode: ArenaProxyMode;
+    openingPressureBoost: number;
+    eventIntensity: number;
+  };
+};
+
+export type GameplayConfigPatch = Partial<{
+  dating: Partial<GameplayConfig["dating"]>;
+  arena: Partial<GameplayConfig["arena"]>;
+}>;
+
+export type GameplayConfigDiffEntry = {
+  path: string;
+  before: string | number | boolean | null;
+  after: string | number | boolean | null;
+};
+
+export type GameplayConfigProposal = {
+  id: string;
+  title: string;
+  reason: string;
+  target: "dating" | "arena";
+  priority: InsightPriority;
+  patch: GameplayConfigPatch;
+  diff: GameplayConfigDiffEntry[];
+};
+
+export type GameplayConfigHistoryEntry = {
+  id: string;
+  createdAt: string;
+  action: "apply" | "rollback";
+  proposalId?: string;
+  proposalTitle?: string;
+  reason: string;
+  patch: GameplayConfigPatch;
+  diff: GameplayConfigDiffEntry[];
+  previousConfig: GameplayConfig;
+  nextConfig: GameplayConfig;
+};
+
+export type ProjectChangeOperation = "replace" | "create";
+
+export type ProjectChangeDraft = {
+  path: string;
+  operation: ProjectChangeOperation;
+  reason: string;
+  content: string;
+  diff: string;
+};
+
+export type ProjectBuildVerification = {
+  command: string;
+  exitCode: number | null;
+  status: "passed" | "failed";
+  stdout: string;
+  stderr: string;
+  ranAt: string;
+};
+
+export type ProjectChangeProposal = {
+  id: string;
+  createdAt: string;
+  prompt: string;
+  summary: string;
+  agentId: string;
+  status: "draft" | "applied" | "rolled_back";
+  changes: ProjectChangeDraft[];
+};
+
+export type ProjectChangeHistoryEntry = {
+  id: string;
+  proposalId: string;
+  createdAt: string;
+  action: "apply" | "rollback";
+  summary: string;
+  verification?: ProjectBuildVerification;
+  files: Array<{
+    path: string;
+    before: string | null;
+    after: string | null;
+  }>;
 };
 
 export type UserRecord = {
@@ -291,5 +537,11 @@ export type AppDatabase = {
   datingStreams: DatingStreamRecord[];
   streams: StreamRecord[];
   scratchUploads: ScratchUpload[];
+  gameplayConfig: GameplayConfig;
+  gameplayConfigHistory: GameplayConfigHistoryEntry[];
+  projectChangeProposals: ProjectChangeProposal[];
+  projectChangeHistory: ProjectChangeHistoryEntry[];
+  telemetryEvents: TelemetryEvent[];
+  insightSnapshots: DirectorInsightSnapshot[];
   webhooks: WebhookLog[];
 };

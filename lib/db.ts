@@ -2,7 +2,7 @@
 import path from "node:path";
 
 import type { AppDatabase, ArenaPrepState, MatchParticipant, PersonaSnapshot } from "@/lib/types";
-import { createSeedDatabase, seedLegends, seedSelfOverlay, seedSelfPersona, seedWorlds } from "@/lib/seed-data";
+import { createSeedDatabase, seedGameplayConfig, seedLegends, seedSelfOverlay, seedSelfPersona, seedWorlds } from "@/lib/seed-data";
 import { nowIso } from "@/lib/utils";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -32,6 +32,8 @@ function buildDefaultPrepState(matchId: string, participantIds: string[], partic
     reservePersonaIds: participants
       .filter((participant) => participant.matchId === matchId && !participantIds.includes(participant.id))
       .map((participant) => participant.personaId),
+    proxyMode: "self",
+    briefing: "房间 briefing 尚未补充，建议在准备室中补齐当前剧本背景和首轮策略。",
     updatedAt: nowIso(),
   };
 }
@@ -91,6 +93,8 @@ function cleanupDb(db: AppDatabase) {
       normalizeAiliangbiaoPersona(persona);
     }
 
+    persona.traitFragmentIds = persona.traitFragmentIds ?? [];
+
     if (!persona.destroyScheduledAt) {
       return persona;
     }
@@ -119,6 +123,35 @@ function cleanupDb(db: AppDatabase) {
     return seeded ? { ...world, ...seeded } : world;
   });
 
+  db.gameplayConfig = {
+    dating: {
+      ...seedGameplayConfig.dating,
+      ...(db.gameplayConfig?.dating || {}),
+    },
+    arena: {
+      ...seedGameplayConfig.arena,
+      ...(db.gameplayConfig?.arena || {}),
+    },
+  };
+  db.gameplayConfigHistory = Array.isArray(db.gameplayConfigHistory) ? db.gameplayConfigHistory.slice(0, 50) : [];
+  db.projectChangeProposals = Array.isArray(db.projectChangeProposals) ? db.projectChangeProposals.slice(0, 20) : [];
+  db.projectChangeHistory = Array.isArray(db.projectChangeHistory) ? db.projectChangeHistory.slice(0, 40) : [];
+  db.projectChangeProposals = db.projectChangeProposals.map((proposal) => ({
+    ...proposal,
+    changes: Array.isArray(proposal.changes)
+      ? proposal.changes.map((change) => ({
+          ...change,
+          diff: typeof change.diff === "string" ? change.diff : "",
+        }))
+      : [],
+  }));
+  db.datingStreams = db.datingStreams.map((stream) => ({
+    ...stream,
+    messages: Array.isArray(stream.messages) ? stream.messages : [],
+  }));
+
+  db.telemetryEvents = Array.isArray(db.telemetryEvents) ? db.telemetryEvents.slice(0, 5000) : [];
+  db.insightSnapshots = Array.isArray(db.insightSnapshots) ? db.insightSnapshots.slice(0, 24) : [];
   db.scratchUploads = db.scratchUploads.filter((upload) => new Date(upload.deleteAfter).getTime() > now);
 
   for (const participant of db.participants) {
@@ -151,8 +184,22 @@ function cleanupDb(db: AppDatabase) {
       )
     );
     match.prep.mode = match.prep.mode === "immersive" ? "immersive" : "rapid";
+    match.prep.proxyMode = match.prep.proxyMode === "ai" ? "ai" : "self";
+    match.prep.briefing =
+      typeof match.prep.briefing === "string" && match.prep.briefing.trim()
+        ? match.prep.briefing.trim()
+        : "房间 briefing 尚未补充，建议在准备室中补齐当前剧本背景和首轮策略。";
     match.prep.updatedAt = match.prep.updatedAt || nowIso();
+    match.roundStates = match.roundStates.map((round) => ({
+      ...round,
+      messages: Array.isArray(round.messages) ? round.messages : [],
+    }));
   }
+
+  db.streams = db.streams.map((stream) => ({
+    ...stream,
+    messages: Array.isArray(stream.messages) ? stream.messages : [],
+  }));
 }
 
 async function readDbFile() {
